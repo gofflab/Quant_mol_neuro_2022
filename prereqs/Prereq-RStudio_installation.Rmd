@@ -1,0 +1,40 @@
+---
+title: "Getting Started Instructions"
+author: "Loyal Goff"
+date: '2022-08-05'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Getting Started Instructions (\<Course Number\>)
+
+## Connecting to the Course RStudio Workbench Server
+
+## Local Installation
+
+### Downloading & Installing R
+
+To get started, you will first have to install R on your local machine. Both R and RStudio are free to download and use. R is developed and maintained by a large network of individuals and the software is made available (open source) on the [Comprehensive R Archive Network](http://cran.r-project.org/).
+
+![](images/paste-608C106B.png)
+
+#### Windows 10
+
+#### Windows \< 10
+
+#### Mac OSX / Linux
+
+### Downloading & Installing RStudio
+
+#### Windows 10
+
+#### Windows \< 10
+
+#### Mac OSX / Linux
+
+```{r}
+sessionInfo()
+```

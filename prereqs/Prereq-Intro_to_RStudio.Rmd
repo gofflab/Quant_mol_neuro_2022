@@ -1,0 +1,62 @@
+---
+title: "Intro to RStudo and RNotebooks"
+output: 
+  html_notebook:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+editor_options: 
+  chunk_output_type: inline
+---
+
+# Introduction
+
+# Learning Objectives
+
+# R Notebooks
+
+Notebooks are designed to facilitate 'literate analysis', which aims to make data analysis more interpretable and transparent. With notebooks, code is embedded with the narrative of the analysis. This has the benefit of helping to convey the specific ideas and thought processes of the author, and allows the introduction of concepts in the workflow that helps to facilitate understanding.
+
+RStudio provides several tools to help develop and share R Notebooks, including the development and maintenance of a specific language structure called RMarkdown. RMarkdown combines the programming language R, with the simple markup language [Markdown](https://daringfireball.net/projects/markdown/). Markdown was designed to help convert human-readable text to HTML or PDF documents using a simple syntax.
+
+-   [RMarkdown Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+
+An R Markdown document begins with a short header section that describes the document that will be created. For example, this R Notebook has the following header at the top:
+
+    ---
+    title: "Intro to RStudo and RNotebooks"
+    output: 
+      html_notebook:
+        toc: true
+        toc_depth: 2
+        toc_float: true
+    editor_options: 
+      chunk_output_type: inline
+    ---
+
+This header uses the [YAML](https://en.wikipedia.org/wiki/YAML) language syntax
+
+# RMarkdown Basics
+
+
+# Chunks
+
+## Non-code chunks
+
+In modern RMarkdown, \## Code chunks
+
+### Running a code chunk
+
+```{r }
+x<-rnorm(100)
+mean(x)
+```
+
+
+# Source vs Visual editor
+
+# Knitting an R Notebook
+
+```{r session}
+sessionInfo()
+```
