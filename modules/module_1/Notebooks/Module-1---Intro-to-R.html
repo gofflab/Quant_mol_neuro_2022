@@ -13,7 +13,7 @@
 
 <meta name="date" content="2022-08-05" />
 
-<title>Getting Started Instructions (ME.440.825)</title>
+<title>Module 1 - Intro to R</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1547,76 +1547,124 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Getting Started Instructions
-(ME.440.825)</h1>
+<h1 class="title toc-ignore">Module 1 - Intro to R</h1>
 <h4 class="author">Loyal Goff</h4>
 <h4 class="date">2022-08-05</h4>
 
 </div>
 
 
+<pre class="r"><code># Import libraries here </code></pre>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
+<p><Overview of module topic></p>
 </div>
 <div id="learning-objectives" class="section level1">
 <h1>Learning Objectives</h1>
+<p><List of learning objectives></p>
 </div>
-<div id="r-notebooks" class="section level1">
-<h1>R Notebooks</h1>
-<p>Notebooks are designed to facilitate ‘literate analysis’, which aims
-to make data analysis more interpretable and transparent. With
-notebooks, code is embedded with the narrative of the analysis. This has
-the benefit of helping to convey the specific ideas and thought
-processes of the author, and allows the introduction of concepts in the
-workflow that helps to facilitate understanding.</p>
-<p>RStudio provides several tools to help develop and share R Notebooks,
-including the development and maintenance of a specific language
-structure called RMarkdown. RMarkdown combines the programming language
-R, with the simple markup language <a href="https://daringfireball.net/projects/markdown/">Markdown</a>.
-Markdown was designed to help convert human-readable text to HTML or PDF
-documents using a simple syntax.</p>
+<div id="what-is-r" class="section level1">
+<h1>What is R?</h1>
+<div id="why-r" class="section level2">
+<h2>Why R?</h2>
+<p>R is inherently a quirky language, but exceptionally powerful and
+well suited to data science, and bioinformatics in particular. R is not
+the fastest or most memory efficient programming language, but there are
+several benefits that make this a solid choice for learning genomics
+data science.</p>
 <ul>
-<li><a href="https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf">RMarkdown
-Cheat Sheet</a></li>
-<li><a href="https://vimeo.com/178485416">RMarkdown Video
-Overview</a></li>
+<li>R is free and open source and widely available across a variety of
+computational platforms</li>
+<li>R (&amp; BioConductor) represent the efforts of an incredibly large,
+robust, and continually growing community dedicated to supporting and
+developing this language.</li>
+<li><a href="https://www.bioconductor.org">BioConductor</a> is an
+incredibly rich and established ecosystem of data and code packages
+tailored specifically for a wide array of bioinformatics, genomics, and
+computational biology tasks. Chances are, if you’re trying to solve a
+problem in computational biology, a package likely already exists to
+help you with this in Bioconductor. We will use this resource widely in
+this course.</li>
+<li>R is one of the best languages for statistical modelling, and
+cleaning/organizing datasets. R has a strong foundation in statistical
+analysis and the syntax and community-based resources for performing
+many common statistical tasks are abundant.</li>
+<li>Visualzation of data in R is both beautiful and intuitive using
+packages such as <code>ggplot2</code> which define a ‘grammar of
+graphics’ that allows you to quickly build complex and stunning plots
+from your data.</li>
+<li>R can (seamlessly?) interact with other programming languages such
+as python or C++ within the same analysis.</li>
 </ul>
-<p>An R Markdown document begins with a short header section that
-describes the document that will be created. For example, this R
-Notebook has the following header at the top:</p>
-<pre><code>---
-title: &quot;Intro to RStudo and RNotebooks&quot;
-output: 
-  html_notebook:
-    toc: true
-    toc_depth: 2
-    toc_float: true
-editor_options: 
-  chunk_output_type: inline
----</code></pre>
-<p>This header uses the <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> language syntax</p>
 </div>
-<div id="rmarkdown-basics" class="section level1">
-<h1>RMarkdown Basics</h1>
+<div id="rscripts" class="section level2">
+<h2>Rscripts</h2>
 </div>
-<div id="chunks" class="section level1">
-<h1>Chunks</h1>
-<div id="non-code-chunks" class="section level2">
-<h2>Non-code chunks</h2>
-<p>In modern RMarkdown, ## Code chunks</p>
-<div id="running-a-code-chunk" class="section level3">
-<h3>Running a code chunk</h3>
-<pre class="r"><code>x&lt;-rnorm(100)
-mean(x)</code></pre>
-<pre><code>## [1] 0.02803636</code></pre>
+<div id="rmarkdown-documents" class="section level2">
+<h2>RMarkdown documents</h2>
 </div>
 </div>
+<div id="the-basics" class="section level1">
+<h1>The Basics</h1>
+<div id="variables" class="section level2">
+<h2>Variables</h2>
 </div>
-<div id="source-vs-visual-editor" class="section level1">
-<h1>Source vs Visual editor</h1>
+<div id="data-types" class="section level2">
+<h2>Data Types</h2>
 </div>
-<div id="knitting-an-r-notebook" class="section level1">
-<h1>Knitting an R Notebook</h1>
+<div id="number-types" class="section level2">
+<h2>Number Types</h2>
+</div>
+<div id="strings" class="section level2">
+<h2>Strings</h2>
+</div>
+<div id="booleans" class="section level2">
+<h2>Booleans</h2>
+</div>
+<div id="collection-data-types" class="section level2">
+<h2>Collection Data Types</h2>
+<div id="vectors" class="section level3">
+<h3>Vectors</h3>
+</div>
+<div id="dataframes" class="section level3">
+<h3>DataFrames</h3>
+</div>
+</div>
+<div id="control-flow" class="section level2">
+<h2>Control Flow</h2>
+<div id="ifelse-and-choice" class="section level3">
+<h3>if[else] and choice()</h3>
+<pre><code>if (condition) true_action
+if (condition) true_action else false_action</code></pre>
+</div>
+<div id="operators" class="section level3">
+<h3>Operators</h3>
+<div id="arithmetic-operators" class="section level4">
+<h4>Arithmetic Operators</h4>
+</div>
+<div id="comparison-operators" class="section level4">
+<h4>Comparison Operators</h4>
+</div>
+<div id="assignment-operators" class="section level4">
+<h4>Assignment Operators</h4>
+</div>
+</div>
+<div id="loopingiteration" class="section level3">
+<h3>Looping/Iteration</h3>
+<div id="for-loops" class="section level4">
+<h4>For loops</h4>
+</div>
+<div id="while-loops" class="section level4">
+<h4>While loops</h4>
+</div>
+<div id="section" class="section level4">
+<h4></h4>
+</div>
+</div>
+</div>
+</div>
+<div id="session-information" class="section level1">
+<h1>Session Information</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>## R version 4.0.4 (2021-02-15)
 ## Platform: x86_64-apple-darwin17.0 (64-bit)

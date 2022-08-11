@@ -1,0 +1,159 @@
+---
+title: "Module 1 - Intro to R"
+author: "Loyal Goff"
+date: '2022-08-05'
+output: 
+  html_document:
+    toc: true
+    toc_level: 3
+    toc_float: true
+    theme: yeti
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries}
+# Import libraries here 
+
+```
+
+# Introduction
+<Overview of module topic>
+
+# Learning Objectives
+<List of learning objectives>
+
+# What is R?
+
+## Why R?
+R is inherently a quirky language, but exceptionally powerful and well suited to data science, and bioinformatics in particular. R is not the fastest or most memory efficient programming language, but there are several benefits that make this a solid choice for learning genomics data science.
+
+* R is free and open source and widely available across a variety of computational platforms
+* R (& BioConductor) represent the efforts of an incredibly large, robust, and continually growing community dedicated to supporting and developing this language. 
+* [BioConductor](https://www.bioconductor.org) is an incredibly rich and established ecosystem of data and code packages tailored specifically for a wide array of bioinformatics, genomics, and computational biology tasks. Chances are, if you're trying to solve a problem in computational biology, a package likely already exists to help you with this in Bioconductor.  We will use this resource widely in this course.
+* R is one of the best languages for statistical modelling, and cleaning/organizing datasets. R has a strong foundation in statistical analysis and the syntax and community-based resources for performing many common statistical tasks are abundant.
+* Visualzation of data in R is both beautiful and intuitive using packages such as `ggplot2` which define a 'grammar of graphics' that allows you to quickly build complex and stunning plots from your data.
+* R can (seamlessly?) interact with other programming languages such as python or C++ within the same analysis.
+
+
+## Rscripts
+
+## RMarkdown documents
+
+# The Basics
+## Variables
+R output can be created by directly typing equations into the console
+
+```{r}
+8 + 2
+4**3
+```
+When executed, the above two lines simply return the result of the equations as output rows. But in order to use R as more than just a calculator, we need to be able to assign values to specific objects called variables.
+
+A variable is in essence a 'named storage' contanier that programs can manipulate. Varibles in R can store a single atomic vector, a group of vectors, or a combination of different objects.
+Variables can be assigned values using several different operators in R.
+
+```{r}
+# Assignment using the equal operator.
+a = 5
+
+# Assignment using the leftward operator (<-)
+b <- 10
+
+# Assignment using the rightward operator (->)
+15 -> c
+```
+For historical reasons, the most common assignment operator in R is the leftward operator `<-`. We will continue to use this syntax for the remainder of the tutorial.
+
+You will notice that in the above code chunk, no output was produced. By default, when a value is assigned to a variable, R does not print anything. You can inspect the contents of a variable by using the `print()` function or by typing the object name
+
+```{r}
+print(a)
+b
+c
+```
+
+## Data Types
+
+## Number Types
+
+## Strings
+
+## Booleans
+
+## Collection Data Types
+
+### Vectors
+The most basic data type in R is the vector, which consists of a group of values.  Vectors are created using the `c()` function as so:
+
+```{r}
+x <- c(5, 10, 15)
+x
+```
+
+You can also store character strings in vectors as well. Individual elements of a string vector must be contained within quotes.
+
+```{r}
+y <- c("Toad", "the", "Wet", "Sprocket")
+y
+```
+
+Many functions exist to either inspect or operate over vectors.
+The `length()` function returns the length of the vector:
+```{r}
+length(x)
+length(y)
+```
+
+```{r}
+str(x)
+str(y)
+```
+
+```{r}
+class(x)
+class(y)
+```
+
+What happens if we create a vector from two different types of variables, one numeric and one a character string?
+
+```{r}
+z <- c(1, "Radiohead", 4.0)
+z
+```
+Elements within vectors in R **must** all be of the same data type. 
+
+### DataFrames
+
+## Control Flow
+
+### if[else] and choice()
+
+```
+if (condition) true_action
+if (condition) true_action else false_action
+```
+
+### Operators
+
+#### Arithmetic Operators
+
+#### Comparison Operators
+
+#### Assignment Operators
+
+### Looping/Iteration
+
+#### For loops
+
+#### While loops
+
+####
+
+
+# Session Information
+```{r session}
+sessionInfo()
+```
+

@@ -1,12 +1,13 @@
 ---
-title: "Intro to RStudo and RNotebooks"
+title: "Getting Started Instructions (ME.440.825)"
+author: "Loyal Goff"
+date: '2022-08-05'
 output: 
-  html_notebook:
+  html_document:
     toc: true
-    toc_depth: 2
+    toc_level: 3
     toc_float: true
-editor_options: 
-  chunk_output_type: inline
+    theme: yeti
 ---
 
 # Introduction
@@ -20,6 +21,7 @@ Notebooks are designed to facilitate 'literate analysis', which aims to make dat
 RStudio provides several tools to help develop and share R Notebooks, including the development and maintenance of a specific language structure called RMarkdown. RMarkdown combines the programming language R, with the simple markup language [Markdown](https://daringfireball.net/projects/markdown/). Markdown was designed to help convert human-readable text to HTML or PDF documents using a simple syntax.
 
 -   [RMarkdown Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+-   [RMarkdown Video Overview](https://vimeo.com/178485416)
 
 An R Markdown document begins with a short header section that describes the document that will be created. For example, this R Notebook has the following header at the top:
 
