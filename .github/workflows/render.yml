@@ -31,10 +31,6 @@ jobs:
         run: install.packages(c('rmarkdown', 'tidyverse'))
         shell: Rscript {0}
 
-      - name: Check
-        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
-        shell: Rscript {0}
-
       - name: Render
         run: |
           files <- Sys.glob(**/*.Rmd)
