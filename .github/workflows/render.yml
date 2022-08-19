@@ -33,9 +33,9 @@ jobs:
 
       - name: Render
         run: |
-          files <- Sys.glob(**/*.Rmd)
-          for (file in files) {
-            rmarkdown::render(file)
-          }
+          "files <- Sys.glob(**/*.Rmd)"
+          "for (file in files) {"
+          "  rmarkdown::render(file)"
+          "}"
         shell: Rscript {0}
 
