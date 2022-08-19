@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up R ${{ matrix.r-version }}
+      - name: Set up R
         uses: r-lib/actions/setup-r@v2
 
       - name: Install dependencies
@@ -39,11 +39,15 @@ jobs:
           "}"
         shell: Rscript {0}
 
+  deploy:
+    runs-on: 'ubuntu-latest'
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    steps:
       - name: Generate index
         run: Rscript genhtml.R
 
       - name: Deploy
-        if: github.ref == 'refs/heads/main'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: .
