@@ -31,19 +31,14 @@ jobs:
         uses: r-lib/actions/setup-r-dependencies@v2
 
       - name: Render
-        run: |
-          "files <- Sys.glob(**/*.Rmd)"
-          "for (file in files) {"
-          "  rmarkdown::render(file)"
-          "}"
-        shell: Rscript {0}
+        run: Rscript render.R
 
       - name: Generate index
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macos-latest' && github.ref == 'refs/heads/main'
         run: Rscript genhtml.R
 
       - name: Deploy
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macos-latest' && github.ref == 'refs/heads/main'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: .

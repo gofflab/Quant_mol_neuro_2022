@@ -1,4 +1,4 @@
-files <- Sys.glob("**/*.html")
+files <- list.files(".", pattern="*.html$", recursive = TRUE)
 links <- paste(
    lapply(files, function (x) paste('<a href="/', x, '">', x, '</a>', sep="")),
    collapse="\n<br>\n"
