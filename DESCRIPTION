@@ -1,3 +1,4 @@
-Package:
+Package: quant_mol_neuro_2022
+Imports:
     rmarkdown,
-    tidyverse
+    tidyverse,
