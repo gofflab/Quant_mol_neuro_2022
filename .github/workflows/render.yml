@@ -39,3 +39,10 @@ jobs:
           "}"
         shell: Rscript {0}
 
+      - name: Generate index
+        run: Rscript genhtml.R
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: .
