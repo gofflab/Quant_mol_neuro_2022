@@ -39,11 +39,11 @@ jobs:
         shell: Rscript {0}
 
       - name: Generate index
-        # if: github.ref == 'refs/heads/main' && matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'macos-latest'
         run: Rscript genhtml.R
 
       - name: Deploy
-        # if: github.ref == 'refs/heads/main' && matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'macos-latest'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: .
