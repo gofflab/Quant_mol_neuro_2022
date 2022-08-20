@@ -1,6 +1,6 @@
 files <- list.files(".", pattern = "*.html$", recursive = TRUE)
 links <- paste(
-    lapply(files, function(x) paste('<a href="/', x, '">', x, "</a>", sep = "")),
+    lapply(files, function(x) paste('<a href="/Quant_mol_neuro_2022/', x, '">', x, "</a>", sep = "")),
     collapse = "\n<br>\n"
 )
 html <- paste(
