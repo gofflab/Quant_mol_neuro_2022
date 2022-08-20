@@ -38,7 +38,7 @@ jobs:
 
       - name: Generate index
         if: matrix.os == 'ubuntu-latest' && github.ref == 'refs/heads/main'
-        run: Rscript genhtml.R
+        run: Rscript genIndex.R
 
       - name: Deploy
         if: matrix.os == 'ubuntu-latest' && github.ref == 'refs/heads/main'

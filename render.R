@@ -1,4 +1,4 @@
-files <- list.files(".", pattern = "*.Rmd$", recursive = TRUE)
-for (file in files) {
-    rmarkdown::render(file)
-}
+files <- list.files(".", recursive = TRUE)
+files <- files[grepl("^(modules/)|(prereqs/)*.\\.Rmd$", files)]
+
+lapply(files, rmarkdown::render)
