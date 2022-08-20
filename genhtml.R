@@ -4,7 +4,7 @@ links <- paste(
     collapse = "\n<br>\n"
 )
 html <- paste(
-    "<html><head><title>Quant_mol_neuro_2022</title></head><body><h1>Quantitative Molecular Neuroscience 2022</h1><h2>Course Materials></h2>",
+    "<html><head><title>Quant_mol_neuro_2022</title></head><body><h1>Quantitative Molecular Neuroscience 2022</h1><h2>Course Materials</h2>",
     links,
     "</body></html>",
     sep = ""
