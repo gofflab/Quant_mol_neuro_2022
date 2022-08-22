@@ -17,8 +17,12 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Connecting to the Course RStudio Workbench Server
-Throughout the course, we will maintain a cloud-based instance of RStudio workbench for students to use as needed. This is primarily our safeguard to streamline learning in case of troubleshooting issues on local installations (which are preferred). Prior to the first day of the course, all students will be given accounts onthe online Workbench and will have access to a working Linux/R/RStudio environment as needed. To access this server please open a web browser and go to [http://neurogenomics.gofflab.org/](http://neurogenomics.gofflab.org/).
+# Connecting to the online high-performance compute environment
+Throughout the course, students and instructors will have access to the rockfish high-performance compute environment at JHU. This is primarily our safeguard to streamline learning in case of troubleshooting issues on local installations (which are preferred). Prior to the first day of the course, all students should [https://coldfront.rockfish.jhu.edu/user/register/](register for accounts on the rockfish platform). Once you have created an account, we will add you to the reserved allocation for this semester's course.
+
+## Introduction videos to rockfish
+
+[Introduction videos](https://www.arch.jhu.edu/support/training-education/videos/)
 
 # Local Installation
 For much of the course, we hope that you will be able to follow along and perform your analyses on your local computer or an environment of your choosing. To do so, you will need to setup your compute environment by installing a few key software tools and programs. 
