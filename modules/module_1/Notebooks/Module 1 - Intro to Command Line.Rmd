@@ -235,6 +235,7 @@ We have now created, deleted, moved, and manipulated files, but what if we simpl
 We can use the wget command followed by the URL. The file will be downloaded into your current directory location. This may take a minute to download
 
 ```{bash}
+rm chr01*  # Delete existing files before run.
 wget http://sgd-archive.yeastgenome.org/sequence/S288C_reference/chromosomes/fasta/chr01.fsa
 ```
 
@@ -254,7 +255,7 @@ This is done using programs such as gzip/gunzip. File compression may be key whe
 
 ```{bash}
 gzip chr01.fsa # gzip command to compress the file, notice the new file extension of *.gz
-du -h chr01.fsa.gz 
+du -h chr01.fsa.gz
 gunzip chr01.fsa.gz # gunzip command to uncompress the file, removes the file extension
 du -h chr01.fsa
 ```
@@ -351,7 +352,7 @@ If you want to use more than one command on a piece of data and don't necessaril
 cat chr01.fsa | head -n 10 | tail -n 5
 ```
 ## You made it through this intro! Great job!
-Let the instructors and/or TAs know if you have any questions and we will expand upon these lessons as needed in class. We will use the command line often throughout this course, and you will have many more opportunities to familiarize yourself with this interface, and how we use the command line to run individual tools/components of many bioinformatics & computational biology pipelines and to string together inputs and outputs of different programs. 
+Let the instructors and/or TAs know if you have any questions and we will expand upon these lessons as needed in class. We will use the command line often throughout this course, and you will have many more opportunities to familiarize yourself with this interface, and how we use the command line to run individual tools/components of many bioinformatics & computational biology pipelines and to string together inputs and outputs of different programs.
 
 # Session Information
 
