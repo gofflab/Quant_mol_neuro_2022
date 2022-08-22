@@ -38,3 +38,9 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# MacOSX stuff
+.DS_Store
+
+# Compiled notebooks
+

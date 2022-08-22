@@ -42,6 +42,25 @@ R is inherently a quirky language, but exceptionally powerful and well suited to
 ## RMarkdown documents
 
 # The Basics
+
+## R as a calculator
+```{r}
+5*10
+
+5/8
+
+10^3
+
+10**3
+
+log(10)
+
+log10(10)
+
+sin(2*pi)
+```
+
+
 ## Variables
 R output can be created by directly typing equations into the console
 
