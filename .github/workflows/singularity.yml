@@ -14,21 +14,35 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        singularity_version:
-          - '3.8.1'
+    steps:
+      - uses: actions/checkout@v3
 
+      - name: Build Docker container
+        run: docker build --output type=tar,dest=image.tar .
+
+      - name: Save production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: image
+          path: image.tar
+          retention-days: 1
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
     container:
-      image: quay.io/singularity/singularity:v${{ matrix.singularity_version }}
+      image: quay.io/singularity/singularity:latest
       options: --privileged
 
-    name: Build
     steps:
-      - name: Build Container
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: image
+
+      - name: Convert to Singularity
         run: |
-          docker build -t qmn22/${{ github.sha }} .
-          sudo singularity build my_container.sif docker-daemon://qmn22/${{ github.sha }}
+          sudo singularity build container.sif docker-archive://image.tar
 
       - name: Login and Deploy Container
         # if: github.event_name != 'pull_request'
