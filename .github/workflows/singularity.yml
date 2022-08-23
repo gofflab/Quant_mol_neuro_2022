@@ -13,41 +13,53 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  SINGULARITY_VERSION: v3.10.2
-  SECRET: ${{ secrets.GITHUB_TOKEN }}
-  ACTOR: ${{ github.actor }}
+  SINGULARITY_VERSION: 3.8.3
 
 jobs:
   build-singularity:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update && sudo apt-get install -y \
+            build-essential \
+            libssl-dev \
+            uuid-dev \
+            libgpgme11-dev \
+            squashfs-tools \
+            libseccomp-dev \
+            pkg-config
+
+      - name: Install Singularity
+        env:
+          GOPATH: /tmp/go
+        run: |
+          mkdir -p $GOPATH
+          sudo mkdir -p /usr/local/var/singularity/mnt && \
+          mkdir -p $GOPATH/src/github.com/sylabs && \
+          cd $GOPATH/src/github.com/sylabs && \
+          wget -qO- https://github.com/sylabs/singularity/releases/download/v${SINGULARITY_VERSION}/singularity-ce-${SINGULARITY_VERSION}.tar.gz | \
+          tar xzv && \
+          cd singularity-ce-${SINGULARITY_VERSION} && \
+          ./mconfig -p /usr/local && \
+          make -C builddir && \
+          sudo make -C builddir install
+
+      - uses: actions/checkout@v3
 
       - name: Build Docker container
         run: docker build -t temp .
 
-
-
       - name: Convert to Singularity
-        run: |
-          docker run -v /var/run/docker.sock:/var/run/docker.sock \
-          -v $(pwd):/data \
-          --privileged -t --rm \
-          quay.io/singularity/singularity:${{ env.SINGULARITY_VERSION }} \
-          build /data/container.sif docker-daemon://temp:latest
+        run: sudo singularity build container.sif docker-daemon://temp
 
       - name: Login and Deploy Container
         # if: github.event_name != 'pull_request'
         run: |
-          docker run \
-          -v $(pwd):/data \
-          -t --rm \
-          --entrypoint '/bin/bash' \
-          quay.io/singularity/singularity:${{ env.SINGULARITY_VERSION }} \
-          -c 'echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ github.actor }} --password-stdin oras://${{ env.REGISTRY }} && singularity push /data/container.sif oras://${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest'
+          echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ github.actor }} --password-stdin oras://${{ env.REGISTRY }}
+          singularity push /data/container.sif oras://${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
   build-docker:
     runs-on: ubuntu-latest
