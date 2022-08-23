@@ -14,6 +14,8 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   SINGULARITY_VERSION: v3.10.2
+  SECRET: ${{ secrets.GITHUB_TOKEN }}
+  ACTOR: ${{ github.actor }}
 
 jobs:
   build-singularity:
@@ -21,11 +23,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Build Docker container
         run: docker build -t temp .
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+
 
       - name: Convert to Singularity
         run: |
