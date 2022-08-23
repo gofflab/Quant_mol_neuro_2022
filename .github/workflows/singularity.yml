@@ -24,6 +24,9 @@ jobs:
       - name: Build Docker container
         run: docker build -t temp .
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Convert to Singularity
         run: |
           docker run -v /var/run/docker.sock:/var/run/docker.sock \
