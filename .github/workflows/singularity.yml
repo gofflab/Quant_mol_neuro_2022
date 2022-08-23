@@ -59,7 +59,7 @@ jobs:
         # if: github.event_name != 'pull_request'
         run: |
           echo ${{ secrets.GITHUB_TOKEN }} | singularity remote login -u ${{ github.actor }} --password-stdin oras://${{ env.REGISTRY }}
-          singularity push /data/container.sif oras://${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          singularity push container.sif oras://${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
   build-docker:
     runs-on: ubuntu-latest
