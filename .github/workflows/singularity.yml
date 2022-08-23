@@ -53,7 +53,7 @@ jobs:
         run: docker build -t temp .
 
       - name: Convert to Singularity
-        run: sudo singularity build container.sif docker-daemon://temp
+        run: sudo singularity build container.sif docker-daemon://temp:latest
 
       - name: Login and Deploy Container
         # if: github.event_name != 'pull_request'
