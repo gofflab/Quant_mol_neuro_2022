@@ -67,5 +67,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ format('${0}-docker', steps.meta.outputs.tags) }}
+          tags: ${{ format('{0}-docker', steps.meta.outputs.tags) }}
           labels: ${{ steps.meta.outputs.labels }}
