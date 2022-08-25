@@ -17,12 +17,17 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Connecting to the online high-performance compute environment
+# Connecting to the online high-performance compute environment (rockfish)
 Throughout the course, students and instructors will have access to the rockfish high-performance compute environment at JHU. This is primarily our safeguard to streamline learning in case of troubleshooting issues on local installations (which are preferred). Prior to the first day of the course, all students should [https://coldfront.rockfish.jhu.edu/user/register/](register for accounts on the rockfish platform). Once you have created an account, we will add you to the reserved allocation for this semester's course.
 
 ## Introduction videos to rockfish
 
 [Introduction videos](https://www.arch.jhu.edu/support/training-education/videos/)
+
+## Familiarizing yourself with the rockfish cluster
+As the course progresses, we will utilize this system more and more if the compute needs exceed those of your local system.  We will be providing more detailed information on how to connect to and use this system as this is developed. Materials will be released on Canvas.
+
+There will be many tools and packages that you will need for this course, and we will make every attempt to either provide specific installation instructions, or create a compute environment (via docker/singularity container(s)) that provides these tools for you.
 
 # Local Installation
 For much of the course, we hope that you will be able to follow along and perform your analyses on your local computer or an environment of your choosing. To do so, you will need to setup your compute environment by installing a few key software tools and programs. 
@@ -51,6 +56,8 @@ RStudio is originally designed to work with linux distributions and Mac OSX. Win
 To install and configure your Windows10 system to use WSL2, please follow the instructions provided here:
 
 [WSL2 Install and RStudio Setup for Windows](https://support.rstudio.com/hc/en-us/articles/360049776974-Using-RStudio-Server-in-Windows-WSL2)
+
+This will walk you through the creating of an Ubuntu wsl system where you can then install RStudio from within ubuntu. This will then mirror a computational biology environment that will allow you to build and install many of the linux-style tools that are commonly used for bioinformatics workflows. 
 
 # Taking R/RStudio for a test run
 Once you've successfully installed R & RStudio, open the RStudio application and let's make sure that the environment is working for you. 
