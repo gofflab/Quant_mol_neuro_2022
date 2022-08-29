@@ -1,0 +1,100 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+### ME.440.825 Quantitative Neurogenomics
+### Problem Set 1
+
+### Part 1: basic bash scripting
+
+First, download *this folder* of genome sequence files. Then, answer each question using Bash scripting.
+
+You'll need to have your folder of sequence files in your working directory. Print your working directory and its contents.
+```{bash}
+echo Working directory:
+pwd
+echo $'\n'Contents of working directory:
+ls
+```
+
+We'll start with Kcna1.fa, a FASTA file that contains the genome sequence of a mouse voltage-gated potassium channel. The first line contains a carat (">"), followed by a unique sequence identifier. The actual sequence starts on the next line. See for yourself by printing the first three lines of the file. Note that FASTA files can contain multiple sequences, but this one has just one.
+```{bash}
+head -3 ion_channel_sequences/Kcna1.fa
+```
+
+Print just the sequence into a new file called Kcna1_sequence.txt
+```{bash}
+tail -n +2 ion_channel_sequences/Kcna1.fa > Kcna1_sequence.txt
+```
+
+How many lines are in Kcna1_sequence.txt? How many characters are in the file? If you subtract the number of lines from the number of characters, you should get the number of  nucleotides in the Kcna1 gene. Why? Answer in a comment.   
+```{bash}
+echo Number of characters:
+wc -m Kcna1_sequence.txt
+
+echo $'\n'Number of lines:
+wc -l Kcna1_sequence.txt
+
+# The wc command counts all the characters in the file, including newline characters. 
+```
+
+Count the number of times each nucleotide appears in the Kcna1 gene.  
+```{bash}
+echo A count:
+grep -o "A" Kcna1_sequence.txt | wc -l 
+echo G count:
+grep -o "G" Kcna1_sequence.txt | wc -l
+echo C count:
+grep -o "C" Kcna1_sequence.txt | wc -l
+echo T count:
+grep -o "T" Kcna1_sequence.txt | wc -l
+
+```
+
+Voltage-gated potassium channels have a signature selectivity filter with the amino acid sequence TVGYG. Confirm that the Kcna1 gene has a sequence that would encode these amino acids. Your first step should be to remove newline characters from Kcna1_sequence.txt.
+```{bash}
+cat Kcna1_sequence.txt | tr -d "\n" |
+grep -o "AC[TCAG]GT[TCAG]GG[TCAG]TA[TC]GG[TCAG]" | wc -l
+```
+
+Using *your favorite text editor*, write a bash script that takes a FASTA file (with a single sequence) and a target sequence motif as input and outputs the number of times that the motif appears in the FASTA file. You will use it here to determine which of the FASTA files in the ion_channel_sequences folder are likely to encode a voltage-gated potassium channel. 
+
+After writing your script, check its file permissions and make it executable
+```{bash}
+ls -l findSeqMotif.sh
+#chmod +x findSeqMotif.sh
+```
+
+Use a loop to check whether each of the FASTA files in the ion_channel_sequences folder contains the TVGYG motif. Print the names of just the files that do contain the motif. 
+```{bash}
+tvgyg="AC[TCAG]GT[TCAG]GG[TCAG]TA[TC]GG[TCAG]"
+
+echo voltage-gated potassium channels:
+
+for filename in ion_channel_sequences/*.fa
+do
+  motifCount=$(./findSeqMotif.sh $filename $tvgyg)
+  if [ $motifCount -gt 0 ]
+  then
+    echo $filename
+  fi
+done
+```
+
+### R section
+
+```{r}
+
+```
+
+### Include some R plotting
+
+```{r}
+
+```
+
+
+## End of Problem Set
+
