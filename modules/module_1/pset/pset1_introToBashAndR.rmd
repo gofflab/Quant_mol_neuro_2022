@@ -9,7 +9,7 @@ output:
 
 ### Part 1: basic bash scripting
 
-First, download *this folder* of genome sequence files. Then, answer each question using Bash scripting.
+First, download [this folder](https://github.com/gofflab/Quant_mol_neuro_2022/tree/main/modules/module_1/pset/ion_channel_sequences) of genome sequence files. Then, answer each question using Bash scripting.
 
 You'll need to have your folder of sequence files in your working directory. Print your working directory and its contents.
 ```{bash}
