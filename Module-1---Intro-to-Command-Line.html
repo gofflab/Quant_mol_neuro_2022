@@ -235,29 +235,29 @@ pre code {
 <p>Bash/shell commands can take input arguments or options. One convention is to use a dash ( - ) to specify arguments. For example, we can ask ls to show a more detailed list of information for each file/folder:</p>
 <pre class="bash"><code>ls -l</code></pre>
 <pre><code>## total 52
-## -rw-r--r-- 1 runner docker    97 Aug 31 04:00 DESCRIPTION
-## -rw-r--r-- 1 runner docker  1065 Aug 31 04:00 LICENSE
-## -rw-r--r-- 1 runner docker 16016 Aug 31 04:02 Module-1---Intro-to-Command-Line.Rmd
-## -rw-r--r-- 1 runner docker   133 Aug 31 04:00 README.md
-## -rw-r--r-- 1 runner docker   467 Aug 31 04:00 genIndex.R
-## drwxr-xr-x 2 runner docker  4096 Aug 31 04:02 images
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 modules
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 prereqs
-## -rw-r--r-- 1 runner docker   136 Aug 31 04:00 render.R
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 templates</code></pre>
+## -rw-r--r-- 1 runner docker    97 Aug 31 14:07 DESCRIPTION
+## -rw-r--r-- 1 runner docker  1065 Aug 31 14:07 LICENSE
+## -rw-r--r-- 1 runner docker 16016 Aug 31 14:09 Module-1---Intro-to-Command-Line.Rmd
+## -rw-r--r-- 1 runner docker   133 Aug 31 14:07 README.md
+## -rw-r--r-- 1 runner docker   467 Aug 31 14:07 genIndex.R
+## drwxr-xr-x 2 runner docker  4096 Aug 31 14:09 images
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 modules
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 prereqs
+## -rw-r--r-- 1 runner docker   136 Aug 31 14:07 render.R
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 templates</code></pre>
 <p>We can aggregate different options by directly appending options one after another. The following shows how to display file sizes in human readable formats ( -h ):</p>
 <pre class="bash"><code>ls -lh</code></pre>
 <pre><code>## total 52K
-## -rw-r--r-- 1 runner docker   97 Aug 31 04:00 DESCRIPTION
-## -rw-r--r-- 1 runner docker 1.1K Aug 31 04:00 LICENSE
-## -rw-r--r-- 1 runner docker  16K Aug 31 04:02 Module-1---Intro-to-Command-Line.Rmd
-## -rw-r--r-- 1 runner docker  133 Aug 31 04:00 README.md
-## -rw-r--r-- 1 runner docker  467 Aug 31 04:00 genIndex.R
-## drwxr-xr-x 2 runner docker 4.0K Aug 31 04:02 images
-## drwxr-xr-x 3 runner docker 4.0K Aug 31 04:00 modules
-## drwxr-xr-x 3 runner docker 4.0K Aug 31 04:00 prereqs
-## -rw-r--r-- 1 runner docker  136 Aug 31 04:00 render.R
-## drwxr-xr-x 3 runner docker 4.0K Aug 31 04:00 templates</code></pre>
+## -rw-r--r-- 1 runner docker   97 Aug 31 14:07 DESCRIPTION
+## -rw-r--r-- 1 runner docker 1.1K Aug 31 14:07 LICENSE
+## -rw-r--r-- 1 runner docker  16K Aug 31 14:09 Module-1---Intro-to-Command-Line.Rmd
+## -rw-r--r-- 1 runner docker  133 Aug 31 14:07 README.md
+## -rw-r--r-- 1 runner docker  467 Aug 31 14:07 genIndex.R
+## drwxr-xr-x 2 runner docker 4.0K Aug 31 14:09 images
+## drwxr-xr-x 3 runner docker 4.0K Aug 31 14:07 modules
+## drwxr-xr-x 3 runner docker 4.0K Aug 31 14:07 prereqs
+## -rw-r--r-- 1 runner docker  136 Aug 31 14:07 render.R
+## drwxr-xr-x 3 runner docker 4.0K Aug 31 14:07 templates</code></pre>
 <p>Sometimes commands take in arguments for various purposes. Again, using ls as example, it can take path as an argument. Without the path, it will by default show the current listings, as shown above. Given a path, it will list items in that path. The following command lists all the files and directories in the directory directly above your current directory:</p>
 <pre class="bash"><code>ls ../</code></pre>
 <pre><code>## Quant_mol_neuro_2022</code></pre>
@@ -516,17 +516,17 @@ pre code {
 <p>Nothing seemed to happen? Lets check and see if our new directory was made:</p>
 <pre class="bash"><code>ls -l</code></pre>
 <pre><code>## total 56
-## -rw-r--r-- 1 runner docker    97 Aug 31 04:00 DESCRIPTION
-## -rw-r--r-- 1 runner docker  1065 Aug 31 04:00 LICENSE
-## -rw-r--r-- 1 runner docker 16016 Aug 31 04:02 Module-1---Intro-to-Command-Line.Rmd
-## -rw-r--r-- 1 runner docker   133 Aug 31 04:00 README.md
-## -rw-r--r-- 1 runner docker   467 Aug 31 04:00 genIndex.R
-## drwxr-xr-x 2 runner docker  4096 Aug 31 04:02 images
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 modules
-## drwxr-xr-x 2 runner docker  4096 Aug 31 04:02 myDirectory
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 prereqs
-## -rw-r--r-- 1 runner docker   136 Aug 31 04:00 render.R
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 templates</code></pre>
+## -rw-r--r-- 1 runner docker    97 Aug 31 14:07 DESCRIPTION
+## -rw-r--r-- 1 runner docker  1065 Aug 31 14:07 LICENSE
+## -rw-r--r-- 1 runner docker 16016 Aug 31 14:09 Module-1---Intro-to-Command-Line.Rmd
+## -rw-r--r-- 1 runner docker   133 Aug 31 14:07 README.md
+## -rw-r--r-- 1 runner docker   467 Aug 31 14:07 genIndex.R
+## drwxr-xr-x 2 runner docker  4096 Aug 31 14:09 images
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 modules
+## drwxr-xr-x 2 runner docker  4096 Aug 31 14:09 myDirectory
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 prereqs
+## -rw-r--r-- 1 runner docker   136 Aug 31 14:07 render.R
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 templates</code></pre>
 <p>There it is, lets try and move into the directory. cd stands for “change directory”. Just as you would click on a folder in Windows Explorer or Finder on a Mac, cd switches you into the directory you specify. In other words, cd changes the working directory.</p>
 <pre class="bash"><code>cd myDirectory
 pwd</code></pre>
@@ -573,17 +573,17 @@ ls</code></pre>
 <pre class="bash"><code>touch myBrandNewFile.txt</code></pre>
 <pre class="bash"><code>ls -l</code></pre>
 <pre><code>## total 52
-## -rw-r--r-- 1 runner docker    97 Aug 31 04:00 DESCRIPTION
-## -rw-r--r-- 1 runner docker  1065 Aug 31 04:00 LICENSE
-## -rw-r--r-- 1 runner docker 16016 Aug 31 04:02 Module-1---Intro-to-Command-Line.Rmd
-## -rw-r--r-- 1 runner docker   133 Aug 31 04:00 README.md
-## -rw-r--r-- 1 runner docker   467 Aug 31 04:00 genIndex.R
-## drwxr-xr-x 2 runner docker  4096 Aug 31 04:02 images
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 modules
-## -rw-r--r-- 1 runner docker     0 Aug 31 04:02 myBrandNewFile.txt
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 prereqs
-## -rw-r--r-- 1 runner docker   136 Aug 31 04:00 render.R
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 templates</code></pre>
+## -rw-r--r-- 1 runner docker    97 Aug 31 14:07 DESCRIPTION
+## -rw-r--r-- 1 runner docker  1065 Aug 31 14:07 LICENSE
+## -rw-r--r-- 1 runner docker 16016 Aug 31 14:09 Module-1---Intro-to-Command-Line.Rmd
+## -rw-r--r-- 1 runner docker   133 Aug 31 14:07 README.md
+## -rw-r--r-- 1 runner docker   467 Aug 31 14:07 genIndex.R
+## drwxr-xr-x 2 runner docker  4096 Aug 31 14:09 images
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 modules
+## -rw-r--r-- 1 runner docker     0 Aug 31 14:09 myBrandNewFile.txt
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 prereqs
+## -rw-r--r-- 1 runner docker   136 Aug 31 14:07 render.R
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 templates</code></pre>
 </div>
 <div id="side-note-about-wildcards" class="section level3">
 <h3>Side note about wildcards</h3>
@@ -617,17 +617,17 @@ echo &#39;Hello World!&#39; &gt;myBrandNewFile.txt</code></pre>
 <pre class="bash"><code>mv myBrandNewFile.txt myOlderFile.txt
 ls -l</code></pre>
 <pre><code>## total 56
-## -rw-r--r-- 1 runner docker    97 Aug 31 04:00 DESCRIPTION
-## -rw-r--r-- 1 runner docker  1065 Aug 31 04:00 LICENSE
-## -rw-r--r-- 1 runner docker 16016 Aug 31 04:02 Module-1---Intro-to-Command-Line.Rmd
-## -rw-r--r-- 1 runner docker   133 Aug 31 04:00 README.md
-## -rw-r--r-- 1 runner docker   467 Aug 31 04:00 genIndex.R
-## drwxr-xr-x 2 runner docker  4096 Aug 31 04:02 images
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 modules
-## -rw-r--r-- 1 runner docker    13 Aug 31 04:02 myOlderFile.txt
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 prereqs
-## -rw-r--r-- 1 runner docker   136 Aug 31 04:00 render.R
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 templates</code></pre>
+## -rw-r--r-- 1 runner docker    97 Aug 31 14:07 DESCRIPTION
+## -rw-r--r-- 1 runner docker  1065 Aug 31 14:07 LICENSE
+## -rw-r--r-- 1 runner docker 16016 Aug 31 14:09 Module-1---Intro-to-Command-Line.Rmd
+## -rw-r--r-- 1 runner docker   133 Aug 31 14:07 README.md
+## -rw-r--r-- 1 runner docker   467 Aug 31 14:07 genIndex.R
+## drwxr-xr-x 2 runner docker  4096 Aug 31 14:09 images
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 modules
+## -rw-r--r-- 1 runner docker    13 Aug 31 14:09 myOlderFile.txt
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 prereqs
+## -rw-r--r-- 1 runner docker   136 Aug 31 14:07 render.R
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 templates</code></pre>
 <p>We now have renamed our file to ‘myOlderFile.txt’</p>
 <pre class="bash"><code>mkdir TemporaryDirectory
 mv myOlderFile.txt TemporaryDirectory
@@ -642,23 +642,23 @@ ls</code></pre>
 ls -la</code></pre>
 <pre><code>## rm: cannot remove &#39;myOlderFile.txt&#39;: No such file or directory
 ## total 80
-## drwxr-xr-x 9 runner docker  4096 Aug 31 04:02 .
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 ..
-## -rw-r--r-- 1 runner docker    28 Aug 31 04:00 .Rbuildignore
-## drwxr-xr-x 8 runner docker  4096 Aug 31 04:00 .git
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:02 .github
-## -rw-r--r-- 1 runner docker   634 Aug 31 04:00 .gitignore
-## -rw-r--r-- 1 runner docker    97 Aug 31 04:00 DESCRIPTION
-## -rw-r--r-- 1 runner docker  1065 Aug 31 04:00 LICENSE
-## -rw-r--r-- 1 runner docker 16016 Aug 31 04:02 Module-1---Intro-to-Command-Line.Rmd
-## -rw-r--r-- 1 runner docker   133 Aug 31 04:00 README.md
-## drwxr-xr-x 2 runner docker  4096 Aug 31 04:02 TemporaryDirectory
-## -rw-r--r-- 1 runner docker   467 Aug 31 04:00 genIndex.R
-## drwxr-xr-x 2 runner docker  4096 Aug 31 04:02 images
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 modules
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 prereqs
-## -rw-r--r-- 1 runner docker   136 Aug 31 04:00 render.R
-## drwxr-xr-x 3 runner docker  4096 Aug 31 04:00 templates</code></pre>
+## drwxr-xr-x 9 runner docker  4096 Aug 31 14:09 .
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 ..
+## -rw-r--r-- 1 runner docker    28 Aug 31 14:07 .Rbuildignore
+## drwxr-xr-x 8 runner docker  4096 Aug 31 14:07 .git
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:09 .github
+## -rw-r--r-- 1 runner docker   634 Aug 31 14:07 .gitignore
+## -rw-r--r-- 1 runner docker    97 Aug 31 14:07 DESCRIPTION
+## -rw-r--r-- 1 runner docker  1065 Aug 31 14:07 LICENSE
+## -rw-r--r-- 1 runner docker 16016 Aug 31 14:09 Module-1---Intro-to-Command-Line.Rmd
+## -rw-r--r-- 1 runner docker   133 Aug 31 14:07 README.md
+## drwxr-xr-x 2 runner docker  4096 Aug 31 14:09 TemporaryDirectory
+## -rw-r--r-- 1 runner docker   467 Aug 31 14:07 genIndex.R
+## drwxr-xr-x 2 runner docker  4096 Aug 31 14:09 images
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 modules
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 prereqs
+## -rw-r--r-- 1 runner docker   136 Aug 31 14:07 render.R
+## drwxr-xr-x 3 runner docker  4096 Aug 31 14:07 templates</code></pre>
 <p>Remember you can navigate to your previous location by using the command <code>cd ..</code> and remove the new directory by using the command <code>rmdir</code></p>
 <div id="key-concept" class="section level4">
 <h4>Key Concept</h4>
@@ -675,20 +675,20 @@ ls -la</code></pre>
 <pre class="bash"><code>rm chr01*  # Delete existing files before run.
 wget http://sgd-archive.yeastgenome.org/sequence/S288C_reference/chromosomes/fasta/chr01.fsa</code></pre>
 <pre><code>## rm: cannot remove &#39;chr01*&#39;: No such file or directory
-## --2022-08-31 04:02:28--  http://sgd-archive.yeastgenome.org/sequence/S288C_reference/chromosomes/fasta/chr01.fsa
-## Resolving sgd-archive.yeastgenome.org (sgd-archive.yeastgenome.org)... 52.92.195.43
-## Connecting to sgd-archive.yeastgenome.org (sgd-archive.yeastgenome.org)|52.92.195.43|:80... connected.
+## --2022-08-31 14:09:41--  http://sgd-archive.yeastgenome.org/sequence/S288C_reference/chromosomes/fasta/chr01.fsa
+## Resolving sgd-archive.yeastgenome.org (sgd-archive.yeastgenome.org)... 52.218.180.98
+## Connecting to sgd-archive.yeastgenome.org (sgd-archive.yeastgenome.org)|52.218.180.98|:80... connected.
 ## HTTP request sent, awaiting response... 200 OK
 ## Length: 234177 (229K) [binary/octet-stream]
 ## Saving to: ‘chr01.fsa’
 ## 
-##      0K .......... .......... .......... .......... .......... 21% 1.15M 0s
-##     50K .......... .......... .......... .......... .......... 43% 2.32M 0s
-##    100K .......... .......... .......... .......... .......... 65% 3.93M 0s
-##    150K .......... .......... .......... .......... .......... 87% 5.41M 0s
-##    200K .......... .......... ........                        100%  233M=0.08s
+##      0K .......... .......... .......... .......... .......... 21% 1.17M 0s
+##     50K .......... .......... .......... .......... .......... 43% 2.39M 0s
+##    100K .......... .......... .......... .......... .......... 65%  142M 0s
+##    150K .......... .......... .......... .......... .......... 87% 2.98M 0s
+##    200K .......... .......... ........                        100% 7.66M=0.08s
 ## 
-## 2022-08-31 04:02:29 (2.63 MB/s) - ‘chr01.fsa’ saved [234177/234177]</code></pre>
+## 2022-08-31 14:09:41 (2.71 MB/s) - ‘chr01.fsa’ saved [234177/234177]</code></pre>
 </div>
 <div id="file-sizes" class="section level3">
 <h3>File sizes</h3>
@@ -4711,7 +4711,7 @@ grep -c &quot;TACC*TACC&quot; chr01.fsa</code></pre>
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] digest_0.6.29   R6_2.5.1        jsonlite_1.8.0  magrittr_2.0.3 
-##  [5] evaluate_0.16   stringi_1.7.8   rlang_1.0.4     cachem_1.0.6   
+##  [5] evaluate_0.16   stringi_1.7.8   rlang_1.0.5     cachem_1.0.6   
 ##  [9] cli_3.3.0       jquerylib_0.1.4 bslib_0.4.0     rmarkdown_2.16 
 ## [13] tools_4.2.1     stringr_1.4.1   xfun_0.32       yaml_2.3.5     
 ## [17] fastmap_1.1.0   compiler_4.2.1  htmltools_0.5.3 knitr_1.40     
