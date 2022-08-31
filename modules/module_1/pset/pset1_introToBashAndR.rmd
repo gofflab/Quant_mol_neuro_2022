@@ -132,14 +132,14 @@ expMat_mode <- getMode(expMat)
 sum(expMat == expMat_mode)/length(expMat)*100
 ```
 
-To analyze this data, it is important to know whether or not it is normally distributed. Plot a histogram of all the expression values in the matrix. Ensure that the axes make sense. What does this histogram tell us about the single-cell RNA-seq count data?
+To analyze this data, it is important to know whether or not it is normally distributed. Plot a histogram of all the expression values in the matrix. Ensure that the axis labels make sense. What does this histogram tell us about the single-cell RNA-seq count data?
 ```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 hist(expMat,40, xlab = "gene counts")
 
 # Many genes are very lowly expressed. There is a long right tail, corresponding to the few genes with high expression values.
 ```
 
-Hopefully by now, you've deduced that RNA-seq count data is not normally distributed. It can sometimes be helpful to log transform the data, so that it becomes closer to a normal distribution. Log transform the data using base 2 and a pseudocount of 1. Save the result as a new variable and plot a histogram. Again, check that your axes make sense. 
+Hopefully by now, you've deduced that RNA-seq count data is not normally distributed. It can sometimes be helpful to log transform the data, so that it becomes closer to a normal distribution. Log transform the data using base 2 and a pseudocount of 1. Save the result as a new variable and plot a histogram. Again, check that your axis labels make sense. 
 ```{r, tidy=TRUE, tidy.opts=list(width.cutoff=60)}
 # log transform the gene counts
 expMat_log <- log2(expMat + 1)
