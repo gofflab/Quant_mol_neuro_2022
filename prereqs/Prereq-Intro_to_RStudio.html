@@ -277,29 +277,37 @@ output:
 editor_options: 
   chunk_output_type: inline
 ---</code></pre>
-<p>This header uses the <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> language syntax</p>
+<p>This header uses the <a href="https://en.wikipedia.org/wiki/YAML">YAML</a> language syntax to define a few parameters for the document such as “title”, “author”, and “output”. For the above header, we are letting RStudio know that we would like to output the final document as an <code>html_notebook</code>, with a table of contents (<code>toc: true</code>) and some other aesthetic elements.</p>
 </div>
 <div id="rmarkdown-basics" class="section level1">
 <h1>RMarkdown Basics</h1>
 </div>
 <div id="chunks" class="section level1">
 <h1>Chunks</h1>
+<p>The remainder of an Rmarkdown document is a combination of normal text (with markup for styling) and code. Code can be incorporated inline by wrapping it in a backticks (e.g. typing <code>`r pi`</code> will add 3.1415927 inline with the rest of your text), or more often, by defining code chunks that contain both your code, and often instructions on how RStudio should evaluate/execute/display the results.</p>
 <div id="non-code-chunks" class="section level2">
 <h2>Non-code chunks</h2>
-<p>In modern RMarkdown, ## Code chunks</p>
+<p>In modern RMarkdown,</p>
+</div>
+<div id="code-chunks" class="section level2">
+<h2>Code chunks</h2>
 <div id="running-a-code-chunk" class="section level3">
 <h3>Running a code chunk</h3>
 <pre class="r"><code>x&lt;-rnorm(100)
 mean(x)</code></pre>
-<pre><code>## [1] 0.09854663</code></pre>
+<pre><code>## [1] 0.1663151</code></pre>
 </div>
 </div>
-</div>
-<div id="source-vs-visual-editor" class="section level1">
-<h1>Source vs Visual editor</h1>
 </div>
 <div id="knitting-an-r-notebook" class="section level1">
 <h1>Knitting an R Notebook</h1>
+</div>
+<div id="rmarkdown-cheat-sheet" class="section level1">
+<h1>Rmarkdown cheat sheet</h1>
+<p>RStudio.com provides a useful <a href="https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf">RMarkdown cheat sheet</a> which describes many tips, tricks, and syntax help for composing Rmarkdown documents. You may find it handy to refer to this as you progress.</p>
+</div>
+<div id="session-information" class="section level1">
+<h1>Session Information</h1>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>## R version 4.2.1 (2022-06-23)
 ## Platform: x86_64-pc-linux-gnu (64-bit)

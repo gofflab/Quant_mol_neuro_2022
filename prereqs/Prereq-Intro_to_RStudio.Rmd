@@ -36,16 +36,19 @@ An R Markdown document begins with a short header section that describes the doc
       chunk_output_type: inline
     ---
 
-This header uses the [YAML](https://en.wikipedia.org/wiki/YAML) language syntax
+This header uses the [YAML](https://en.wikipedia.org/wiki/YAML) language syntax to define a few parameters for the document such as "title", "author", and "output". For the above header, we are letting RStudio know that we would like to output the final document as an `html_notebook`, with a table of contents (`toc: true`) and some other aesthetic elements.  
 
 # RMarkdown Basics
 
-
 # Chunks
+The remainder of an Rmarkdown document is a combination of normal text (with markup for styling) and code. Code can be incorporated inline by wrapping it in a backticks (e.g. typing `` `r '\x60r pi\x60'` `` will add `r pi` inline with the rest of your text), or more often, by defining code chunks that contain both your code, and often instructions on how RStudio should evaluate/execute/display the results.
+
 
 ## Non-code chunks
 
-In modern RMarkdown, \## Code chunks
+In modern RMarkdown, 
+
+## Code chunks
 
 ### Running a code chunk
 
@@ -55,10 +58,13 @@ mean(x)
 ```
 
 
-# Source vs Visual editor
 
 # Knitting an R Notebook
 
+# Rmarkdown cheat sheet
+RStudio.com provides a useful [RMarkdown cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) which describes many tips, tricks, and syntax help for composing Rmarkdown documents.  You may find it handy to refer to this as you progress.
+
+# Session Information
 ```{r session}
 sessionInfo()
 ```
