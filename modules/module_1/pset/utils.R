@@ -26,6 +26,9 @@ getMode <- function(x) {
 #   geneName  a string specifying the gene of interest. Must also be a column in
 #             the dataframe df
 makeBP <- function(df, geneName) {
-  print(ggplot(df, aes_string("cellClass", geneName)) + geom_boxplot() +
-    ylab(paste(geneName, 'log2(counts+1)')))
+  p<-ggplot(df, aes_string("cellClass", geneName)) + 
+    geom_boxplot() +
+    ylab(paste(geneName, 'log2(counts+1)'))
+  
+  print(p)
 }

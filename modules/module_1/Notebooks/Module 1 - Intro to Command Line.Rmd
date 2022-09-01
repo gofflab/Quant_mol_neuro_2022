@@ -4,9 +4,12 @@ author: "Loyal Goff"
 date: '2022-08-05'
 output:
   html_document:
-    df_print: paged
-  html_notebook:
+    toc: yes
+    toc_level: 3
+    toc_float: yes
     theme: yeti
+    df_print: paged
+  pdf_document: default
 editor_options:
   chunk_output_type: inline
 ---
@@ -18,6 +21,13 @@ knitr::opts_chunk$set(echo = TRUE)
 # Introduction
 
 # Learning Objectives
+
+-   Develop familiarity with the \*nix command line
+-   Understand how to navigate a \*nix filesystem
+-   Become comfortable with running commands and passing arguments
+-   Understand how to create, inspect, move, and delete files and folders using the command line system
+-   Understand file permissions and they can be modified
+-   Practice searching through a sample file with `grep`
 
 # Basics
 
@@ -283,20 +293,42 @@ We have used `ls -lh` previously to look at the file in our directory, but now t
 -   the first line corresponds to the total size of all the files contained within the target directory
 -   the remaining lines are each of the files or directories contained within that directory
 -   for each line the information is as follows:
-    -   a) the first character 'd' or '-' tells you if the item is a directory or file, repectively
-    -   b) characters 2-10 designate the permissions of the file owner (characters 2-4), group owner (characters 5-7), and all other users (characters 8-10)
+    -   
+
+        a)  the first character 'd' or '-' tells you if the item is a directory or file, repectively
+
+    -   
+
+        b)  characters 2-10 designate the permissions of the file owner (characters 2-4), group owner (characters 5-7), and all other users (characters 8-10)
+
         -   'r' for read which allows the contents of the file or directory to be read or listed
         -   'w' for write which allows the file or directory to be created, deleted, or edited
         -   'x' for execute which allows the file to perform commands or searching through a directory
-    -   c) identity of the current file owner
-    -   d) identity of the current file group
-    -   e) size of file or byte block size of the directory
-    -   f) date and time the file or directory was last modified
-    -   g) file or directory name
+
+    -   
+
+        c)  identity of the current file owner
+
+    -   
+
+        d)  identity of the current file group
+
+    -   
+
+        e)  size of file or byte block size of the directory
+
+    -   
+
+        f)  date and time the file or directory was last modified
+
+    -   
+
+        g)  file or directory name
 
 Many times users will run into error messages because they do not have appropriate permissions to read, write, or execute a file or directory. Keep this in mind for the future if you run into errors! You can `ls -lh` in your current directory to check out your own permissions.
 
 ## Viewing Files
+
 We previously used the command `cat` too look at the contents of small files. However, for large files (like our chromosome file with over 3000 lines, commands like `cat` are not particularly useful if we perhaps only need a small subset of that information. A few other commands we can use to view file content are `head` and `tail` which display the first 10 lines and the last 10 lines of the file, respectively. If you wish to view more, you can use the argument `-n`, for example, `head -n 20 <your_file_name>` would display the first 20 lines of your file.
 
 ```{bash}
@@ -313,10 +345,7 @@ You can view the full contents of your file by using either the `less` or `more`
 more chr01.fsa
 ```
 
-Try and switch to the terminal and try `less` or `more` to view the `chr01.fsa` file. You can:
-  * use up and down arrows to scroll
-  * spacebar scrolls down 1 page at a time
-  * hit q to quit
+Try and switch to the terminal and try `less` or `more` to view the `chr01.fsa` file. You can: \* use up and down arrows to scroll \* spacebar scrolls down 1 page at a time \* hit q to quit
 
 ##Searching in files
 
@@ -334,12 +363,14 @@ grep -c "TACCCTACC" chr01.fsa
 grep "TACC.TACC" chr01.fsa
 grep -c "TACC.TACC" chr01.fsa
 ```
+
 ```{bash}
 grep "TACC*TACC" chr01.fsa
 grep -c "TACC*TACC" chr01.fsa
 ```
 
 ## Piping/redirection
+
 Most of the commands that we have used thusfar have utilized a single command that returned its output to the command line. Perhaps you want to save the ouput of your command to a new file, which can be done using the redirect `>` symbol. Here we are taking the last 10 lines from the `chr01.fsa` file and writing them to a new file which we are calling `tail.txt`
 
 ```{bash}
@@ -351,7 +382,9 @@ If you want to use more than one command on a piece of data and don't necessaril
 ```{bash}
 cat chr01.fsa | head -n 10 | tail -n 5
 ```
+
 ## You made it through this intro! Great job!
+
 Let the instructors and/or TAs know if you have any questions and we will expand upon these lessons as needed in class. We will use the command line often throughout this course, and you will have many more opportunities to familiarize yourself with this interface, and how we use the command line to run individual tools/components of many bioinformatics & computational biology pipelines and to string together inputs and outputs of different programs.
 
 # Session Information
