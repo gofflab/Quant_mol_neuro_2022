@@ -1,0 +1,21 @@
+Author	Original language	Number of books	Nationality
+William Shakespeare	English	42	English
+Agatha Christie	English	85	English
+Barbara Cartland	English	723	English
+Danielle Steel	English	179	American
+Harold Robbins	English	23	American
+Georges Simenon	French	570	Belgian
+Enid Blyton	English	800	English
+Sidney Sheldon	English	21	American
+J.K. Rowling	English	15	British
+Gilbert Patten	English	209	American
+Theodore Geisel	English	44	American
+Eiichiro Oda	Japanese	99	Japanese
+Akira Toriyama	Japanese	66	Japanese
+Leo Tolstoy	Russian	48	Russian
+Corín Tellado	Spanish	4,000	Spanish
+Dean Koontz	English	91	American
+Jackie Collins	English	25	English
+Horatio Alger	English	135	American
+R.L. Stine	English	430+	American
+Stephen King	English	77	American
