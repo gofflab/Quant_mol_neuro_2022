@@ -343,7 +343,7 @@ Try and switch to the terminal and try `less` or `more` to view the `chr01.fsa` 
 
 # Searching in files
 
-Rather than scanning through the entire contents lines of a file by eye, you can also use the `grep` command to pull out specific words or lines in the case of this chromosome file. Using the `-c` argument tells `grep` to return the number of times the pattern occurred.
+Rather than scanning through the entire contents lines of a file by eye, you can also use the `grep` command to pull out specific words or lines in the case of this chromosome file. Using the `-c` argument tells `grep` to return the number of lines that contain the pattern.
 
 ```{bash}
 grep "TACCCTACC" chr01.fsa

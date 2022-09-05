@@ -32,47 +32,30 @@ Then, answer each question using Bash scripting. Please note that the bash opera
 You'll need to have your folder of sequence files (`ion_channel_sequence`) in your working directory. Print your working directory and its contents.
 
 ```{bash}
-echo "Working directory:"
-pwd
-echo "Contents of working directory:"
-ls
+
 ```
 
 We'll start with Kcna1.fa, a FASTA file that contains the genome sequence of a mouse voltage-gated potassium channel. The first line contains a carat ("\>"), followed by a unique sequence identifier. The actual sequence starts on the next line. See for yourself by printing the first three lines of the file. Note that FASTA files can contain multiple sequences, but this one has just one.
 
 ```{bash}
-head -3 ion_channel_sequences/Kcna1.fa
+
 ```
 
 Print just the sequence into a new file called Kcna1_sequence.txt
 
 ```{bash}
-tail -n +2 ion_channel_sequences/Kcna1.fa > Kcna1_sequence.txt
+
 ```
 
 How many lines are in Kcna1_sequence.txt? How many characters are in the file? If you subtract the number of lines from the number of characters, you should get the number of nucleotides in the Kcna1 gene. Why? Answer in a comment.
 
 ```{bash}
-echo Number of characters:
-wc -m Kcna1_sequence.txt
-
-echo $'\n'Number of lines:
-wc -l Kcna1_sequence.txt
-
-# The wc command counts all the characters in the file, including newline characters. 
+ 
 ```
 
 Count the number of times each nucleotide appears in the Kcna1 gene.
 
 ```{bash}
-echo A count:
-grep -o "A" Kcna1_sequence.txt | wc -l 
-echo G count:
-grep -o "G" Kcna1_sequence.txt | wc -l
-echo C count:
-grep -o "C" Kcna1_sequence.txt | wc -l
-echo T count:
-grep -o "T" Kcna1_sequence.txt | wc -l
 
 ```
 
@@ -85,9 +68,7 @@ Note the bases in square brackets. This string uses [regular expressions](https:
 Confirm that the Kcna1 gene has a sequence that would encode these amino acids. _Hint: Your first step should be to remove newline characters from Kcna1_sequence.txt._
 
 ```{bash}
-tvgyg="AC[TCAG]GT[TCAG]GG[TCAG]TA[TC]GG[TCAG]"
-cat Kcna1_sequence.txt | tr -d "\n" |
-grep -o $tvgyg | wc -l
+
 ```
 
 Write a bash script that takes a FASTA file (with a single sequence) and a target sequence motif as input and outputs the number of times that the motif appears in the FASTA file.
@@ -103,25 +84,13 @@ Your script must (in order):
 After writing your script, check its file permissions and make it is executable.
 
 ```{bash}
-ls -l findSeqMotif.sh
-#chmod +x findSeqMotif.sh
+
 ```
 Use your new script here to determine which of the FASTA files in the ion_channel_sequences folder are likely to encode a voltage-gated potassium channel.
 Construct a loop to check whether each of the FASTA files in the ion_channel_sequences folder contains the `TVGYG` motif. Print the names of just the files that do contain the motif.
 
 ```{bash}
-tvgyg="AC[TCAG]GT[TCAG]GG[TCAG]TA[TC]GG[TCAG]"
 
-echo voltage-gated potassium channels:
-
-for filename in ion_channel_sequences/*.fa
-do
-  motifCount=$(./findSeqMotif.sh $filename $tvgyg)
-  if [ $motifCount -gt 0 ]
-  then
-    echo $filename
-  fi
-done
 ```
 
 ## Part 2: basic R
@@ -129,121 +98,86 @@ done
 Get your dependencies. For this section, you will need the ggplot2 package. If you haven't already, you can get it by installing the whole tidyverse as suggested here: <https://ggplot2.tidyverse.org/>. You should also download and read the file *utils.R*, which loads your dependencies and contains some supplementary functions. You will want to look at utils.R yourself for guidance on using these functions. Lastly, make sure you download *Yao2021_ionChannels_expMat_genesByCells.rds* and *Yao2021_ionChannels_pData.rds*.
 
 ```{r}
-# Clear all variables from the environment
-rm(list=ls())
 
-# read utils.R here
-source('utils.R')
 ```
 
 Now load Yao2021_ionChannels_expMat_genesByCells.rds, a genes x cells matrix that contains publicly available gene expression data from single-cell RNA-sequencing performed in motor cortex (Yao et al. 2021, <https://doi.org/10.1038/s41586-021-03500-8>). Specifically, this matrix includes the expression of the ion channels that you looked at in Part 1 of this problem set.
 
 ```{r}
 # load the expression data here and save it as a variable
-expMat <- readRDS('Yao2021_ionChannels_expMat_genesByCells.rds')
+
 ```
 
 Let's take a look at the first few values to familiarize ourselves with how these data are arranged. Slice this matrix so that only the first 5 rows and first 5 columns are displayed
 
 ```{r}
-# Slice expMat so that you can preview the first 5 rows and columns
-expMat[1:5,1:5]
+
 ```
 
 The value in each entry of `expMat` corresponds to the count of mRNA transcripts for a specific gene detected within a single cell. Therefore, each row contains the expression estimates for a particular gene across all assayed cells, and each column contains the expression values across all genes for a particular cell. How many genes are included in this matrix? How many cells?
 
 ```{r}
-print("Number of genes:")
-dim(expMat)[1]
 
-print("Number of cells:")
-dim(expMat)[2]
 ```
 
 The row names of the matrix are the short names of the genes. The column names are IDs for each cell. Confirm that this is the case by printing just the first 5 row names and the first 5 column names.
 
 ```{r}
-print("Row names:")
-rownames(expMat)[1:5]
 
-print("Column names")
-colnames(expMat)[1:5]
 ```
 
 What is the most common gene expression value in the matrix? Hint: The built-in R function "mode" will not help you here (feel free to see what it does though!). There's a function in utils.R that you will find useful. Is the answer what you expected?
 
 ```{r}
-# find the most common gene expression value
-getMode(expMat)
+
 ```
 
 That most common value makes up what percentage of all the expression values in the matrix?
 
 ```{r}
-# find the frequency percentage of the most common gene expression value
-expMat_mode <- getMode(expMat)
-sum(expMat == expMat_mode)/length(expMat)*100
+
 ```
 
 To analyze this data, it is important to know whether or not it is normally distributed. Plot a histogram of all the expression values in the matrix. Ensure that the axis labels make sense. What does this histogram tell us about the single-cell RNA-seq count data?
 
 ```{r}
-hist(expMat,40, xlab = "gene counts")
 
-# Many genes are very lowly expressed. There is a long right tail, corresponding to the few genes with high expression values.
 ```
 
 Hopefully by now, you've deduced that RNA-seq count data is not normally distributed. It can sometimes be helpful to log transform the data, so that it becomes closer to a normal distribution. Log transform the data using base 2 and a pseudocount of 1. Save the result as a new variable and plot a histogram. Again, check that your axis labels make sense.
 
 ```{r}
-# log transform the gene counts
-expMat_log <- log2(expMat + 1)
 
-hist(expMat_log,20, xlab = "log2(counts+1)")
 ```
 
 Now, we can look at what types of cells express of these ion channel genes. Load Yao2021_ionChannels_pData.rds, which contains a data.frame with information about each of the cells in the counts matrix. Print the names of the columns included in this data.frame.
 
 ```{r}
-# load the dataframe here and save it as a variable
-cellInfo <- readRDS('Yao2021_ionChannels_pData.rds')
 
-print('Dataframe columns:')
-colnames(cellInfo)
 ```
 
 What are the possible values in the column "cellClass"? What are the possible values in the column "cellSubclass"?
 
 ```{r}
-print("Unique values of cellClass")
-unique(cellInfo$cellClass)
 
-print("Unique values of cellSubclass")
-unique(cellInfo$cellSubclass)
 ```
 
 The values in the column "cellID" correspond to the column names of the counts matrix. Merge this dataframe with the transpose of the log-transformed counts matrix to create a new dataframe that includes gene expression information for each cell. This new dataframe should have a new column for each gene.
 
 ```{r}
-# merge the cell info with the gene expression info
-df_ionChannels <- merge(cellInfo,t(expMat_log), by.x = "cellID", by.y = "row.names")
+
 ```
 
 Now use the function makeBP included in Utils.R to create box plots of gene expression by cell class for your gene of choice. Your new dataframe will be the first argument and your gene of choice will be the second argument.
 
 ```{r}
-makeBP(df_ionChannels,"Gabra1")
+
 ```
 
 One of the ion channels is expressed more highly in glia than in neurons. To find it, use a loop to create box plots for each gene. Note: In this case, it is particularly obvious, but eventually we will want to quantify observations like this.
 
 ```{r}
-for(geneName in rownames(expMat))
-{
-  makeBP(df_ionChannels,geneName)
-}
 
-# Answer: Kcnj10, which encodes Kir 4.1, an inwardly rectifying potassium channel thought to mediate potassium buffering by astrocytes.
 ```
 
 ## PSet Submission
