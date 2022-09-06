@@ -2,12 +2,16 @@
 title: "Module 1 - Intro to R"
 author: "Loyal Goff"
 date: '2022-08-05'
-output: 
+output:
   html_document:
-    toc: true
+    toc: yes
     toc_level: 3
-    toc_float: true
+    toc_float: yes
     theme: yeti
+    df_print: paged
+  pdf_document: default
+editor_options:
+  chunk_output_type: inline
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -60,17 +64,8 @@ log10(10)
 sin(2*pi)
 ```
 
-
 ## Variables
-R output can be created by directly typing equations into the console
-
-```{r}
-8 + 2
-4**3
-```
-When executed, the above two lines simply return the result of the equations as output rows. But in order to use R as more than just a calculator, we need to be able to assign values to specific objects called variables.
-
-A variable is in essence a 'named storage' contanier that programs can manipulate. Varibles in R can store a single atomic vector, a group of vectors, or a combination of different objects.
+A variable is a 'named storage' contanier that programs can manipulate. Varibles in R can store a single atomic vector, a group of vectors, or a combination of different objects.
 Variables can be assigned values using several different operators in R.
 
 ```{r}
@@ -93,22 +88,40 @@ b
 c
 ```
 
+
 ## Data Types
+Everything that you create/use/import in R is considered an 'object', and individual objects are imbued with specific properties that relate to how you use/interact with it. Objects are defined as a particular 'type'.
 
-## Number Types
+R has several base data types:
 
-## Strings
+  * character (`'abc'`)
+  * numeric (real or decimal) (`1`, `3.14`)
+  * integer (`10L`) _Note: an appended `L` lets R know that this value is an integer_ 
+  * logical (`TRUE` or `FALSE`)
 
-## Booleans
+R provides built-in functions to explore the different features of a given object
+```{r}
+x <- "genomics"
+class(x)
+typeof(x)
+attributes(x)
+```
 
-## Collection Data Types
+## Data Strucures
+
+Multiple instances of these "data types" can be combined to form different "data structures". In R, these can take many different forms:
+  * atomic vector (a collection of elements of the same data type)
+  * list (a collection of elements that can be of mixed type)
+  * matrix (a [multi-dimensional] array of elements of the same data type)
+  * data.frame (a collection of observations and their associated variables)
 
 ### Vectors
-The most basic data type in R is the vector, which consists of a group of values.  Vectors are created using the `c()` function as so:
+The most basic data structure in R is the vector, which consists of a group of values. Vectors are created using the `c()` function as so:
 
 ```{r}
 x <- c(5, 10, 15)
 x
+class(x)
 ```
 
 You can also store character strings in vectors as well. Individual elements of a string vector must be contained within quotes.
@@ -116,6 +129,14 @@ You can also store character strings in vectors as well. Individual elements of 
 ```{r}
 y <- c("Toad", "the", "Wet", "Sprocket")
 y
+class(y)
+```
+
+Using `TRUE` and `FALSE` will create a 'logical' vector:
+```{r}
+z <- c(TRUE,TRUE,FALSE,TRUE,FALSE)
+z
+class(z)
 ```
 
 Many functions exist to either inspect or operate over vectors.
@@ -125,14 +146,10 @@ length(x)
 length(y)
 ```
 
+The `str()` function will show you the 'structure' of an object.
 ```{r}
 str(x)
 str(y)
-```
-
-```{r}
-class(x)
-class(y)
 ```
 
 What happens if we create a vector from two different types of variables, one numeric and one a character string?
@@ -141,35 +158,224 @@ What happens if we create a vector from two different types of variables, one nu
 z <- c(1, "Radiohead", 4.0)
 z
 ```
-Elements within vectors in R **must** all be of the same data type. 
+Elements within vectors in R **must** all be of the same data type. so R will automatically _coerce_ the values to the same data type; in this case, the values are converted to `chr`.
 
-### DataFrames
+Vectors can be directly coerced to a different data type by using the `as.<class>()` collection of functions
+
+```{r}
+# Create numerical vector
+x<-c(1,5,10,15)
+x
+class(x)
+# Coerce to character vector
+y<-as.character(x)
+y
+class(y)
+
+# Coerce to logical vector
+z<-as.logical(x)
+z
+class(z)
+```
+#### Slicing to select elements of a vector
+Individual elements, or a range of elements can be selected by 'slicing' a vector using square brackets:
+
+```{r}
+x[1] # returns the first (1-based) element of the vector 'x'
+
+x[c(2:3)] # returns elements 2-4 of the vector x
+
+```
+
+### Object Attributes
+Objects in R can also have attributes that can provide additional contextual or descriptive information:
+  
+  * `length()` # returns the length of one-dimensional data structures (lists, vectors)
+  * `dim()` # returns the dimensions of multi-dimensional data structures (data.frames, matrix, etc)
+  * `names()` # Individual elements of a data structure can be named, and this returns a vector of those names
+
+### Matrix
+Matrices in R are basically multi-dimensional atomic vectors (A vector with dimensions). This means that all elements in a matrix must also be of the same data type. A matrix is instatiated via the `matrix()` function.
+
+```{r}
+m <- matrix(c(1:50), nrow=10,ncol=5)
+m
+
+class(m)
+
+typeof(m)
+```
+
+You can get (and set) the dimensions of a matrix by using the `dim()` function
+
+```{r}
+dim(m) #Returns the current dimensions of m. Returns, in order, nRow and nCol
+
+dim(m)<-c(2,25) # Change the dimensions of m to be 2 rows and 25 columns
+
+dim(m)
+
+head(m)
+```
+### Lists
+Lists are similar to vectors, but allow for different data types. The individual elements of a list can be any type of R object, including other lists. Lists are created with the `list()` function.
+```{r}
+x <- list(3.1415, "neuron", 18L, FALSE)
+x
+```
+Elements of a list an be indexed and retrieved using double square brackets.
+```{r}
+x[[1]] # retrieves the first element of the list x
+
+x[[1]] <- "4.0" # updates/sets the first element of the list x
+```
+
+The elements of a list can have unique names as well
+```{r}
+x <- list(pi=3.1415, celltype="neuron", myNum=18L, significant=FALSE)
+x
+
+x['celltype']
+
+names(x) # Get or set list names
+```
+
+### Data Frames
+One of the more widely used data structures in R is the data frame. A data frame is a collection of lists of the same length, and is the data structure of choice for tabular data. Columns in a data frame can contain different data types although each column must be an atomic vector (e.g. One column can be numeric, and the other can contain characters).
+
+Data frames are created using the `data.frame()` function:
+
+```{r}
+genes <- data.frame(
+  name=c("Asl","Apod","Cyp2d22","Klk6","Fcrls"),
+  EntrezID=c(109900,11815,56448,19144,80891),
+  chrom=c("chr5","chr16","chr15","chr7","chr3"),
+  start=c(130011258,31297341,82259593,43825395,87250758)
+)
+
+genes
+```
+
+
+```{r}
+class(genes)
+
+str(genes)
+```
+Individual columns of a data frame can be returned as a vector by using the `$` as so:
+
+```{r}
+genes$chrom
+
+genes$name
+```
+
+Matrices and dataframes can also be sliced using the square bracket nomenclature. Since these structures are more than one dimension, a comma is used to indicate which dimension is being sliced (first rows, then columns)
+
+```{r}
+genes[1:3,] #returns the first three rows of genes
+genes[,1:2] #returns the firwt two columns of genes
+
+genes[1:3,c("name","chrom")] # Column names can also be sliced/selected by name
+```
 
 ## Control Flow
+Control flow is how you direct the computer to execute your code.  This often involves making choices based on specific criteria (as in an if statement), or executing a code block repeatedly by iterating over a data structure such as a vector or list (for example in a for loop or apply() statement). 
 
 ### if[else] and choice()
 
+The overall structure of an if statement in R is:
+
 ```
-if (condition) true_action
-if (condition) true_action else false_action
+if (condition) {
+  true_action
+}
+
+if (condition) {
+  true_action 
+} else {
+  false_action
+}
 ```
+If the supplied `condition` statement evaluates to TRUE, then the `true_action` chunk (defined with `{}` is evaluated. If `condition` is `FALSE` then the optional `false_action` is run instead.
 
-### Operators
+In practice, this looks something like:
+```{r}
+x<-40
+if (x %% 2 == 0) {
+  print("even")
+} else {
+  print("odd")
+}
+```
+_Note the use of the double equals `==` 'comparison' operator. Remember that the single equals can be used as an assignment operator in R._
 
-#### Arithmetic Operators
+`if` however, only works on a single logical comparison at a time. R has a special form of if that can operate over a vector to test multiple conditions at once called `ifelse()`
 
-#### Comparison Operators
+```{r}
+x <-1:20
 
-#### Assignment Operators
-
+ifelse(x %% 2 == 0, "even", "odd")
+```
 ### Looping/Iteration
+Loops are used to iterate over items in a vector or list. 
 
 #### For loops
+`for` loops perform the tasks defined in a code chunk for each item of a list or vector. The syntax of a for loop will have the following structure:
 
-#### While loops
+```
+for (<variable> in <vector>) {
+  <code chunk to execute>
+}
+```
+In the following case, the loop is iterating over a vector of numbers from 1 to 10, and in each instance of the loop, assigning the value to a variable `i`.
+```{r}
+for (i in c(1:10)) {
+  print(i)
+}
+```
 
-####
+# Summary Stats and basic visualization
+To briefly show you around some basic summary statistics and base graphics plots in R, lets first import a commonly used dataset. The `iris` dataset contains multiple parameter measurements (columns) for individual flowers (rows).
 
+```{r}
+data(iris) # loads a pre-stored data frame called 'iris'
+
+head(iris)
+
+```
+
+```{r}
+dim(iris)
+```
+
+Since each row is an observation here, and each column is a parameter, we can use these tabular data to explore different 
+Lets start by looking at some summary statistics for each column of this data frame
+```{r}
+summary(iris)
+```
+Lets plot a histogram of some of the parameters
+```{r}
+hist(iris$Sepal.Width)
+
+hist(iris$Sepal.Length, main="Histogram of Sepal Length", xlab="Sepal Length", col="blue", freq=FALSE)
+
+```
+
+We can plot pairwise variables on a scatter plot using `plot(x,y)` where `x` and `y` are the variables we are interested in
+```{r}
+plot(iris$Sepal.Width, iris$Sepal.Length)
+```
+
+We can color the points by species by passing the species name to the `col` argument
+```{r}
+plot(iris$Sepal.Width, iris$Sepal.Length, col=iris$Species)
+```
+
+## Final Notes
+* This overview only serves to introduce you to R. It is by no means comprehensive. As with much of this course, you will need to spend a decent amount of time on self-guided tours and tutorials. Please spend some time this week familiarizing yourself with R, R studio. There are a number of online tutorials that can be found online.
+* As the course progresses, we will learn to use different packages to create graphical representations of our data. One of the most widely used packages in R for visualization is [ggplot2](https://ggplot2.tidyverse.org/) which defines a 'grammar of graphics'. While this might take some time to familiarize yourself with, it is a useful framework to learn to make better visualizations. [Cheat Sheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-visualization.pdf)
+* If you have any questions about the interactive notebooks, how to navigate using R/RStudio, or how to setup your compute environment at this point, please reach out to us through canvas, email, or the course slack workgroup.  We will also be happy to answer and address your questions on the first day of class this friday.
 
 # Session Information
 ```{r session}

@@ -4,6 +4,8 @@
 ### 2. target motif as a regular expression 
 # Returns the number of times the motif appears
 
+#!/usr/bin/env bash
+
 cat $1 | tail -n +2 |
 tr -d "\n" |
 grep -o $2 | wc -l

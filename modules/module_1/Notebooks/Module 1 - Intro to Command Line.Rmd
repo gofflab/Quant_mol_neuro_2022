@@ -4,9 +4,12 @@ author: "Loyal Goff"
 date: '2022-08-05'
 output:
   html_document:
-    df_print: paged
-  html_notebook:
+    toc: yes
+    toc_level: 3
+    toc_float: yes
     theme: yeti
+    df_print: paged
+  pdf_document: default
 editor_options:
   chunk_output_type: inline
 ---
@@ -15,29 +18,28 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Introduction
-
 # Learning Objectives
+-   Develop familiarity with the \*nix command line
+-   Understand how to navigate a \*nix filesystem
+-   Become comfortable with running commands and passing arguments
+-   Understand how to create, inspect, move, and delete files and folders using the command line system
+-   Understand file permissions and they can be modified
+-   Practice searching through a sample file with `grep`
+- Initial exposure to bash scripting and control flow
+- Construct simple workflows in bash using scripts/programs and pipes.
 
 # Basics
 
-## Hardware, software, and the operating system
-
--   harware = laptop, desktop, iphone and the physical components of your computer
--   software = word processing, spreadsheet, graphics, games, email
--   OS (also software) = Windows, Mac, Android, Ubuntu, Debian, Unix, Linux
-
-## Computer Structure
-
-![](images/paste-804C22BD.png)
-
 ## Interfaces
-
-How we interact with the computer (input and output)
+Computers take input and receive output through _interfaces_. This is how we interact with the computer (input and output)
 
 ### Graphical User Interface (GUI)
+Modern computers generally use GUI interfaces for ease of use and generality. This is how most of us interact with our computers on a daily basis. But most computational biology tools _do not_ have designed GUIs and to use them, we will have to communicate with the computer more directly. The purpose of this module is to expose you to, and familiarize yourself with the type of interface that is more widely used in computational biology.
 
-Anything you see and and click (FileExplorer, Finder) \### Command Line Interface (CLI) In the remainder of this document we are demonstrating how to run shell (bash) commands within an RMarkdown document/notebook by indicating which language we'll be using at the beginning of each code chunk.
+### Command Line Interface (CLI) 
+The CLI provides us with the means to directly run commands/tools/programs and creating our own scripts and code to operate over data.
+
+In the remainder of this document we are demonstrating how to run shell (bash) commands directly within an RMarkdown document/notebook by indicating which language we'll be using at the beginning of each code chunk.
 
     '''{bash}
 
@@ -51,7 +53,7 @@ See the command line interface screenshot below as an example.
 
 ![](images/paste-18BEC010.png)
 
-## Navigating the File System
+# Navigating the File System
 
 The first thing we need to figure our is 'where are we' in the file system. To do this, we want to '**P**rint the **W**orking **D**irectory' using the shell command `pwd`
 
@@ -65,7 +67,7 @@ We can list the contents of the directory using the bash comand `ls`
 ls
 ```
 
-### Options/Input arguments
+## Options/Input arguments
 
 Bash/shell commands can take input arguments or options. One convention is to use a dash ( - ) to specify arguments. For example, we can ask ls to show a more detailed list of information for each file/folder:
 
@@ -85,17 +87,17 @@ Sometimes commands take in arguments for various purposes. Again, using ls as ex
 ls ../
 ```
 
-### Manual Pages (man)
+## Manual Pages (man)
 
 It is certainly not expected that you memorize all arguments for every command. This is where the manual ( man ) comes in handy. You can use man command_name to find information about how to use a specific command. For example:
 
-```{bash}
+```{bash, eval=FALSE}
 man ls
 ```
 
 Here, man is a command that takes one input argument (which should be a Bash command) and outputs the corresponding manual.
 
-### Creating and Navigating Folders
+## Creating and Navigating Folders
 
 Now that we have a basic overview of how to interact with the computer in bash, it will be useful to understand how to create folders (directories) and navigate around our system. We've already used the pwd command to learn where we currently are. But what if we wanted to make a new directory to contain a project? The mkdir command stands for "make directory". It takes in a directory name as an argument, and then creates a new directory in the current working directory.
 
@@ -130,7 +132,7 @@ rmdir myDirectory
 ls
 ```
 
-### Review
+## Review
 
 -   The command line is a text interface for the computer's operating system. To access the command line, we use the terminal.
 -   A filesystem organizes a computer's files and directories into a tree. It starts with the root directory. Each parent directory can contain more child directories and files.
@@ -141,9 +143,9 @@ ls
     -   `mkdir` creates a new directory in the working directory.
     -   `rmdir` removes an empty directory
 
-## Viewing and changing files
+# Viewing and changing files
 
-### Creating files
+## Creating files
 
 There are several ways to create a file. One of the easiest is to just create an empty file by touching it ( `touch` )
 
@@ -174,7 +176,7 @@ ls my?randNewFile.txt
 
 ```
 
-### Writing to a file in bash
+## Writing to a file in bash
 
 Side note over. Let's get back to writing files!
 
@@ -192,7 +194,7 @@ cat myBrandNewFile.txt
 
 ```
 
-### Moving and removing files
+## Moving and removing files
 
 The 'mv' command has a couple of different uses. You can use it to move files from one directory to another (imagine moving a file from your 'Downloads' to your 'Desktop'). The `mv` command could also be used to rename files or directories. Let's first explore renaming our file using the `mv` command below which take the file to be moved as the primary argument and new name of the file as the secondary argument:
 
@@ -228,7 +230,7 @@ You may have already noticed that in our file and directory names we do not use 
 
 ## File Properties
 
-We have now created, deleted, moved, and manipulated files, but what if we simply want to know more about their contects without actually changing them? For example, we can download a chromosome file from a database and learn more about its contents.
+We have now created, deleted, moved, and manipulated files, but what if we simply want to know more about their contents without actually changing them? For example, we can download a chromosome file from a database and learn more about its contents.
 
 ### Downloading files from the internet
 
@@ -281,22 +283,46 @@ We have used `ls -lh` previously to look at the file in our directory, but now t
 ![](images/paste-3B19599D.png)
 
 -   the first line corresponds to the total size of all the files contained within the target directory
+
 -   the remaining lines are each of the files or directories contained within that directory
+
 -   for each line the information is as follows:
-    -   a) the first character 'd' or '-' tells you if the item is a directory or file, repectively
-    -   b) characters 2-10 designate the permissions of the file owner (characters 2-4), group owner (characters 5-7), and all other users (characters 8-10)
-        -   'r' for read which allows the contents of the file or directory to be read or listed
-        -   'w' for write which allows the file or directory to be created, deleted, or edited
-        -   'x' for execute which allows the file to perform commands or searching through a directory
-    -   c) identity of the current file owner
-    -   d) identity of the current file group
-    -   e) size of file or byte block size of the directory
-    -   f) date and time the file or directory was last modified
-    -   g) file or directory name
+  a)  the first character 'd' or '-' tells you if the item is a directory or file, repectively
+  b)  characters 2-10 designate the permissions of the file owner (characters 2-4), group owner (characters 5-7), and all other users (characters 8-10)
+  c)  identity of the current file owner
+  d)  identity of the current file group
+  e)  size of file or byte block size of the directory
+  f)  date and time the file or directory was last modified
+  g)  file or directory name
+
+#### Permissions
+
+Lets take a look again at the files in our directory
+
+```{bash}
+ls -lh
+```
+
+The first set of characters in each returned line details the permissions of the file. The permissions are assigned based on three different 'levels' of users, and there are three types of permissions:
+
+  -   'r' for read which allows the contents of the file or directory to be read or listed
+   -   'w' for write which allows the file or directory to be created, deleted, or edited
+   -   'x' for execute which allows the file to perform commands or searching through a directory
+
+![](images/paste-4DE0540C.png)
+
+Specific permissions on a given file are added or removed for each 'level' using chmod
+
+```
+$ touch testfile  #creates an empty file named testfile
+$ ls -l testfile   #what are the default permissions?
+$ chmod +x testfile ##sets the execute bit for owner, group and world.
+```
 
 Many times users will run into error messages because they do not have appropriate permissions to read, write, or execute a file or directory. Keep this in mind for the future if you run into errors! You can `ls -lh` in your current directory to check out your own permissions.
 
-## Viewing Files
+# Viewing Files
+
 We previously used the command `cat` too look at the contents of small files. However, for large files (like our chromosome file with over 3000 lines, commands like `cat` are not particularly useful if we perhaps only need a small subset of that information. A few other commands we can use to view file content are `head` and `tail` which display the first 10 lines and the last 10 lines of the file, respectively. If you wish to view more, you can use the argument `-n`, for example, `head -n 20 <your_file_name>` would display the first 20 lines of your file.
 
 ```{bash}
@@ -309,18 +335,15 @@ tail -n 20 chr01.fsa
 
 You can view the full contents of your file by using either the `less` or `more` commands. These will function differently whether you are using them inside an Rmd notebook/markdown, or directly in the terminal. In an Rmd, the entire contents of the file will be reported in the results chunk. In the terminal, `more` or `less` will return a page at a time so you can 'scroll' through the document.
 
-```{bash, exec=FALSE}
+```{bash, eval=FALSE}
 more chr01.fsa
 ```
 
-Try and switch to the terminal and try `less` or `more` to view the `chr01.fsa` file. You can:
-  * use up and down arrows to scroll
-  * spacebar scrolls down 1 page at a time
-  * hit q to quit
+Try and switch to the terminal and try `less` or `more` to view the `chr01.fsa` file. You can: \* use up and down arrows to scroll \* spacebar scrolls down 1 page at a time \* hit q to quit
 
-##Searching in files
+# Searching in files
 
-Rather than scanning through the entire contents lines of a file by eye, you can also use the `grep` command to pull out specific words or lines in the case of this chromosome file. Using the `-c` argument tells `grep` to return the number of times the pattern occurred.
+Rather than scanning through the entire contents lines of a file by eye, you can also use the `grep` command to pull out specific words or lines in the case of this chromosome file. Using the `-c` argument tells `grep` to return the number of lines that contain the pattern.
 
 ```{bash}
 grep "TACCCTACC" chr01.fsa
@@ -334,12 +357,14 @@ grep -c "TACCCTACC" chr01.fsa
 grep "TACC.TACC" chr01.fsa
 grep -c "TACC.TACC" chr01.fsa
 ```
+
 ```{bash}
 grep "TACC*TACC" chr01.fsa
 grep -c "TACC*TACC" chr01.fsa
 ```
 
-## Piping/redirection
+# Piping/redirection
+
 Most of the commands that we have used thusfar have utilized a single command that returned its output to the command line. Perhaps you want to save the ouput of your command to a new file, which can be done using the redirect `>` symbol. Here we are taking the last 10 lines from the `chr01.fsa` file and writing them to a new file which we are calling `tail.txt`
 
 ```{bash}
@@ -351,7 +376,204 @@ If you want to use more than one command on a piece of data and don't necessaril
 ```{bash}
 cat chr01.fsa | head -n 10 | tail -n 5
 ```
-## You made it through this intro! Great job!
+
+# Bash Scripting
+
+Often times we will want to write our code into a script. This is simply a text file with a series of commands that the computer will execute in order. This is useful for several reasons: \* Multiple steps can be executed in order \* You can retain a 'log' of what you have performed (useful for reproducibility) \* You can *reuse* your code and make it flexible against multiple inputs \* Adding comments and documentation to a script will help you remember what you wrote when you revisit it.
+
+Create a new 'shell script' in RStudio as follows:
+
+File-\>New File -\> Shell Script
+
+![](images/paste-F1BAD9A1.png)
+
+Inside this new text file, write the following and save it as 'hiscript.sh':
+
+    #!/usr/bin/env bash
+
+    echo "Hello World!"
+
+The 'shebang' (hash-bang) tells the computer what interpreter to use to run this command. It could be bash, as we have here, or perl, python etc. After this first line, we place all of the logic and commands of our script, here just writing the string "Hello World!" to the output.
+
+Finally, we need to change the permissions on the file. This makes the file into an executable program. Here we are adding the 'execute' permission to the file
+
+```{bash, eval=FALSE}
+chmod a+x hiscript.sh
+```
+
+Now we can run this new script as an executable program
+
+```{bash, eval=FALSE}
+./hiscript.sh
+```
+
+## Variables
+We can use variables to store information for use in our script.  In `bash`, variables are created during assignment and then recalled by prepending with a dollarsign `$`.
+
+
+```{bash}
+x=1
+echo "$x"
+
+y=2
+echo "$y"
+
+echo "2^$x+4*$y" 
+echo $[ 2^$x+4*$y ] # Evaluate the above expression to return a result
+
+motif="AGCGATATCGAGC"
+
+echo "My current motif is: $motif"
+
+```
+Note above that: 1) variables can be used inline to construct and 2) wrapping an expression in square brackets $[ ] will tell bash to 'evaluate' the expression and return the result
+
+# Control Flow and Looping
+In the `notebooks/data` directory provided with this module, we have included a file describing the genes in the hg38 human genome. What if we wanted to ask how many genes exist on chromosome 19?
+
+```{bash}
+chrom="chr19"
+grep $chrom data/hg38genes.txt | wc -l
+```
+## For loops
+
+If we also wanted to do this for other chromosomes, we could manually change the value of `$chrom`, or we might automate this with a `for` loop. 
+```{bash}
+for chrom in chr11 chr12 chr13 chr14
+  do 
+    echo $chrom
+    grep $chrom data/hg38genes.txt | wc -l
+  done
+  
+```
+
+You will notice that a 'for' loop in `bash` takes the form:
+
+```
+for <variable> in <array of values>
+  do
+    <code block to execute for each iteration with new variable value>
+  done
+```
+
+## While loops
+`while` will continue executing the code in the loop as long as its condition is true:
+
+```{bash}
+VAR=1
+while [ $VAR -lt 5 ]
+do
+    echo "VAR=$VAR"
+    VAR=$[ VAR+1 ]
+done
+```
+Reminder that the test evaluation  [  ] is actually evaluating the expression ` $VAR -lt 5` and in this case returning `TRUE` as long as the value in `$VAR` is less than the integer 5. Possible boolean tests include -eq, -lt, -gt, -le, -ge. Strings can be compared with = and != . Lots of other tests are possible.
+
+The above while loop also includes a line inside the loop to auto-increment the value of $VAR. If we didn't do that here, then `$VAR -lt 5` will _always_ evaluate to TRUE and this will be an infinite loop.  It’s easy to write a while loop that never finishes. Remember control-c will kill a running/runaway process.
+
+## Conditional tests
+`if-then-else`statements are very useful, when you want to execute code only if some condition is met. ‘fi’ terminates the if statement.
+
+```{bash}
+VAR=2
+if [ $VAR -gt 5 ] ; then
+    echo "VAR > 5"
+else
+    echo "VAR <= 5"
+fi
+```
+additional “else” statements can be added, using elif:
+
+```{bash}
+VAR=2
+if [ $VAR -gt 5 ] ; then
+    echo "VAR > 5"
+elif [ $VAR -lt 0 ]; then
+    echo "VAR < 0"
+else
+    echo "0 <= VAR <= 5"
+fi
+```
+
+# Passing arguments to a script
+When you write code and save it as a bash script, you can increase the flexibility and reusability of this code by passing arguments (think of `ls -lh` where the `-lh` are arguments that change the functionality of the program and the composition of the output). In `bash` there are several 'default' variables that are instantiated when you run a script to help capture passed arguments. 
+
+Create a new shell script called `args.sh` and place the following code inside, save, and change permissions to execute the file
+
+```{bash, eval=FALSE}
+#!/usr/bin/env bash
+
+echo "the first argument is $1."
+echo "the second argument is $2."
+echo "the number of arguments is $#."
+echo "the name of the program is $0."
+echo "\$@ is a variable with all arguments: $@"
+```
+
+Now run your new script.
+
+```{bash, eval=FALSE}
+./args.sh argument1 arg2 another argument
+```
+
+The `$1, $2, $3, ...` variables capture, respectively, the first, second, and third argument passed to `args.sh`. 
+
+#### Exercise:
+1. Create a bash script that takes two arguments: a string, and an integer. The output of the script should be to repeat the input string as many times as indicated by the second argument.
+
+# cut | sort | uniq
+
+## `cut` - remove sections from each line of files
+Cut can grab columns of data from a delimited (in this case tab-delimited) 
+
+```{bash}
+cut -f1 data/hg38genes.txt | head
+```
+
+```{bash}
+cut -f2,3 data/hg38genes.txt | head
+```
+
+## `sort` - sort or merge records (lines) of text and binary files
+We can combine the power of `cut` with another command-line tool, `sort` by using the pipe (`|`) operator.
+
+```{bash}
+# sort all chromosomes
+cut -f1 data/hg38genes.txt | sort | head
+```
+
+```{bash}
+# sort all start positions
+cut -f2 data/hg38genes.txt | sort | head
+```
+
+Note that the default sorting is 'alphanumeric' instead of numeric for these integers.  Looking at the `man sort` tells us that we need to use the argument `-n` to sort numerically
+
+```{bash}
+cut -f2 data/hg38genes.txt | sort -n | head
+```
+
+
+## `uniq` - report or filter out repeated lines in a file
+As it's name implies, `uniq` will take the input provided and collapse it to the unique set of rows.
+When combined with `cut` and `sort` this can be a very handy set of tools for summarizing tabular data in files.
+
+```{bash}
+#Find unique chromosome names
+cut -f1 data/hg38genes.txt | sort | uniq 
+```
+What if we added the argument `-c` to `uniq`? (hint: `man uniq` for answer)
+
+#### Exercises:
+Using the combination of `cut | sort | uniq`, find:
+
+1. How many genes are on each strand ('+', '-') in the file hg38genes.txt?
+
+2. How many genes are on each strand, for each chromosome?
+
+## End of Module component
+_**You made it through this intro! Great job!**_
+
 Let the instructors and/or TAs know if you have any questions and we will expand upon these lessons as needed in class. We will use the command line often throughout this course, and you will have many more opportunities to familiarize yourself with this interface, and how we use the command line to run individual tools/components of many bioinformatics & computational biology pipelines and to string together inputs and outputs of different programs.
 
 # Session Information
