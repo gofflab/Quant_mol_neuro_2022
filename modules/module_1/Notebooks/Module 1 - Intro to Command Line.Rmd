@@ -118,19 +118,25 @@ cd myDirectory
 pwd
 ```
 
-Note that within the above chunk, you actually ran two commands in bash, one right after the other. You first changed your location within the file system by using the `cd` command. Then you used the `pwd` command to list out your current location in the file system. All scripting will follow this type of linear instruction list unless we create a loop (more on that later!). Now we have moved into the folder/directory we just made. We can move back into the previous directory by using the shortcut `..`
+Note that within the above chunk, you actually ran two commands in bash, one right after the other. You first changed your location within the file system by using the `cd` command. Then you used the `pwd` command to list out your current location in the file system. All scripting will follow this type of linear instruction list unless we create a loop (more on that later!). Now we have moved into the folder/directory we just made. We can move back into the previous directory by using the shortcut `..` 
+
+_Note: in RMarkdown, each `bash` code chunk 'begins' in the current working directory. So in this next chunk, we will first move into the new `myDirectory`, and then move back into the current working directory.  
 
 ```{bash}
+cd myDirectory
+pwd
+
 cd ..
 pwd
 ```
-
 And finally, we can remove an (empty) directory using rmdir .
 
 ```{bash}
 rmdir myDirectory
 ls
 ```
+
+We can copy a file or directory from another location by using `cp <existing file> <new file location>`
 
 ## Review
 
@@ -234,7 +240,7 @@ We have now created, deleted, moved, and manipulated files, but what if we simpl
 
 ### Downloading files from the internet
 
-We can use the wget command followed by the URL. The file will be downloaded into your current directory location. This may take a minute to download
+We can use the `wget` command followed by the URL. `wget` is a command line program that takes a URL as an argument and downloads the content of that URL to a file. The file will be downloaded into your current directory location. This may take a minute to download. If you do not have `wget` installed on your machine/environment, you can find intstallation instructions [here](https://www.jcchouinard.com/wget/#How_to_Install_Wget).
 
 ```{bash}
 rm chr01*  # Delete existing files before run.
@@ -343,11 +349,17 @@ Try and switch to the terminal and try `less` or `more` to view the `chr01.fsa` 
 
 # Searching in files
 
-Rather than scanning through the entire contents lines of a file by eye, you can also use the `grep` command to pull out specific words or lines in the case of this chromosome file. Using the `-c` argument tells `grep` to return the number of lines that contain the pattern.
+Rather than scanning through the entire contents lines of a file by eye, you can also use the `grep` command to pull out specific words or lines in the case of this chromosome file.
 
 ```{bash}
 grep "TACCCTACC" chr01.fsa
-grep -c "TACCCTACC" chr01.fsa
+```
+
+Using the `-o` argument tells `grep` to return all of the instances of the pattern. We can take that output and 'pipe' it into the input for the `wc` command to count the number of lines (instances) of the pattern in the output of `grep`.
+```{bash}
+grep -o "TACCCTACC" chr01.fsa
+
+grep -o "TACCCTACC" chr01.fsa | wc -l
 
 ```
 
@@ -355,12 +367,12 @@ grep -c "TACCCTACC" chr01.fsa
 
 ```{bash}
 grep "TACC.TACC" chr01.fsa
-grep -c "TACC.TACC" chr01.fsa
+grep -o "TACC.TACC" chr01.fsa | wc -l
 ```
 
 ```{bash}
 grep "TACC*TACC" chr01.fsa
-grep -c "TACC*TACC" chr01.fsa
+grep -o "TACC*TACC" chr01.fsa | wc -l
 ```
 
 # Piping/redirection
