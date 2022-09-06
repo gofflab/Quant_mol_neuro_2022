@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Part 1: Basic bash scripting
 
-First, make sure that you have downloaded and unzipped the contents of the [ion_channel_sequences folder](https://github.com/gofflab/Quant_mol_neuro_2022/tree/main/modules/module_1/pset/ion_channel_sequences) of genome sequence files. This dataset will be included in Canvas for this problemset.
+First, make sure that you have the `ion_channel_sequences` folder in your working directory. If you unzipped `Module_1_pset.tar.gz` in your working directory of choice, the folder should already be in the correct location.
 
 Then, answer each question using Bash scripting. Please note that the bash operations should be executed inside a `bash` code chunk like so:
 
@@ -29,7 +29,7 @@ Then, answer each question using Bash scripting. Please note that the bash opera
 
 ```
 
-You'll need to have your folder of sequence files (`ion_channel_sequence`) in your working directory. Print your working directory and its contents.
+You'll need to have your folder of sequence files (`ion_channel_sequences`) in your working directory. Print your working directory and its contents.
 
 ```{bash}
 
@@ -95,20 +95,20 @@ Construct a loop to check whether each of the FASTA files in the ion_channel_seq
 
 ## Part 2: basic R
 
-Get your dependencies. For this section, you will need the ggplot2 package. If you haven't already, you can get it by installing the whole tidyverse as suggested here: <https://ggplot2.tidyverse.org/>. You should also download and read the file *utils.R*, which loads your dependencies and contains some supplementary functions. You will want to look at utils.R yourself for guidance on using these functions. Lastly, make sure you download *Yao2021_ionChannels_expMat_genesByCells.rds* and *Yao2021_ionChannels_pData.rds*.
+Get your dependencies. For this section, you will need the ggplot2 package. If you haven't already, you can get it by installing the whole tidyverse as suggested here: <https://ggplot2.tidyverse.org/>. You should also read the file `utils.R`, which loads your dependencies and contains some supplementary functions. You will want to look at utils.R yourself for guidance on using these functions. Lastly, make sure you have `Yao2021_ionChannels_expMat_genesByCells.rds` and `Yao2021_ionChannels_pData.rds` in your working directory.
 
 ```{r}
 
 ```
 
-Now load Yao2021_ionChannels_expMat_genesByCells.rds, a genes x cells matrix that contains publicly available gene expression data from single-cell RNA-sequencing performed in motor cortex (Yao et al. 2021, <https://doi.org/10.1038/s41586-021-03500-8>). Specifically, this matrix includes the expression of the ion channels that you looked at in Part 1 of this problem set.
+Now load `Yao2021_ionChannels_expMat_genesByCells.rds`, a genes x cells matrix that contains publicly available gene expression data from single-cell RNA-sequencing performed in motor cortex (Yao et al. 2021, <https://doi.org/10.1038/s41586-021-03500-8>). Specifically, this matrix includes the expression of the ion channels that you looked at in Part 1 of this problem set.
 
 ```{r}
 # load the expression data here and save it as a variable
 
 ```
 
-Let's take a look at the first few values to familiarize ourselves with how these data are arranged. Slice this matrix so that only the first 5 rows and first 5 columns are displayed
+Let's take a look at the first few values to familiarize ourselves with how these data are arranged. Slice this matrix so that only the first 5 rows and first 5 columns are displayed.
 
 ```{r}
 
@@ -150,7 +150,7 @@ Hopefully by now, you've deduced that RNA-seq count data is not normally distrib
 
 ```
 
-Now, we can look at what types of cells express of these ion channel genes. Load Yao2021_ionChannels_pData.rds, which contains a data.frame with information about each of the cells in the counts matrix. Print the names of the columns included in this data.frame.
+Now, we can look at what types of cells express of these ion channel genes. Load `Yao2021_ionChannels_pData.rds`, which contains a data.frame with information about each of the cells in the counts matrix. Print the names of the columns included in this data.frame.
 
 ```{r}
 
@@ -168,7 +168,7 @@ The values in the column "cellID" correspond to the column names of the counts m
 
 ```
 
-Now use the function makeBP included in Utils.R to create box plots of gene expression by cell class for your gene of choice. Your new dataframe will be the first argument and your gene of choice will be the second argument.
+Now use the function `makeBP` included in Utils.R to create box plots of gene expression by cell class for your gene of choice. Your new dataframe will be the first argument and your gene of choice will be the second argument.
 
 ```{r}
 
