@@ -1,5 +1,5 @@
 files <- list.files(".", recursive = TRUE)
-files <- files[grepl("^(Module|prereqs).*\\.html", files)]
+files <- files[grepl("^(Module|prereqs).*\\.html", files, ignore.case = TRUE)]
 
 links <- paste(
     lapply(files, function(x) paste("- [", x, "](/Quant_mol_neuro_2022/", x, ")", sep = "")),
