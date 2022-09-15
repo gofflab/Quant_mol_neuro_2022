@@ -1,0 +1,91 @@
+---
+title: "Final Project Outline"
+author: "<Your Name Here>"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Study Overview
+
+## Citation
+
+-   Add citation information for chosen study here
+-   [Manuscript Link](https://%3Clink%20to%20manuscript%3E)
+
+## Brief Summary of Published Study
+
+*High-level summary (1-2 paragraphs) of the existing study. Be sure to add relevant contextual background details and information about how the study was performed*
+
+## Biological Questions
+
+-   What *specific* biological questions were asked by the authors of this study using the dataset(s) that you will re-analyze?
+
+# Data Availability
+
+## Data Source
+
+*Where are the raw and processed data available for download?*
+
+## Accession Numbers / Links
+
+*Please list all accession numbers or other identifying IDs for the data you will be using for your project.*
+
+# Sample Information
+
+*Create a table of all samples. Be sure to list sample generation information and as much relevant metadata including conditions of interest and*
+
+# Study Design
+
+*What comparisons/contrasts will be made?*
+
+# Proposed Workflow
+
+For each subsection, try and identify additional resources that might need to be created or acquired to enact your workflow (e.g. reference genome/transcriptome for read alignment, gene annotations, etc)
+
+## Data Acquisition
+
+## Data Organization
+
+## Read Alignment/Mapping
+
+## Feature Quantification/Tabulation
+
+## Data Analysis
+
+*Add additional subheaders here for additional tasks or analysis steps that are specific to your project workflow*
+
+# Required Software/Tools/Packages
+
+*Please try and be as comprehensive as possible here. This will be a useful resource for you to not only think about how the data will 'flow' through your project (ie. how tools will be chained together), and help you think about which tools can be used to answer your biological questions, but also provide quick references for their use and troubleshooting.*
+
+*Use the provided examples below to help get you started.*
+
++-----------------------+------------------------+-------------------------------------------------+--------------------------------------------------------------------+-----------------------------------------------------------------------------------------+---------+
+| Software/Tool/Package | Task                   | Software Location                               | Link to Documentation                                              | Link to Vignettes/Tutorials                                                             | Notes   |
++:======================+:=======================+=================================================+:===================================================================+:========================================================================================+:========+
+| ffq                   | Data Query/Retrieval   | [ffq github](https://github.com/pachterlab/ffq) | [ffq Documentation](https://openbase.com/python/ffq/documentation) |                                                                                         |         |
++-----------------------+------------------------+-------------------------------------------------+--------------------------------------------------------------------+-----------------------------------------------------------------------------------------+---------+
+| Hisat2                | Spliced Read Alignment |                                                 | [Hisat2 Manual](http://daehwankimlab.github.io/hisat2/)            | -   [Mapping with Hisat](https://wikis.utexas.edu/display/bioiteam/Mapping+with+HISAT2) |         |
+|                       |                        |                                                 |                                                                    |                                                                                         |         |
+|                       |                        |                                                 |                                                                    | -   [Hisat2 tutorial](https://rpubs.com/selveyad/hisat2_tutorial)                       |         |
++-----------------------+------------------------+-------------------------------------------------+--------------------------------------------------------------------+-----------------------------------------------------------------------------------------+---------+
+|                       |                        |                                                 |                                                                    |                                                                                         |         |
++-----------------------+------------------------+-------------------------------------------------+--------------------------------------------------------------------+-----------------------------------------------------------------------------------------+---------+
+|                       |                        |                                                 |                                                                    |                                                                                         |         |
++-----------------------+------------------------+-------------------------------------------------+--------------------------------------------------------------------+-----------------------------------------------------------------------------------------+---------+
+
+# Anticipated Results
+
+# Additional Metadata resources
+
+_Here you should curate **and link** to an additional resources that you might need external to your target datasets. Examples might include:_
+
+-   Reference Genome/Transcriptome (what version)?
+
+-   Key gene sequences/annotation?
+
+-   Curated relevant gene sets for enrichment analysis?

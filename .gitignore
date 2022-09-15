@@ -43,5 +43,4 @@ vignettes/*.pdf
 .DS_Store
 
 # Compiled notebooks
-*.html
-
+*.pdf
