@@ -312,32 +312,32 @@ div.tocify {
 <h2>Options/Input arguments</h2>
 <p>Bash/shell commands can take input arguments or options. One convention is to use a dash ( - ) to specify arguments. For example, we can ask ls to show a more detailed list of information for each file/folder:</p>
 <pre class="bash"><code>ls -l</code></pre>
-<pre><code>## total 64
-## -rw-r--r-- 1 runner docker    97 Sep 15 02:59 DESCRIPTION
-## -rw-r--r-- 1 runner docker  1065 Sep 15 02:59 LICENSE
-## -rw-r--r-- 1 runner docker 24075 Sep 15 03:01 Module-1---Intro-to-Command-Line.Rmd
-## -rw-r--r-- 1 runner docker   133 Sep 15 02:59 README.md
-## -rw-r--r-- 1 runner docker   487 Sep 15 02:59 genIndex.R
-## drwxr-xr-x 2 runner docker  4096 Sep 15 03:01 images
-## drwxr-xr-x 3 runner docker  4096 Sep 15 02:59 modules
-## drwxr-xr-x 3 runner docker  4096 Sep 15 02:59 prereqs
-## drwxr-xr-x 2 runner docker  4096 Sep 15 02:59 project
-## -rw-r--r-- 1 runner docker   175 Sep 15 02:59 render.R
-## drwxr-xr-x 3 runner docker  4096 Sep 15 02:59 templates</code></pre>
+<pre><code>## total 68
+## -rw-r--r-- 1 runner docker    97 Sep 19 14:50 DESCRIPTION
+## -rw-r--r-- 1 runner docker  1065 Sep 19 14:50 LICENSE
+## -rw-r--r-- 1 runner docker 24916 Sep 19 14:51 Module-1---Intro-to-Command-Line.Rmd
+## -rw-r--r-- 1 runner docker   133 Sep 19 14:50 README.md
+## -rw-r--r-- 1 runner docker   487 Sep 19 14:50 genIndex.R
+## drwxr-xr-x 2 runner docker  4096 Sep 19 14:51 images
+## drwxr-xr-x 3 runner docker  4096 Sep 19 14:50 modules
+## drwxr-xr-x 3 runner docker  4096 Sep 19 14:50 prereqs
+## drwxr-xr-x 2 runner docker  4096 Sep 19 14:50 project
+## -rw-r--r-- 1 runner docker   175 Sep 19 14:50 render.R
+## drwxr-xr-x 3 runner docker  4096 Sep 19 14:50 templates</code></pre>
 <p>We can aggregate different options by directly appending options one after another. The following shows how to display file sizes in human readable formats ( -h ):</p>
 <pre class="bash"><code>ls -lh</code></pre>
-<pre><code>## total 64K
-## -rw-r--r-- 1 runner docker   97 Sep 15 02:59 DESCRIPTION
-## -rw-r--r-- 1 runner docker 1.1K Sep 15 02:59 LICENSE
-## -rw-r--r-- 1 runner docker  24K Sep 15 03:01 Module-1---Intro-to-Command-Line.Rmd
-## -rw-r--r-- 1 runner docker  133 Sep 15 02:59 README.md
-## -rw-r--r-- 1 runner docker  487 Sep 15 02:59 genIndex.R
-## drwxr-xr-x 2 runner docker 4.0K Sep 15 03:01 images
-## drwxr-xr-x 3 runner docker 4.0K Sep 15 02:59 modules
-## drwxr-xr-x 3 runner docker 4.0K Sep 15 02:59 prereqs
-## drwxr-xr-x 2 runner docker 4.0K Sep 15 02:59 project
-## -rw-r--r-- 1 runner docker  175 Sep 15 02:59 render.R
-## drwxr-xr-x 3 runner docker 4.0K Sep 15 02:59 templates</code></pre>
+<pre><code>## total 68K
+## -rw-r--r-- 1 runner docker   97 Sep 19 14:50 DESCRIPTION
+## -rw-r--r-- 1 runner docker 1.1K Sep 19 14:50 LICENSE
+## -rw-r--r-- 1 runner docker  25K Sep 19 14:51 Module-1---Intro-to-Command-Line.Rmd
+## -rw-r--r-- 1 runner docker  133 Sep 19 14:50 README.md
+## -rw-r--r-- 1 runner docker  487 Sep 19 14:50 genIndex.R
+## drwxr-xr-x 2 runner docker 4.0K Sep 19 14:51 images
+## drwxr-xr-x 3 runner docker 4.0K Sep 19 14:50 modules
+## drwxr-xr-x 3 runner docker 4.0K Sep 19 14:50 prereqs
+## drwxr-xr-x 2 runner docker 4.0K Sep 19 14:50 project
+## -rw-r--r-- 1 runner docker  175 Sep 19 14:50 render.R
+## drwxr-xr-x 3 runner docker 4.0K Sep 19 14:50 templates</code></pre>
 <p>Sometimes commands take in arguments for various purposes. Again, using ls as example, it can take path as an argument. Without the path, it will by default show the current listings, as shown above. Given a path, it will list items in that path. The following command lists all the files and directories in the directory directly above your current directory:</p>
 <pre class="bash"><code>ls ../</code></pre>
 <pre><code>## Quant_mol_neuro_2022</code></pre>
@@ -354,27 +354,32 @@ div.tocify {
 <pre class="bash"><code>mkdir myDirectory</code></pre>
 <p>Nothing seemed to happen? Lets check and see if our new directory was made:</p>
 <pre class="bash"><code>ls -l</code></pre>
-<pre><code>## total 68
-## -rw-r--r-- 1 runner docker    97 Sep 15 02:59 DESCRIPTION
-## -rw-r--r-- 1 runner docker  1065 Sep 15 02:59 LICENSE
-## -rw-r--r-- 1 runner docker 24075 Sep 15 03:01 Module-1---Intro-to-Command-Line.Rmd
-## -rw-r--r-- 1 runner docker   133 Sep 15 02:59 README.md
-## -rw-r--r-- 1 runner docker   487 Sep 15 02:59 genIndex.R
-## drwxr-xr-x 2 runner docker  4096 Sep 15 03:01 images
-## drwxr-xr-x 3 runner docker  4096 Sep 15 02:59 modules
-## drwxr-xr-x 2 runner docker  4096 Sep 15 03:01 myDirectory
-## drwxr-xr-x 3 runner docker  4096 Sep 15 02:59 prereqs
-## drwxr-xr-x 2 runner docker  4096 Sep 15 02:59 project
-## -rw-r--r-- 1 runner docker   175 Sep 15 02:59 render.R
-## drwxr-xr-x 3 runner docker  4096 Sep 15 02:59 templates</code></pre>
+<pre><code>## total 72
+## -rw-r--r-- 1 runner docker    97 Sep 19 14:50 DESCRIPTION
+## -rw-r--r-- 1 runner docker  1065 Sep 19 14:50 LICENSE
+## -rw-r--r-- 1 runner docker 24916 Sep 19 14:51 Module-1---Intro-to-Command-Line.Rmd
+## -rw-r--r-- 1 runner docker   133 Sep 19 14:50 README.md
+## -rw-r--r-- 1 runner docker   487 Sep 19 14:50 genIndex.R
+## drwxr-xr-x 2 runner docker  4096 Sep 19 14:51 images
+## drwxr-xr-x 3 runner docker  4096 Sep 19 14:50 modules
+## drwxr-xr-x 2 runner docker  4096 Sep 19 14:51 myDirectory
+## drwxr-xr-x 3 runner docker  4096 Sep 19 14:50 prereqs
+## drwxr-xr-x 2 runner docker  4096 Sep 19 14:50 project
+## -rw-r--r-- 1 runner docker   175 Sep 19 14:50 render.R
+## drwxr-xr-x 3 runner docker  4096 Sep 19 14:50 templates</code></pre>
 <p>There it is, lets try and move into the directory. cd stands for “change directory”. Just as you would click on a folder in Windows Explorer or Finder on a Mac, cd switches you into the directory you specify. In other words, cd changes the working directory.</p>
 <pre class="bash"><code>cd myDirectory
 pwd</code></pre>
 <pre><code>## /home/runner/work/Quant_mol_neuro_2022/Quant_mol_neuro_2022/myDirectory</code></pre>
 <p>Note that within the above chunk, you actually ran two commands in bash, one right after the other. You first changed your location within the file system by using the <code>cd</code> command. Then you used the <code>pwd</code> command to list out your current location in the file system. All scripting will follow this type of linear instruction list unless we create a loop (more on that later!). Now we have moved into the folder/directory we just made. We can move back into the previous directory by using the shortcut <code>..</code></p>
-<pre class="bash"><code>cd ..
+<p>_Note: in RMarkdown, each <code>bash</code> code chunk ‘begins’ in the current working directory. So in this next chunk, we will first move into the new <code>myDirectory</code>, and then move back into the current working directory.</p>
+<pre class="bash"><code>cd myDirectory
+pwd
+
+cd ..
 pwd</code></pre>
-<pre><code>## /home/runner/work/Quant_mol_neuro_2022</code></pre>
+<pre><code>## /home/runner/work/Quant_mol_neuro_2022/Quant_mol_neuro_2022/myDirectory
+## /home/runner/work/Quant_mol_neuro_2022/Quant_mol_neuro_2022</code></pre>
 <p>And finally, we can remove an (empty) directory using rmdir .</p>
 <pre class="bash"><code>rmdir myDirectory
 ls</code></pre>
@@ -389,6 +394,7 @@ ls</code></pre>
 ## project
 ## render.R
 ## templates</code></pre>
+<p>We can copy a file or directory from another location by using <code>cp &lt;existing file&gt; &lt;new file location&gt;</code></p>
 </div>
 <div id="review" class="section level2">
 <h2>Review</h2>
@@ -413,19 +419,19 @@ ls</code></pre>
 <p>There are several ways to create a file. One of the easiest is to just create an empty file by touching it ( <code>touch</code> )</p>
 <pre class="bash"><code>touch myBrandNewFile.txt</code></pre>
 <pre class="bash"><code>ls -l</code></pre>
-<pre><code>## total 64
-## -rw-r--r-- 1 runner docker    97 Sep 15 02:59 DESCRIPTION
-## -rw-r--r-- 1 runner docker  1065 Sep 15 02:59 LICENSE
-## -rw-r--r-- 1 runner docker 24075 Sep 15 03:01 Module-1---Intro-to-Command-Line.Rmd
-## -rw-r--r-- 1 runner docker   133 Sep 15 02:59 README.md
-## -rw-r--r-- 1 runner docker   487 Sep 15 02:59 genIndex.R
-## drwxr-xr-x 2 runner docker  4096 Sep 15 03:01 images
-## drwxr-xr-x 3 runner docker  4096 Sep 15 02:59 modules
-## -rw-r--r-- 1 runner docker     0 Sep 15 03:01 myBrandNewFile.txt
-## drwxr-xr-x 3 runner docker  4096 Sep 15 02:59 prereqs
-## drwxr-xr-x 2 runner docker  4096 Sep 15 02:59 project
-## -rw-r--r-- 1 runner docker   175 Sep 15 02:59 render.R
-## drwxr-xr-x 3 runner docker  4096 Sep 15 02:59 templates</code></pre>
+<pre><code>## total 68
+## -rw-r--r-- 1 runner docker    97 Sep 19 14:50 DESCRIPTION
+## -rw-r--r-- 1 runner docker  1065 Sep 19 14:50 LICENSE
+## -rw-r--r-- 1 runner docker 24916 Sep 19 14:51 Module-1---Intro-to-Command-Line.Rmd
+## -rw-r--r-- 1 runner docker   133 Sep 19 14:50 README.md
+## -rw-r--r-- 1 runner docker   487 Sep 19 14:50 genIndex.R
+## drwxr-xr-x 2 runner docker  4096 Sep 19 14:51 images
+## drwxr-xr-x 3 runner docker  4096 Sep 19 14:50 modules
+## -rw-r--r-- 1 runner docker     0 Sep 19 14:51 myBrandNewFile.txt
+## drwxr-xr-x 3 runner docker  4096 Sep 19 14:50 prereqs
+## drwxr-xr-x 2 runner docker  4096 Sep 19 14:50 project
+## -rw-r--r-- 1 runner docker   175 Sep 19 14:50 render.R
+## drwxr-xr-x 3 runner docker  4096 Sep 19 14:50 templates</code></pre>
 <div id="side-note-about-wildcards" class="section level3">
 <h3>Side note about wildcards</h3>
 <ul>
@@ -458,19 +464,19 @@ echo &#39;Hello World!&#39; &gt;myBrandNewFile.txt</code></pre>
 <p>The ‘mv’ command has a couple of different uses. You can use it to move files from one directory to another (imagine moving a file from your ‘Downloads’ to your ‘Desktop’). The <code>mv</code> command could also be used to rename files or directories. Let’s first explore renaming our file using the <code>mv</code> command below which take the file to be moved as the primary argument and new name of the file as the secondary argument:</p>
 <pre class="bash"><code>mv myBrandNewFile.txt myOlderFile.txt
 ls -l</code></pre>
-<pre><code>## total 68
-## -rw-r--r-- 1 runner docker    97 Sep 15 02:59 DESCRIPTION
-## -rw-r--r-- 1 runner docker  1065 Sep 15 02:59 LICENSE
-## -rw-r--r-- 1 runner docker 24075 Sep 15 03:01 Module-1---Intro-to-Command-Line.Rmd
-## -rw-r--r-- 1 runner docker   133 Sep 15 02:59 README.md
-## -rw-r--r-- 1 runner docker   487 Sep 15 02:59 genIndex.R
-## drwxr-xr-x 2 runner docker  4096 Sep 15 03:01 images
-## drwxr-xr-x 3 runner docker  4096 Sep 15 02:59 modules
-## -rw-r--r-- 1 runner docker    13 Sep 15 03:01 myOlderFile.txt
-## drwxr-xr-x 3 runner docker  4096 Sep 15 02:59 prereqs
-## drwxr-xr-x 2 runner docker  4096 Sep 15 02:59 project
-## -rw-r--r-- 1 runner docker   175 Sep 15 02:59 render.R
-## drwxr-xr-x 3 runner docker  4096 Sep 15 02:59 templates</code></pre>
+<pre><code>## total 72
+## -rw-r--r-- 1 runner docker    97 Sep 19 14:50 DESCRIPTION
+## -rw-r--r-- 1 runner docker  1065 Sep 19 14:50 LICENSE
+## -rw-r--r-- 1 runner docker 24916 Sep 19 14:51 Module-1---Intro-to-Command-Line.Rmd
+## -rw-r--r-- 1 runner docker   133 Sep 19 14:50 README.md
+## -rw-r--r-- 1 runner docker   487 Sep 19 14:50 genIndex.R
+## drwxr-xr-x 2 runner docker  4096 Sep 19 14:51 images
+## drwxr-xr-x 3 runner docker  4096 Sep 19 14:50 modules
+## -rw-r--r-- 1 runner docker    13 Sep 19 14:51 myOlderFile.txt
+## drwxr-xr-x 3 runner docker  4096 Sep 19 14:50 prereqs
+## drwxr-xr-x 2 runner docker  4096 Sep 19 14:50 project
+## -rw-r--r-- 1 runner docker   175 Sep 19 14:50 render.R
+## drwxr-xr-x 3 runner docker  4096 Sep 19 14:50 templates</code></pre>
 <p>We now have renamed our file to ‘myOlderFile.txt’</p>
 <pre class="bash"><code>mkdir TemporaryDirectory
 mv myOlderFile.txt TemporaryDirectory
@@ -484,25 +490,25 @@ ls</code></pre>
 <pre class="bash"><code>rm myOlderFile.txt
 ls -la</code></pre>
 <pre><code>## rm: cannot remove &#39;myOlderFile.txt&#39;: No such file or directory
-## total 92
-## drwxr-xr-x 10 runner docker  4096 Sep 15 03:01 .
-## drwxr-xr-x  3 runner docker  4096 Sep 15 02:59 ..
-## -rw-r--r--  1 runner docker    28 Sep 15 02:59 .Rbuildignore
-## drwxr-xr-x  8 runner docker  4096 Sep 15 02:59 .git
-## drwxr-xr-x  3 runner docker  4096 Sep 15 03:01 .github
-## -rw-r--r--  1 runner docker   632 Sep 15 02:59 .gitignore
-## -rw-r--r--  1 runner docker    97 Sep 15 02:59 DESCRIPTION
-## -rw-r--r--  1 runner docker  1065 Sep 15 02:59 LICENSE
-## -rw-r--r--  1 runner docker 24075 Sep 15 03:01 Module-1---Intro-to-Command-Line.Rmd
-## -rw-r--r--  1 runner docker   133 Sep 15 02:59 README.md
-## drwxr-xr-x  2 runner docker  4096 Sep 15 03:01 TemporaryDirectory
-## -rw-r--r--  1 runner docker   487 Sep 15 02:59 genIndex.R
-## drwxr-xr-x  2 runner docker  4096 Sep 15 03:01 images
-## drwxr-xr-x  3 runner docker  4096 Sep 15 02:59 modules
-## drwxr-xr-x  3 runner docker  4096 Sep 15 02:59 prereqs
-## drwxr-xr-x  2 runner docker  4096 Sep 15 02:59 project
-## -rw-r--r--  1 runner docker   175 Sep 15 02:59 render.R
-## drwxr-xr-x  3 runner docker  4096 Sep 15 02:59 templates</code></pre>
+## total 96
+## drwxr-xr-x 10 runner docker  4096 Sep 19 14:51 .
+## drwxr-xr-x  3 runner docker  4096 Sep 19 14:50 ..
+## -rw-r--r--  1 runner docker    28 Sep 19 14:50 .Rbuildignore
+## drwxr-xr-x  8 runner docker  4096 Sep 19 14:50 .git
+## drwxr-xr-x  3 runner docker  4096 Sep 19 14:51 .github
+## -rw-r--r--  1 runner docker   632 Sep 19 14:50 .gitignore
+## -rw-r--r--  1 runner docker    97 Sep 19 14:50 DESCRIPTION
+## -rw-r--r--  1 runner docker  1065 Sep 19 14:50 LICENSE
+## -rw-r--r--  1 runner docker 24916 Sep 19 14:51 Module-1---Intro-to-Command-Line.Rmd
+## -rw-r--r--  1 runner docker   133 Sep 19 14:50 README.md
+## drwxr-xr-x  2 runner docker  4096 Sep 19 14:51 TemporaryDirectory
+## -rw-r--r--  1 runner docker   487 Sep 19 14:50 genIndex.R
+## drwxr-xr-x  2 runner docker  4096 Sep 19 14:51 images
+## drwxr-xr-x  3 runner docker  4096 Sep 19 14:50 modules
+## drwxr-xr-x  3 runner docker  4096 Sep 19 14:50 prereqs
+## drwxr-xr-x  2 runner docker  4096 Sep 19 14:50 project
+## -rw-r--r--  1 runner docker   175 Sep 19 14:50 render.R
+## drwxr-xr-x  3 runner docker  4096 Sep 19 14:50 templates</code></pre>
 <p>Remember you can navigate to your previous location by using the command <code>cd ..</code> and remove the new directory by using the command <code>rmdir</code></p>
 <div id="key-concept" class="section level4">
 <h4>Key Concept</h4>
@@ -514,24 +520,24 @@ ls -la</code></pre>
 <p>We have now created, deleted, moved, and manipulated files, but what if we simply want to know more about their contents without actually changing them? For example, we can download a chromosome file from a database and learn more about its contents.</p>
 <div id="downloading-files-from-the-internet" class="section level3">
 <h3>Downloading files from the internet</h3>
-<p>We can use the wget command followed by the URL. The file will be downloaded into your current directory location. This may take a minute to download</p>
+<p>We can use the <code>wget</code> command followed by the URL. <code>wget</code> is a command line program that takes a URL as an argument and downloads the content of that URL to a file. The file will be downloaded into your current directory location. This may take a minute to download. If you do not have <code>wget</code> installed on your machine/environment, you can find intstallation instructions <a href="https://www.jcchouinard.com/wget/#How_to_Install_Wget">here</a>.</p>
 <pre class="bash"><code>rm chr01*  # Delete existing files before run.
 wget http://sgd-archive.yeastgenome.org/sequence/S288C_reference/chromosomes/fasta/chr01.fsa</code></pre>
 <pre><code>## rm: cannot remove &#39;chr01*&#39;: No such file or directory
-## --2022-09-15 03:01:25--  http://sgd-archive.yeastgenome.org/sequence/S288C_reference/chromosomes/fasta/chr01.fsa
-## Resolving sgd-archive.yeastgenome.org (sgd-archive.yeastgenome.org)... 52.92.164.75
-## Connecting to sgd-archive.yeastgenome.org (sgd-archive.yeastgenome.org)|52.92.164.75|:80... connected.
+## --2022-09-19 14:51:24--  http://sgd-archive.yeastgenome.org/sequence/S288C_reference/chromosomes/fasta/chr01.fsa
+## Resolving sgd-archive.yeastgenome.org (sgd-archive.yeastgenome.org)... 52.92.165.59
+## Connecting to sgd-archive.yeastgenome.org (sgd-archive.yeastgenome.org)|52.92.165.59|:80... connected.
 ## HTTP request sent, awaiting response... 200 OK
 ## Length: 234177 (229K) [binary/octet-stream]
 ## Saving to: ‘chr01.fsa’
 ## 
-##      0K .......... .......... .......... .......... .......... 21% 1.17M 0s
-##     50K .......... .......... .......... .......... .......... 43% 2.36M 0s
-##    100K .......... .......... .......... .......... .......... 65% 3.61M 0s
-##    150K .......... .......... .......... .......... .......... 87% 6.22M 0s
-##    200K .......... .......... ........                        100%  242M=0.08s
+##      0K .......... .......... .......... .......... .......... 21%  309K 1s
+##     50K .......... .......... .......... .......... .......... 43%  618K 0s
+##    100K .......... .......... .......... .......... .......... 65%  185M 0s
+##    150K .......... .......... .......... .......... .......... 87% 3.36M 0s
+##    200K .......... .......... ........                        100%  433K=0.3s
 ## 
-## 2022-09-15 03:01:26 (2.66 MB/s) - ‘chr01.fsa’ saved [234177/234177]</code></pre>
+## 2022-09-19 14:51:25 (706 KB/s) - ‘chr01.fsa’ saved [234177/234177]</code></pre>
 </div>
 <div id="file-sizes" class="section level3">
 <h3>File sizes</h3>
@@ -583,21 +589,21 @@ wc -m chr01.fsa #characters</code></pre>
 <h4>Permissions</h4>
 <p>Lets take a look again at the files in our directory</p>
 <pre class="bash"><code>ls -lh</code></pre>
-<pre><code>## total 372K
-## -rw-r--r-- 1 runner docker   97 Sep 15 02:59 DESCRIPTION
-## -rw-r--r-- 1 runner docker 1.1K Sep 15 02:59 LICENSE
-## -rw-r--r-- 1 runner docker  24K Sep 15 03:01 Module-1---Intro-to-Command-Line.Rmd
-## -rw-r--r-- 1 runner docker  133 Sep 15 02:59 README.md
-## drwxr-xr-x 2 runner docker 4.0K Sep 15 03:01 TemporaryDirectory
+<pre><code>## total 376K
+## -rw-r--r-- 1 runner docker   97 Sep 19 14:50 DESCRIPTION
+## -rw-r--r-- 1 runner docker 1.1K Sep 19 14:50 LICENSE
+## -rw-r--r-- 1 runner docker  25K Sep 19 14:51 Module-1---Intro-to-Command-Line.Rmd
+## -rw-r--r-- 1 runner docker  133 Sep 19 14:50 README.md
+## drwxr-xr-x 2 runner docker 4.0K Sep 19 14:51 TemporaryDirectory
 ## -rw-r--r-- 1 runner docker 229K Oct 25  2019 chr01.fsa
 ## -rw-r--r-- 1 runner docker  70K Oct 25  2019 chr01.fsa.gz
-## -rw-r--r-- 1 runner docker  487 Sep 15 02:59 genIndex.R
-## drwxr-xr-x 2 runner docker 4.0K Sep 15 03:01 images
-## drwxr-xr-x 3 runner docker 4.0K Sep 15 02:59 modules
-## drwxr-xr-x 3 runner docker 4.0K Sep 15 02:59 prereqs
-## drwxr-xr-x 2 runner docker 4.0K Sep 15 02:59 project
-## -rw-r--r-- 1 runner docker  175 Sep 15 02:59 render.R
-## drwxr-xr-x 3 runner docker 4.0K Sep 15 02:59 templates</code></pre>
+## -rw-r--r-- 1 runner docker  487 Sep 19 14:50 genIndex.R
+## drwxr-xr-x 2 runner docker 4.0K Sep 19 14:51 images
+## drwxr-xr-x 3 runner docker 4.0K Sep 19 14:50 modules
+## drwxr-xr-x 3 runner docker 4.0K Sep 19 14:50 prereqs
+## drwxr-xr-x 2 runner docker 4.0K Sep 19 14:50 project
+## -rw-r--r-- 1 runner docker  175 Sep 19 14:50 render.R
+## drwxr-xr-x 3 runner docker 4.0K Sep 19 14:50 templates</code></pre>
 <p>The first set of characters in each returned line details the permissions of the file. The permissions are assigned based on three different ‘levels’ of users, and there are three types of permissions:</p>
 <ul>
 <li>‘r’ for read which allows the contents of the file or directory to be read or listed</li>
@@ -655,22 +661,28 @@ $ chmod +x testfile ##sets the execute bit for owner, group and world.</code></p
 </div>
 <div id="searching-in-files" class="section level1">
 <h1>Searching in files</h1>
-<p>Rather than scanning through the entire contents lines of a file by eye, you can also use the <code>grep</code> command to pull out specific words or lines in the case of this chromosome file. Using the <code>-c</code> argument tells <code>grep</code> to return the number of lines that contain the pattern.</p>
-<pre class="bash"><code>grep &quot;TACCCTACC&quot; chr01.fsa
-grep -c &quot;TACCCTACC&quot; chr01.fsa
-</code></pre>
+<p>Rather than scanning through the entire contents lines of a file by eye, you can also use the <code>grep</code> command to pull out specific words or lines in the case of this chromosome file.</p>
+<pre class="bash"><code>grep &quot;TACCCTACC&quot; chr01.fsa</code></pre>
 <pre><code>## CAACCCACTGCCACTTACCCTACCATTACCCTACCATCCACCATGACCTACTCACCATAC
-## TACCCTACCACTTTATACCACCACCACATGCCATACTCACCCTCACTTGTATACTGATTT
-## 2</code></pre>
+## TACCCTACCACTTTATACCACCACCACATGCCATACTCACCCTCACTTGTATACTGATTT</code></pre>
+<p>Using the <code>-o</code> argument tells <code>grep</code> to return all of the instances of the pattern. We can take that output and ‘pipe’ it into the input for the <code>wc</code> command to count the number of lines (instances) of the pattern in the output of <code>grep</code>.</p>
+<pre class="bash"><code>grep -o &quot;TACCCTACC&quot; chr01.fsa
+
+grep -o &quot;TACCCTACC&quot; chr01.fsa | wc -l
+</code></pre>
+<pre><code>## TACCCTACC
+## TACCCTACC
+## TACCCTACC
+## 3</code></pre>
 <p><code>grep</code> can also utilize wildcards in the search pattern. The <code>.</code>wildcard is used for searching for a single character substitution in the given pattern. The <code>*</code> wildcard is used for searching for any number of character substitutions within the given pattern.</p>
 <pre class="bash"><code>grep &quot;TACC.TACC&quot; chr01.fsa
-grep -c &quot;TACC.TACC&quot; chr01.fsa</code></pre>
+grep -o &quot;TACC.TACC&quot; chr01.fsa | wc -l</code></pre>
 <pre><code>## CAACCCACTGCCACTTACCCTACCATTACCCTACCATCCACCATGACCTACTCACCATAC
 ## TACCCTACCACTTTATACCACCACCACATGCCATACTCACCCTCACTTGTATACTGATTT
 ## TCAATTTTAGCCGCTTCTTTGGTTAATGCAGGTACCATACCCCTCGGAAAGTTATCTGAC
-## 3</code></pre>
+## 4</code></pre>
 <pre class="bash"><code>grep &quot;TACC*TACC&quot; chr01.fsa
-grep -c &quot;TACC*TACC&quot; chr01.fsa</code></pre>
+grep -o &quot;TACC*TACC&quot; chr01.fsa | wc -l</code></pre>
 <pre><code>## CACCATCCATCCCTCTACTTACTACCACTCACCCACCGTTACCCTCCAATTACCCATATC
 ## CAACCCACTGCCACTTACCCTACCATTACCCTACCATCCACCATGACCTACTCACCATAC
 ## TACCCTACCACTTTATACCACCACCACATGCCATACTCACCCTCACTTGTATACTGATTT
@@ -687,7 +699,7 @@ grep -c &quot;TACC*TACC&quot; chr01.fsa</code></pre>
 ## TTTATAACATATAAGAACTACTACCTCATGAATTCTAGTGGATGAAAGAAGCAGCACGAA
 ## TTATATAATAACATCCGTATAAGTACATATACTACCATGTCTGTTCTCTACATTGCTTTT
 ## TCTACTGTTATGATGGGTGGTATGTTGGCCGGTACTACCGAATCACCAGGTGAATATCTC
-## 16</code></pre>
+## 17</code></pre>
 </div>
 <div id="pipingredirection" class="section level1">
 <h1>Piping/redirection</h1>
