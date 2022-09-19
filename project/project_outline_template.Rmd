@@ -15,10 +15,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 -   Add citation information for chosen study here
 -   [Manuscript Link](https://%3Clink%20to%20manuscript%3E)
+-   Add other relevant links such as supplemental materials, key references, etc.
 
 ## Brief Summary of Published Study
 
-*High-level summary (1-2 paragraphs) of the existing study. Be sure to add relevant contextual background details and information about how the study was performed*
+*High-level summary (2-3 paragraphs) of the existing study. Be sure to add relevant contextual background details and information about how the study was performed*
 
 ## Biological Questions
 
@@ -35,28 +36,39 @@ knitr::opts_chunk$set(echo = TRUE)
 *Please list all accession numbers or other identifying IDs for the data you will be using for your project.*
 
 # Sample Information
-
 *Create a table of all samples. Be sure to list sample generation information and as much relevant metadata including conditions of interest and*
+
+## Sample Types
+*What type of samples/data are available (RNA-Seq, ATAC-Seq, ChIP-Seq, etc). Be sure to describe how the libraries where made, and from what types of input. The more information you have here about sample generation, the better you will be able to select/identify tools for your workflow.*
 
 # Study Design
 
-*What comparisons/contrasts will be made?*
+## Biological Questions to ask
+_What **specific** biological questions will you ask of these data for your project? The first may be similar to those asked by the authors of the original study, but at least one must be unique/novel_
+
+## Explicit comparisons/contrasts
+*What comparisons/contrasts will be made?  Will you be comparing one (or more) conditions to another? Which samples will be used as a control and why? You may have multiple sections here describing different experimental designs for each biological question you are interested in asking.*
 
 # Proposed Workflow
 
-For each subsection, try and identify additional resources that might need to be created or acquired to enact your workflow (e.g. reference genome/transcriptome for read alignment, gene annotations, etc)
+_For each subsection, try and identify additional resources that might need to be created or acquired to enact your workflow (e.g. reference genome/transcriptome for read alignment, gene annotations, etc)_
 
 ## Data Acquisition
+_Where and how will you acquire the 1) raw sequencing data, and/or 2) processed data provided by the authors?_
 
 ## Data Organization
+_How will the data be organized and made available within your project? Plan ahead for an organized project structure._
 
 ## Read Alignment/Mapping
+_What approaches/tools will you be using to map the reads to a reference (e.g. ungapped alignment, splice-aware alignment, pseudoalignment?) Can you use a publicly available reference index to map? If so, where is this located and how can you retrieve it?  If not, what steps/tools/data will you need to construct a reference index required for mapping of the raw sequencing data? How will you assess the quality of your read mapping?_
 
 ## Feature Quantification/Tabulation
+_Once you have mapped reads to a reference, how will you quantify features of interest? For DNA tasks, how will you define peaks/regions of interest?  For RNA tasks, which features are you interested in (e.g. transcripts, aggregated genes, splice variants, etc)? What tools will you use to translate your aligned reads to quantified features? Describe how you will QC these quantifications to assess such things as expected distributions, feature selection (e.g. how will you remove poor or erroneous features, or select a subset of features for downstream processing?)_
 
 ## Data Analysis
+*Add additional subheaders here as needed for additional tasks or analysis steps that are specific to your project workflow.*
 
-*Add additional subheaders here for additional tasks or analysis steps that are specific to your project workflow*
+_e.g. Data Preprocessing & cleaning, Feature QC, Feature annotation, Dimensionality reduction, Differential analysis, Gene set enrichment analysis, Pathway analysis, etc_
 
 # Required Software/Tools/Packages
 
@@ -78,7 +90,8 @@ For each subsection, try and identify additional resources that might need to be
 |                       |                        |                                                 |                                                                    |                                                                                         |         |
 +-----------------------+------------------------+-------------------------------------------------+--------------------------------------------------------------------+-----------------------------------------------------------------------------------------+---------+
 
-# Anticipated Results
+# Anticipated Results (Deliverables)
+_Describe what specific results/figures/etc you would like to generate to address your biological questions. How might these results be presented? Do you have any a priori hypotheses that you expect to test?  Will this require specific statistics to test/reject?_
 
 # Additional Metadata resources
 
