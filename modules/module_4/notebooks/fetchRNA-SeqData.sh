@@ -25,7 +25,7 @@ ffq $GEO > $GEO.json
 
 # Use jq to extract the ftp links for the fastq files from the .json and pass to wget to download
 # Note: this will download all fastq files, and will be approximately 60 Gb (24 * 2.5Gb) of raw data. Please be sure you have sufficient disk space available.
-jq -r '.[].geo_samples | .[].samples | .[] | .experiments | .[].runs | .[] | .files.ftp | .[] | .url ' $GEO.json | xargs wget
+jq -r '.[].geo_samples | .[].samples | .[] | .experiments | .[].runs | .[] | .files.ftp | .[] | .url ' $GEO.json | xargs -n 1 -P 4 wget
 
 # Use jq to extract the metadata for each sample and write to a .tsv file
 jq -r '.[].geo_samples | .[].samples | .[] | [.accession, (.experiments | .[].runs | .[] | .files.ftp | .[] | .[]), (.attributes | .[])] | @tsv' $GEO.json > $GEO.tsv
