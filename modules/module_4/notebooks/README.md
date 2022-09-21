@@ -3,10 +3,11 @@
 ## Install miniconda
 
 ### Windows user
-Use WSL 2
+
 Download [this](https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh).
 In terminal,
 ```sh
+# **Use WSL 2**
 chmod +x Mambaforge-Linux-x86_64.sh
 ./Mambaforge-Linux-x86_64.sh
 ```
