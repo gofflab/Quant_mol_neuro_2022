@@ -7,11 +7,14 @@
 #########
 
 # install needed components (if needed)
-#conda install -c bioconda MultiQC fastqc kallisto igv
+#conda install -c bioconda multiqc fastqc kallisto igv
 #conda install jq
 #pip install ffq gget
 
-# Create acceession variable and directory structure for raw data
+# Stop script on any errors.
+set -e
+
+# Create acceession variable and directory structure
 GEO="GSE74985"
 mkdir -p data/raw/${GEO}
 cd data/raw/${GEO}
@@ -70,5 +73,5 @@ for fastq in $(ls ../../../data/raw/$GEO/*.fastq.gz);
 
 # Run MultiQC to generate a project QC report
 cd ../../../
-multiQC .
+multiqc .
 
