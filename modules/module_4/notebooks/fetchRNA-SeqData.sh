@@ -7,12 +7,12 @@
 #########
 
 # install needed components (if needed)
-#conda install -c bioconda MultiQC
-#conda install -c bioconda fastqc
-#conda install -c bioconda kallisto
-#conda install -c bioconda igv
+#conda install -c bioconda multiqc fastqc kallisto igv
 #conda install jq
 #pip install ffq gget
+
+# Stop script on any errors.
+set -e
 
 # Create acceession variable and directory structure
 GEO="GSE74985"
@@ -52,13 +52,13 @@ kallisto inspect gencode.vM30.idx
 cd ../../../
 mkdir -p results/$GEO/kallisto
 cd results/$GEO/kallisto
-for fastq in $(ls ../../raw/$GEO/*.fastq.gz); 
-    do 
+for fastq in $(ls ../../../data/raw/$GEO/*.fastq.gz);
+    do
         SAMPLE_NAME=$(basename $fastq | cut -d "_" -f 1)
         kallisto quant -i ../../../metadata/$GEO/kallisto_index/gencode.vM30.idx -o $SAMPLE_NAME --single -l 200 -s 20 $fastq; 
     done
 
 # Run MultiQC to generate a project QC report
 cd ../../../
-multiQC .
+multiqc .
 
