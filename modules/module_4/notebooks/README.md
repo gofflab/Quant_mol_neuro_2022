@@ -8,6 +8,9 @@ Download [this](https://github.com/conda-forge/miniforge/releases/latest/downloa
 In terminal,
 ```sh
 # **Use WSL 2**
+# If possible, try using /home/[YOUR USERNAME], the internal WSL drive, as the directory for scripts.
+# There is significant disk read/write penalty when using anything in /mnt/c/.
+# You can access your WSL drive from Windows Explorer at \\wsl$.
 chmod +x Mambaforge-Linux-x86_64.sh
 ./Mambaforge-Linux-x86_64.sh
 ```
