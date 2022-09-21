@@ -42,3 +42,23 @@ echo $(ls *.fastq.gz) | xargs -n 1 -P 4 fastqc
 
 # Step back to main directory
 cd ../../../
+
+# Create directory structure for metadata
+mkdir -p metadata/$GEO/bowtie2_idx
+cd metadata/$GEO/bowtie2_idx
+
+# Download the mouse genome and build bowtie2 index
+#gget ref --ftp -w dna,gtf mus_musculus | xargs -n 1 -P 4 wget -c # Downloads the genome and gtf files for the most recent mouse genome release
+#bowtie2-build Mus_musculus.GRCm39.dna.primary_assembly.fa.gz GRCm39 # Builds the bowtie2 index
+
+# OR download a pre-built bowtie2 index
+wget -c https://genome-idx.s3.amazonaws.com/bt/GRCm39.zip
+unzip GRCm39.zip
+
+# Step back to main directory
+cd ../../../
+# Build dir structure for results
+mkdir -p results/$GEO/bowtie2
+cd results/$GEO/bowtie2
+
+# Run bowtie pseudoalignments
