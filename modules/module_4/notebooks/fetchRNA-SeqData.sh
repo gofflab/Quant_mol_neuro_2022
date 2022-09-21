@@ -7,9 +7,9 @@
 #########
 
 # install needed components (if needed)
-#conda install -c bioconda multiqc fastqc kallisto igv
+#conda install -c bioconda fastqc kallisto igv
 #conda install jq
-#pip install ffq gget
+#pip install ffq gget multiqc
 
 # Stop script on any errors.
 set -e
@@ -67,8 +67,8 @@ cd results/$GEO/kallisto
 for fastq in $(ls ../../../data/raw/$GEO/*.fastq.gz); 
     do 
         SAMPLE_NAME=$(basename $fastq .fastq.gz);
-        #echo $SAMPLE_NAME;
-        kallisto quant -i ../../../metadata/$GEO/kallisto_index/mus_musculus/transcriptome.idx -o $SAMPLE_NAME --single -l 200 -s 20 $fastq; 
+        echo "Performing kalliso pseudoalignment for $SAMPLE_NAME";
+        kallisto quant -i ../../../metadata/$GEO/kallisto_index/mus_musculus/transcriptome.idx --genomebam -g ../../../metadata/$GEO/kallisto_index/mus_musculus/Mus_musculus.GRCm38.96.gtf -o $SAMPLE_NAME --single -l 200 -s 20 $fastq; 
     done
 
 # Run MultiQC to generate a project QC report
