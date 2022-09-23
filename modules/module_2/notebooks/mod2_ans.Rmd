@@ -1,9 +1,6 @@
 ## Part 1
 ```{r}
 library(here)
-tuesdata <- tidytuesdayR::tt_load("2020-01-21")
-spotify_songs <- tuesdata$spotify_songs
-
 # tests if a directory named "data" exists locally
 if (!dir.exists(here::here("data"))) {
     dir.create(here::here("data"))
