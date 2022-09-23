@@ -4,9 +4,12 @@
 # https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE74985
 # https://elifesciences.org/articles/14997
 # https://doi.org/10.7554/eLife.14997
+#
+# Please try and work through this script by placing it into a new empty directory and working through the steps to see how it works.
+#
 #########
 
-# install needed components (if needed)
+# install needed components (uncomment and run if needed).  You will need to have anaconda installed.
 #conda install -c bioconda fastqc kallisto igv
 #conda install jq
 #pip install ffq gget multiqc
@@ -71,7 +74,8 @@ for fastq in $(ls ../../../data/raw/$GEO/*.fastq.gz);
     do 
         SAMPLE_NAME=$(basename $fastq .fastq.gz);
         echo "Performing kalliso pseudoalignment for $SAMPLE_NAME";
-        kallisto quant -i ../../../metadata/$GEO/kallisto_index/mus_musculus/transcriptome.idx --genomebam -g ../../../metadata/$GEO/kallisto_index/mus_musculus/Mus_musculus.GRCm38.96.gtf -o $SAMPLE_NAME --single -l 200 -s 20 $fastq; 
+        time kallisto quant -i ../../../metadata/$GEO/kallisto_index/mus_musculus/transcriptome.idx -o $SAMPLE_NAME --single -l 200 -s 20 $fastq 2>$SAMPLE_NAME/$SAMPLE_NAME.log; 
+        #kallisto quant -i ../../../metadata/$GEO/kallisto_index/mus_musculus/transcriptome.idx --genomebam -g ../../../metadata/$GEO/kallisto_index/mus_musculus/Mus_musculus.GRCm38.96.gtf -o $SAMPLE_NAME --single -l 200 -s 20 $fastq 2>$SAMPLE_NAME/$SAMPLE_NAME.log; 
     done
 
 # Run MultiQC to generate a project QC report

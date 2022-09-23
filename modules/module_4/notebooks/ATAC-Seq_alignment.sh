@@ -27,18 +27,20 @@ ffq $GEO > $GEO.json
 # Use jq to extract the ftp links for the fastq files from the .json and pass to wget to download (4 at a time)
 # Note: this will download all fastq files, and will be approximately 60 Gb (24 * 2.5Gb) of raw data. Please be sure you have sufficient disk space available.
 # Note: These samples are paired-end, so there will be 2 files for each sample to download.
-jq -r '.[].geo_samples | .[].samples | .[].experiments | .[].runs | .[].files.ftp | .[].url ' $GEO.json | xargs -n 1 -P 4 wget -c
+jq -r '.[].geo_samples | .[].samples | .[].experiments | .[].runs | .[].files.ftp | .[].url ' $GEO.json | xargs -n 1 -P 8 wget -c
 
 # Use jq to extract the metadata for each sample and write to a .tsv file
 jq -r '.[].geo_samples | .[].samples | .[] | [.accession, (.experiments | .[].runs | .[] | .files.ftp | .[] | .[]), (.attributes | .[])] | @tsv' $GEO.json > $GEO.tsv
 
-# Some samples were sequenced more than once. To see which samples have more than one run, run the following command:
-# jq -r '.[].geo_samples | .[].samples | .[].experiments | .[].runs | keys ' $GEO.json
-# We will aggregate the reads for each sample when we align them below.
+# Some samples were sequenced more than once. To see which SRX experiments have more than one run, run the following command:
+# jq -r '.[].geo_samples | .[].samples | .[].experiments | [.[].accession, (.[].runs | keys)] ' $GEO.json
+# To see which SRS samples have more than one run, run the following command:
+# jq -r '.[].geo_samples | .[].samples | .[] | [.accession, (.experiments | .[].runs | keys)] ' $GEO.json
+# We will aggregate the reads for each sample after we align them below.
 
 # Run FastQC on all fastq files (4 at a time)
 # This too will take some time to run on all fastq files
-echo $(ls *.fastq.gz) | xargs -n 1 -P 4 fastqc
+echo $(ls *.fastq.gz) | xargs -n 1 -P 8 fastqc
 
 # Step back to main directory
 cd ../../../
@@ -62,3 +64,12 @@ mkdir -p results/$GEO/bowtie2
 cd results/$GEO/bowtie2
 
 # Run bowtie pseudoalignments
+for RUN in $(jq -r '.[].geo_samples | .[].samples | .[].experiments | .[].runs | .[].accession' ../../../data/raw/$GEO/$GEO.json);
+    do
+        echo "Performing Bowtie2 alignment for $RUN"
+        bowtie2 -p 4 -x ../../../metadata/$GEO/bowtie2_idx/GRCm39/GRCm39 -1 ../../../data/raw/$GEO/${RUN}_1.fastq.gz -2 ../../../data/raw/$GEO/${RUN}_2.fastq.gz 2>$RUN.log | samtools view -bS - > $RUN.bam;
+    done;
+
+# Run MultiQC to generate a project QC report
+cd ../../../
+multiqc .
