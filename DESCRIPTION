@@ -2,5 +2,9 @@ Package: quant_mol_neuro_2022
 Title: Package
 Version: 0.1.0
 Imports:
+    here,
     rmarkdown,
-    tidyverse
+    tidyverse,
+    scRNAseq,
+    scater,
+    scran,
