@@ -6,7 +6,7 @@ Imports:
     rmarkdown,
     tidytuesdayR,
     tidyverse,
-    ggridges
+    ggridges,
     scRNAseq,
     scater,
     scran,
