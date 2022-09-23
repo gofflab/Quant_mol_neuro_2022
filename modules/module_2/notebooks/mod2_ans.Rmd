@@ -1,0 +1,149 @@
+## Part 1
+```{r}
+library(here)
+tuesdata <- tidytuesdayR::tt_load("2020-01-21")
+spotify_songs <- tuesdata$spotify_songs
+
+# tests if a directory named "data" exists locally
+if (!dir.exists(here::here("data"))) {
+    dir.create(here::here("data"))
+}
+
+# saves data only once (not each time you knit a R Markdown)
+if (!file.exists(here::here("data", "spotify_songs.RDS"))) {
+    url_csv <- "https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv"
+    spotify_songs <- readr::read_csv(url_csv)
+
+    # save the file to RDS objects
+    saveRDS(spotify_songs, file = here("data", "spotify_songs.RDS"))
+}
+
+spotify_songs <- readRDS(here("data", "spotify_songs.RDS"))
+df <- dplyr::as_tibble(spotify_songs)
+```
+
+```{r}
+library(dplyr)
+# How many songs are in each genre?
+df %>%
+    dplyr::count(playlist_genre) %>%
+    dplyr::arrange(desc(n))
+```
+
+Note: I like to put the package name in front of the function.
+This makes it easier to see where the function comes from.
+It also makes it easier to see if you are using a function from a package that you haven't loaded yet.
+It's best practices in every other programming languages.
+
+```{r}
+# What is average value of energy and acousticness in the latin genre in this dataset?
+df %>%
+    dplyr::filter(playlist_genre == "latin") %>%
+    dplyr::summarise(mean_energy = mean(energy), mean_acousticness = mean(acousticness))
+```
+
+```{r}
+# Calculate the average duration of song (in minutes) across all subgenres.
+# Which subgenre has the longest song on average?
+df %>%
+    dplyr::group_by(playlist_subgenre) %>%
+    dplyr::summarise(mean_duration = mean(duration_ms) / 60000) %>%
+    dplyr::arrange(desc(mean_duration))
+```
+
+```{r}
+# Make two boxplots side-by-side of the danceability of songs stratifying by whether a song has a fast or slow tempo.
+# Define fast tempo as any song that has a tempo above its median value.
+# On average, which songs are more danceable?
+library(ggplot2)
+df %>%
+    dplyr::mutate(tempo = ifelse(tempo > median(tempo), "fast", "slow")) %>%
+    ggplot(aes(x = tempo, y = danceability)) +
+    geom_boxplot()
+```
+
+Note: modern practices discourage the use of bar graphs and boxplots when displaying distributional data
+as they can be misleading for non-normal data.
+Instead, use a violin plot or a [raincloud](https://www.cedricscherer.com/2021/06/06/visualizing-distributions-with-raincloud-plots-and-how-to-create-them-with-ggplot2/) plot.
+
+```{r}
+to_plot <- df %>% dplyr::mutate(tempo = ifelse(tempo > median(tempo), "fast", "slow"))
+ggplot(to_plot, aes(x = danceability, y = tempo, fill = tempo)) +
+    geom_violin()
+```
+
+However, as we can see, this violin plot is not the easiest to read.
+A ridgeline plot should be better.
+
+```{r}
+ggplot(to_plot, aes(x = danceability, y = tempo, fill = tempo)) +
+    ggridges::stat_density_ridges(
+        quantile_lines = TRUE,
+        quantiles = 2,
+        alpha = 0.7,
+    ) +
+    ggridges::theme_ridges() +
+    labs(title = "Dancability. Line indicates median.")
+```
+
+
+## Part 2
+
+```{r}
+sce <- scRNAseq::MacoskoRetinaData()
+# Show the number of number of genes and number of observations in the sce object.
+dim(sce)
+```
+
+```{r}
+# Quality control (using mitochondrial genes).
+is.mito <- grepl("^MT-", rownames(sce))
+qcstats <- scater::perCellQCMetrics(sce, subsets = list(Mito = is.mito))
+filtered <- scater::quickPerCellQC(qcstats, percent_subsets = "subsets_Mito_percent")
+sce <- sce[, !filtered$discard]
+```
+Try not to create a bunch of objects. They are duplicates and eat your memory.
+
+```{r}
+# Normalization.
+sce <- scater::logNormCounts(sce)
+```
+
+`logNormCounts` outputs log-transformed normalized expression.
+Normalized expression divides expression by the size factor for each cell,
+computed as the library size of each cell after scaling them to have a mean of 1 across all cells.
+
+**This is the simplest way for normalization. Big cells will have a higher size factor than small cells.
+It also assumes that upregulation for a subset of genes is cancelled out by the same magnitude of downregulation in a different subset of genes.**
+
+See [this](http://bioconductor.org/books/3.13/OSCA.basic/normalization.html).
+
+```{r}
+# Feature selection.
+dec <- scran::modelGeneVar(sce)
+hvg <- scran::getTopHVGs(dec, prop = 0.1)
+```
+
+> A larger subset will reduce the risk of discarding interesting biological signal by retaining more potentially relevant genes,
+at the cost of increasing noise from irrelevant genes that might obscure said signal.
+It is difficult to determine the optimal trade-off for any given application as noise in one context may be useful signal in another.
+
+See [this](http://bioconductor.org/books/3.13/OSCA.basic/feature-selection.html).
+
+```{r}
+# PCA.
+set.seed(1234)
+sce <- scater::runPCA(sce, ncomponents = 25, subset_row = hvg)
+
+# Clustering.
+colLabels(sce) <- scran::clusterCells(sce,
+    use.dimred = "PCA",
+    BLUSPARAM = bluster::NNGraphParam(cluster.fun = "louvain")
+)
+```
+
+```{r}
+# Visualization.
+sce <- scater::runUMAP(sce, dimred = "PCA")
+scater::plotUMAP(sce, colour_by = "label")
+```
