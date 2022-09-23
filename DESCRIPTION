@@ -10,3 +10,4 @@ Imports:
     scRNAseq,
     scater,
     scran,
+    uwot,
