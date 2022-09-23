@@ -8,7 +8,7 @@ import seaborn as sns
 
 sns.set()
 
-here = Path(__file__).parent
+here = Path(".")
 data = here / "data"
 data.mkdir(exist_ok=True, parents=True)
 #%% Part 1
