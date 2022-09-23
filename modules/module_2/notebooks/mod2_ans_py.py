@@ -8,13 +8,13 @@ import seaborn as sns
 
 sns.set()
 
-here = Path(".")
+here = Path(__file__).parent
 data = here / "data"
 data.mkdir(exist_ok=True, parents=True)
 #%% Part 1
 
 # This is a dataframe (like tibble).
-spotify_songs = pd.read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv")
+spotify_songs = pd.read_csv(data / "spotify_songs.csv")
 spotify_songs.to_csv(data / 'spotify_songs.csv', index=False)
 
 spotify_songs
