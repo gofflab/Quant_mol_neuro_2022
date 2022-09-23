@@ -13,6 +13,9 @@ on:
     branches: [ "main" ]
   pull_request:
 
+defaults:
+  run:
+    shell: bash -l {0}
 
 jobs:
   jupyter-build:
@@ -24,12 +27,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: mamba-org/provision-with-micromamba@main
         with:
-          miniforge-version: latest
-          activate-environment: qmn
+          cache-downloads: true
+          cache-env: true
+          environment-name: qmn
           environment-file: environment.yml
-          use-mamba: true
 
       - name: Execute and export
         run: |
