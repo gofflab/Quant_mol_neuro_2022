@@ -46,3 +46,4 @@ vignettes/*.pdf
 *.pdf
 
 **/data/**
+*.ipynb
