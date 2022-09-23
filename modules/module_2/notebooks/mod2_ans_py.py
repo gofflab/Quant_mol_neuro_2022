@@ -10,6 +10,7 @@ sns.set()
 
 here = Path(".")
 data = here / "data"
+data.mkdir(exist_ok=True, parents=True)
 #%% Part 1
 
 # This is a dataframe (like tibble).
