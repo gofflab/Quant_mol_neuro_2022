@@ -44,3 +44,5 @@ vignettes/*.pdf
 
 # Compiled notebooks
 *.pdf
+
+**/data/**
