@@ -165,7 +165,8 @@ like the index of a book allows you to look up information more rapidly.
 **This file is 3.5 GB.**
 
 ```{bash hisatindex}
-cd data
+mkdir -p data/reference
+cd data/reference
 wget -N https://genome-idx.s3.amazonaws.com/hisat/mm10_genome.tar.gz
 tar xvzf mm10_genome.tar.gz
 ```
@@ -201,7 +202,7 @@ cd data
 for file in *.fq.gz
 do
   name=${file%.fq.gz}
-  hisat2 -x mm10/genome -U ${name}.fq.gz -S ${name}.sam
+  hisat2 -x reference/mm10/genome -U ${name}.fq.gz -S ${name}.sam
   echo ${name} completed!
 done
 ```

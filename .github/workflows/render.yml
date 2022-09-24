@@ -33,6 +33,12 @@ jobs:
       - name: Install R dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
 
+      - name: Cache Reference
+        uses: actions/cache@v3
+        with:
+          path: modules/module_3/data/reference
+          key: constant
+
       - name: Render
         run: Rscript render.R
 
