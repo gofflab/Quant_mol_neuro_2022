@@ -178,7 +178,7 @@ tar xvzf mm10_genome.tar.gz
 HiSat2 can be installed with `conda`.
 
 # **DO NOT TRY TO FIND OTHER METHODS FOR INSTALLING CONDA.**
-# M1 people: DO NOT INSTALL WITH CONDA.
+# M1 people: DO NOT INSTALL WITH CONDA YET. Use the following cell.
 
 **Use this [installation guide](https://github.com/gofflab/Quant_mol_neuro_2022/tree/main/modules/module_4/notebooks) only.**
 
@@ -187,19 +187,13 @@ Normal people can run as well. It won't do anything harmful.
 
 ```{bash}
 if [[ "$(arch)" == "arm64" ]]; then
-  mkdir -p hisat2
-  cd hisat2
-  wget -N -q https://anaconda.org/bioconda/hisat2/2.2.1/download/osx-64/hisat2-2.2.1-h9722bc1_4.tar.bz2
-  tar -xf hisat2-2.2.1-h9722bc1_4.tar.bz2
-  rm hisat2-2.2.1-h9722bc1_4.tar.bz2
-  echo "M1 rejoice!"
+  CONDA_SUBDIR=osx-64 conda install hisat2 -c bioconda
 fi
 ```
 
 Then we are going to align all our data, using a for loop to loop through all the FASTQ files we downloaded.
 
 ```{bash, hisatalign2}
-export PATH=$PATH:$(pwd)/hisat2/bin  # For M1 people.
 cd data
 for file in *.fq.gz
 do
