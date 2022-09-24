@@ -10,3 +10,4 @@ Imports:
     scater,
     scran,
     uwot,
+    BiocManager,

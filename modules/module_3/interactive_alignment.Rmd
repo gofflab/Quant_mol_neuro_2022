@@ -1,0 +1,296 @@
+---
+title: "220923 Quantitative Neurogenomics"
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+---
+
+Ok - so we have an idea of how to make data experimentally from the last lecture,
+but now we have to think about how to analyze some data!
+
+I'm going to steal from the _lovely_ [Galaxy project](https://galaxyproject.org/) for this tutorial
+- specifically here: [Transcriptomics](https://training.galaxyproject.org/training-material/topics/transcriptomics/)
+
+We are going to work from RNA-seq data from [Fu et al.](https://www.nature.com/articles/ncb3117)
+where they sequenced basal and luminal cells from breast tissue of nulliparous, pregnant, or lactating female mice.
+
+The first thing we are going to do is to grab a "FASTQ" file.
+
+FASTQ [Wiki](https://en.wikipedia.org/wiki/FASTQ_format) is a plain text file that encodes for a DNA sequence
+- along with how confident (quality score) we are that the read is correct.
+
+For the purposes of instruction here and to make sure it runs smoothly,
+we are going to use a downsampled dataset that is only 1000 reads from each sample,
+hosted at [Zenodo](https://zenodo.org/record/4249555).
+
+
+```{r}
+# Set working dir to where this file is.
+if (rstudioapi::isAvailable()) {
+  setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+}
+```
+
+First, let's setup a table of the data
+
+```{r metainfo}
+meta <- dplyr::tibble(
+  sample.id = c(
+    "MCL1-DL", "MCL1-DK", "MCL1-DJ", "MCL1-DI", "MCL1-DH", "MCL1-DG",
+    "MCL1-LF", "MCL1-LE", "MCL1-LD", "MCL1-LC", "MCL1-LB", "MCL1-LA"
+  ),
+  cell.type = c(
+    "basal", "basal", "basal", "basal", "basal", "basal",
+    "luminal", "luminal", "luminal", "luminal", "luminal", "luminal"
+  ),
+  mouse.type = c(
+    "lactate", "lactate", "virgin", "virgin", "pregnant", "pregnant",
+    "lactate", "lactate", "pregnant", "pregnant", "virgin", "virgin"
+  ),
+  url = c(
+    "https://zenodo.org/record/4249555/files/SRR1552455.fastq.gz",
+    "https://zenodo.org/record/4249555/files/SRR1552454.fastq.gz",
+    "https://zenodo.org/record/4249555/files/SRR1552453.fastq.gz",
+    "https://zenodo.org/record/4249555/files/SRR1552452.fastq.gz",
+    "https://zenodo.org/record/4249555/files/SRR1552451.fastq.gz",
+    "https://zenodo.org/record/4249555/files/SRR1552450.fastq.gz",
+    "https://zenodo.org/record/4249555/files/SRR1552449.fastq.gz",
+    "https://zenodo.org/record/4249555/files/SRR1552448.fastq.gz",
+    "https://zenodo.org/record/4249555/files/SRR1552447.fastq.gz",
+    "https://zenodo.org/record/4249555/files/SRR1552446.fastq.gz",
+    "https://zenodo.org/record/4249555/files/SRR1552445.fastq.gz",
+    "https://zenodo.org/record/4249555/files/SRR1552444.fastq.gz"
+  )
+)
+
+meta$destfile <- paste0(meta$sample.id, ".fq.gz")
+meta
+```
+
+Ok - got that in.  Now let's download the data, making a directory called "data" in your current directory
+
+```{bash downloadfastq}
+mkdir -p data
+cd data
+wget -q -N -O MCL1-DL.fq.gz https://zenodo.org/record/4249555/files/SRR1552455.fastq.gz
+wget -q -N -O MCL1-DK.fq.gz https://zenodo.org/record/4249555/files/SRR1552454.fastq.gz
+wget -q -N -O MCL1-DJ.fq.gz https://zenodo.org/record/4249555/files/SRR1552453.fastq.gz
+wget -q -N -O MCL1-DI.fq.gz https://zenodo.org/record/4249555/files/SRR1552452.fastq.gz
+wget -q -N -O MCL1-DH.fq.gz https://zenodo.org/record/4249555/files/SRR1552451.fastq.gz
+wget -q -N -O MCL1-DG.fq.gz https://zenodo.org/record/4249555/files/SRR1552450.fastq.gz
+wget -q -N -O MCL1-LF.fq.gz https://zenodo.org/record/4249555/files/SRR1552449.fastq.gz
+wget -q -N -O MCL1-LE.fq.gz https://zenodo.org/record/4249555/files/SRR1552448.fastq.gz
+wget -q -N -O MCL1-LD.fq.gz https://zenodo.org/record/4249555/files/SRR1552447.fastq.gz
+wget -q -N -O MCL1-LC.fq.gz https://zenodo.org/record/4249555/files/SRR1552446.fastq.gz
+wget -q -N -O MCL1-LB.fq.gz https://zenodo.org/record/4249555/files/SRR1552445.fastq.gz
+wget -q -N -O MCL1-LA.fq.gz https://zenodo.org/record/4249555/files/SRR1552444.fastq.gz
+echo "Download completed."
+```
+
+## Examine FASTQ
+Ok - so we have downloaded a bunch of FASTQ files - what do they look like
+
+```{bash fastqlookbash}
+gunzip -cq data/MCL1-DK.fq.gz | head -n4
+```
+
+Using `gunzip` because it's a compressed text file - we can look at just the first four lines of the FASTQ.
+- The first line is an `@` followed by a read name and optional description.
+- The second line is the actual DNA sequence read (i.e. "A", "C", "G", "T").
+- The third line is generally just a `+`, though in this case they have repeated the read name and description.
+- The fourth line is an ASCII encoding of the "PHRED" quality score - a log_10 score fo the quality score.
+  In this case the front of the read is a lower quality (B=33, @=31) and most of the read higher score (I=40, J=41).
+  A quick [PHRED Lookup Table](https://support.illumina.com/help/BaseSpace_OLH_009008/Content/Source/Informatics/BS/QualityScoreEncoding_swBS.htm) is here from Illumina.
+
+## Plot FASTQ qscore plot?
+
+Let's look at what the overall quality scores are for this FASTQ, using the package "ShortRead"
+
+```{R, installshortread}
+if (!require("pak", quietly = TRUE)) {
+  install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))
+}
+
+# pak::pkg_install("ShortRead")
+BiocManager::install("ShortRead") # In case that didn't work.
+```
+
+
+```{R, fastqload}
+myfq <- ShortRead::readFastq("data/MCL1-DK.fq.gz")
+myfq
+```
+
+Ok - so we have a FASTQ file here with 1000 reads (because we cut it to make it managable) and that's 100 "cycles" of sequencing long, i.e. we have 100 A,C,G,or T in each read.
+
+```{R, fastqlook}
+ShortRead::sread(myfq)
+Biostrings::quality(myfq)
+```
+
+Here's a quick look at the DNA sequences and quality scores, like we did from gunzip in the bash chunk above.
+
+Let's plot the quality scores for just the first 10 reads.
+
+```{R, fqplotq}
+qscores <- as(Biostrings::quality(myfq), "matrix")
+matplot(t(qscores[1:10, ]), type = "l")
+```
+
+Note a couple of things - the beginning quality score is sometimes terrible, and the overall score drops through the read towards the end.  This is frequently solved by "trimming" the reads to get the subset of high quality results we trust.
+
+But what was the overal quality score of the reads?
+
+```{R, perreadQ}
+perread <- ShortRead::alphabetScore(myfq) / BiocGenerics::width(myfq)
+perread.disto <- BiocGenerics::density(perread)
+plot(perread.disto)
+perread.disto
+```
+
+So _overall_ our quality scores are real good!
+
+
+## Align with Hisat2
+
+Ok - so we have the FASTQ.
+Now we want to "align" it against a reference genome.
+We are going to do this with [HiSat2](http://daehwankimlab.github.io/hisat2/)
+which is an aligner that is designed to work with sequencing data,
+specifically RNA sequencing data in this case.
+
+We need to pull down a "reference index" which uses a genome reference (in this case mouse(mm10)) to align against.
+The index is a specific file to the sequence aligner that uses the "raw" genome sequence to generate rapid alignments,
+like the index of a book allows you to look up information more rapidly.
+
+**This file is 3.5 GB.**
+
+```{bash hisatindex}
+mkdir -p data/reference
+cd data/reference
+wget -N https://genome-idx.s3.amazonaws.com/hisat/mm10_genome.tar.gz
+tar xvzf mm10_genome.tar.gz
+```
+
+### Installation
+
+HiSat2 can be installed with `conda`.
+
+# **DO NOT TRY TO FIND OTHER METHODS FOR INSTALLING CONDA.**
+# M1 people: DO NOT INSTALL WITH CONDA.
+
+**Use this [installation guide](https://github.com/gofflab/Quant_mol_neuro_2022/tree/main/modules/module_4/notebooks) only.**
+
+#### For M1 people
+Normal people can run as well. It won't do anything harmful.
+
+```{bash}
+if [[ "$(arch)" == "arm64" ]]; then
+  mkdir -p hisat2
+  cd hisat2
+  wget -N -q https://anaconda.org/bioconda/hisat2/2.2.1/download/osx-64/hisat2-2.2.1-h9722bc1_4.tar.bz2
+  tar -xf hisat2-2.2.1-h9722bc1_4.tar.bz2
+  rm hisat2-2.2.1-h9722bc1_4.tar.bz2
+  echo "M1 rejoice!"
+fi
+```
+
+Then we are going to align all our data, using a for loop to loop through all the FASTQ files we downloaded.
+
+```{bash, hisatalign2}
+export PATH=$PATH:$(pwd)/hisat2/bin  # For M1 people.
+cd data
+for file in *.fq.gz
+do
+  name=${file%.fq.gz}
+  hisat2 -x reference/mm10/genome -U ${name}.fq.gz -S ${name}.sam
+  echo ${name} completed!
+done
+```
+
+As you can see from the output, we get a report on how the reads aligned -
+it tells us that the reads were unpaired (which we knew) and a small percent of the reads don't align at all,
+the vast majority align once, and then a couple align multiple times.
+
+- Reads that don't align we can toss, could be contamination, could just be gaps in assembly.
+  As long as these are low it's not a huge concern.
+- Reads that align multiple times could be in repetitive sequences or genes (since RNA-seq) with high homology.
+  These are more of a concern to lose, but it's a largely unavoidable problem with short reads.
+- The "uniquely" aligned reads are our meat and potatoes.
+
+
+## SAM files
+
+Let's take a quick look at the alignment file
+
+```{bash, samlookbash}
+tail -n5 data/MCL1-DK.sam
+```
+
+I took the last 5 lines in this case because the beginning has a header that we aren't going to get into (with `tail`)
+
+The SAM/BAM file spec is avilable [here](https://samtools.github.io/hts-specs/SAMv1.pdf).
+
+Essentially it's a tab-separated text file with columns as:
+
+- Sequence read name
+- Flags (i.e. multiple alignment, etc)
+- Reference sequence it's aligned to (in this case the chromomsome)
+- Map Quality score (How confident it is of correct alignment on a log scale, 0 is bad, high numbers good)
+- CIGAR string - this specifies differences from the reference, with M being matches (and often mismatches), D deletions and I insertions
+- RNEXT is used to specify the reference sequence (chromosome) for a paired read if there is one
+- PNEXT is used to specify the position of the paired read
+- TLEN is the length of the molecule - again if you have paired reads you want to know the distance between the paired start and end
+- SEQ is the sequence of the read (from the FASTQ)
+- QUAL is the quality of the read (from the FASTQ)
+- Extra Alignment Tags
+
+Let's pull open this SAM in R, first install Rsubread:
+
+```{r, installsubread}
+pak::pkg_install(c("Rsubread", "Rsamtools", "GenomicAlignments"))
+```
+
+```{R, lookatsam}
+# convert from "SAM" or human readable alignment to "BAM" or binary alignment/map.
+getwd()
+Rsamtools::asBam("data/MCL1-DK.sam", overwrite = TRUE)
+myaln <- GenomicAlignments::readGAlignments("data/MCL1-DK.bam")
+myaln
+```
+
+Looking at this, it's the same info,
+but perhaps a bit easier to parse and putting a nice "Ranges" ojbect for the alignments.
+
+Note we have more than 1000 alignments -
+that's because we had those reads with multiple alignments.
+But they'll have the same "qname".
+
+## Gene alignment
+
+Ok - finally let's look at how many of our alignments go to *genes*
+
+```{r, aln2genes}
+mygenes <- Rsubread::featureCounts("data/MCL1-DK.sam",
+  annot.inbuilt = "mm10"
+)
+
+mygenes$stat
+```
+
+So most of our reads are actually assigned to a gene - this is great.
+We can even see what gene and how many counts:
+
+```{R, lookgenes}
+library(dplyr)
+# Filter genes with 0 reads
+genecounts <- tibble(id = rownames(mygenes$counts), counts = as.numeric(mygenes$counts)) %>%
+  filter(counts != 0)
+
+genecounts
+```
+
+Ok - and for example gene ID 19989 is _Rpl7_
+(ribosomal protein 7 - this is a high level expression because it's part of a ribosome!
+Makes sense!
