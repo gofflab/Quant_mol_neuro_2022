@@ -7,15 +7,8 @@ if (!dir.exists(here::here("data"))) {
 }
 
 # saves data only once (not each time you knit a R Markdown)
-if (!file.exists(here::here("data", "spotify_songs.RDS"))) {
-    url_csv <- c(getwd(), "data/spotify_songs.csv")  # "https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv"
-    spotify_songs <- readr::read_csv(url_csv)
-
-    # save the file to RDS objects
-    saveRDS(spotify_songs, file = here("data", "spotify_songs.RDS"))
-}
-
-spotify_songs <- readRDS(here("data", "spotify_songs.RDS"))
+url_csv <- "https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv"
+spotify_songs <- readr::read_csv(url_csv)
 df <- dplyr::as_tibble(spotify_songs)
 ```
 
