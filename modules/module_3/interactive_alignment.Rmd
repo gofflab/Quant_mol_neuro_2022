@@ -27,7 +27,9 @@ hosted at [Zenodo](https://zenodo.org/record/4249555).
 
 ```{r}
 # Set working dir to where this file is.
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+if (rstudioapi::isAvailable()) {
+  setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+}
 ```
 
 First, let's setup a table of the data
