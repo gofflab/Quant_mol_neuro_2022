@@ -69,7 +69,7 @@ jobs:
           path: modules/module_3/data/reference
           key: constant
 
-      - uses: mxschmitt/action-tmate@v3
+      # - uses: mxschmitt/action-tmate@v3
 
       - name: Render
         run: Rscript render.R
