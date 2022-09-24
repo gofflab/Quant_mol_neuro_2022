@@ -3,4 +3,5 @@ Title: Package
 Version: 0.1.0
 Imports:
     rmarkdown,
-    tidyverse
+    tidyverse,
+    BiocManager,
