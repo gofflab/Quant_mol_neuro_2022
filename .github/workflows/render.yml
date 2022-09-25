@@ -13,13 +13,43 @@ on:
     branches: [ "main" ]
   pull_request:
 
+defaults:
+  run:
+    shell: bash -l {0}
 
 jobs:
-  build:
+  jupyter-build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest] #, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: mamba-org/provision-with-micromamba@main
+        with:
+          cache-downloads: true
+          cache-env: true
+          environment-name: qmn
+          environment-file: environment.yml
+
+      - name: Execute and export
+        run: |
+          jupytext --to notebook modules/**/*.py
+          jupyter nbconvert --NbConvertApp.recursive_glob=True --output-dir=modules/jupyter --execute --to html modules/**/*.ipynb
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: modules/jupyter/
+
+  Rmd-build:
+    needs: jupyter-build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest] #, macos-latest]
 
     steps:
       - uses: actions/checkout@v3
@@ -33,8 +63,21 @@ jobs:
       - name: Install R dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
 
-      - name: Render
-        run: Rscript render.R
+      - name: Cache Reference
+        uses: actions/cache@v3
+        with:
+          path: modules/module_3/data/reference
+          key: constant
+
+      # - uses: mxschmitt/action-tmate@v3
+
+#       - name: Render
+#         run: Rscript render.R
+
+      - name: Download jupyter artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: modules/jupyter/
 
       - name: Generate index
         if: matrix.os == 'ubuntu-latest' && github.ref == 'refs/heads/main'
