@@ -71,8 +71,8 @@ jobs:
 
       # - uses: mxschmitt/action-tmate@v3
 
-      - name: Render
-        run: Rscript render.R
+#       - name: Render
+#         run: Rscript render.R
 
       - name: Download jupyter artifacts
         uses: actions/download-artifact@v3
