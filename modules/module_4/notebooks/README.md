@@ -1,6 +1,15 @@
-# To run this week's script.
+# To run this week's script
 
-## Install miniconda
+# CHECK IF YOU ALREADY HAVE CONDA
+
+```sh
+which conda
+```
+
+If something gets returned, you already have conda.
+
+## Install miniconda (ONLY IF YOU DO NOT ALREADY HAVE CONDA)
+
 
 ### Windows user
 
@@ -28,14 +37,13 @@ chmod +x Mambaforge-MacOSX-[arm64 if M1 or x86_64 if Intel].sh
 
 Enter yes for the license and install at the default directory.
 
-**Restart your terminal before proceeding.**
-
 ## Create an environment and install packages
 
 ```sh
-mamba create -y -n qmn python=3.10 jq
+source ~/.bashrc
+conda create -y -n qmn python=3.10 jq
 conda activate qmn
-mamba install -y -c bioconda multiqc fastqc kallisto igv
+conda install -y -c bioconda multiqc fastqc kallisto igv
 pip install ffq gget
 ```
 

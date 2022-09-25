@@ -1,0 +1,12 @@
+name: qmn
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.10
+  - jupyterlab
+  - jupytext
+  - scanpy
+  - seaborn
+  - pandas

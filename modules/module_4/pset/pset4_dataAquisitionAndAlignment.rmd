@@ -1,0 +1,99 @@
+---
+title: "Problemset 4"
+subtitle: "ME.440.825 Quantitative Neurogenomics"
+author: "<Your Name Here>"
+date: ''
+output:
+  html_document:
+    toc: yes
+    toc_level: 3
+    toc_float: yes
+    theme: yeti
+    df_print: paged
+  pdf_document: default
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Part 1: 
+
+
+```{bash}
+
+```
+
+
+
+```{bash}
+
+```
+
+
+
+```{bash}
+
+```
+
+
+
+```{bash}
+
+```
+
+
+
+```{bash}
+ 
+```
+
+
+
+```{bash}
+
+```
+
+
+
+```{bash}
+
+```
+
+
+
+```{bash}
+
+```
+
+
+
+```{bash}
+
+```
+
+## Part 2: 
+
+```{r}
+
+```
+
+
+## PSet Submission
+
+When you have completed the above exercises, please make sure that you have added your name and date into the yaml header at the top and "knit" this document.
+
+![](images/paste-70D156D7.png)
+
+When you are "knitting" please make sure that you set the knit directory to: "Document Directory" to that RStudio knows where to find all of the accessory files associated with this problemset.
+
+![](images/paste-5760B0D6.png)
+
+Once this completes without error, please upload the compiled .html document to the "Problem Set 1" assignment on Canvas.
+
+## Session Information
+```{r}
+sessionInfo()
+```
