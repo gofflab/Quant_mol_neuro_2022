@@ -19,14 +19,20 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Part 1: RNA-seq Pseudoalignment
-
 For this problem set, you will perform pseudoalignment on RNA-seq data from S. Cerevisiae (baker's yeast), which has a conveniently small genome. Yeast has been used as a model to study protein aggregation in neurodegenerative disorders. In Chen et al. 2020 (https://doi.org/10.1038/s41467-020-14525-4), the authors use a yeast model of consitutive amyloid-$\beta$42 (A$\beta$42), which is more prone to aggregation than the more common form, A$\beta$40. They find that flavin mononucleotide (FMN) supplementation reduces A$\beta$ toxicity, and use RNA-seq to investigate whether FMN supplementation causes transcriptional changes. 
 
 ### Task 1
-Download FASTQ files containing raw sequencing data from the paper. Also download the corresponding metadata.
+Ensure that you have installed all of the necessary tools in your conda environment:
+``` {bash}
+#conda install -c bioconda fastqc kallisto igv
+#conda install jq
+#pip install ffq gget multiqc
+```
+
+### Task 2
+Download FASTQ files containing raw sequencing data from the paper. Also download the corresponding metadata and write it to a .tsv file.
 GEO series number: GSE128905.
-For time's sake, just download the files corresponding to 4 samples (1 per condition):
+For time's sake, just download the files corresponding to 4 out of the 48 total samples (1 per condition):
 GSM3688093: Control
 GSM3688105: Control + FMN
 GSM3688117: A$\beta$42
@@ -40,10 +46,9 @@ cd data/raw/${GEO}
 
 # Get .json file with metadata for all samples
 # This operation sometimes fails with errors because of rate limiting at NCBI.  If it fails, just try again.
-#ffq $GEO > $GEO.json
+ffq $GEO > $GEO.json
 
-# Use jq to extract the ftp links for the fastq files from the .json and pass to wget to download (4 at a time)
-# Note: this will download all fastq files, and will be approximately 60 Gb (24 * 2.5Gb) of raw data. Please be sure you have sufficient disk space available.
+# Use jq to extract the ftp links for the fastq files for your desired samples from the .json and pass to wget to download (4 at a time)
 jq -r '.[].geo_samples | .["GSM3688093","GSM3688105","GSM3688117","GSM3688129"].samples | .[].experiments | .[].runs | .[].files.ftp | .[].url ' $GEO.json | xargs -n 1 -P 4 wget -c
 
 # Use jq to extract the metadata for each sample and write to a .tsv file
@@ -51,67 +56,59 @@ jq -r '.[].geo_samples | .["GSM3688093","GSM3688105","GSM3688117","GSM3688129"].
 
 ```
 
-### Task 2
-How many reads are in each of the first two fastq files in your directory? Print the names of the files along with the numbers of reads. Do the two files have the same number of reads? Why or why not?
-```{bash numReads}
+### Question 2.1
+In your raw data directory, you should have 8 FASTQ files, where four filenames end with "_1.fastq.gz" and the other four end with "_2.fastq.gz. Why are there two files for each SRR ID number?
+
+
+### Task 3
+Download and expand the pre-built S. Cerevisiae kallisto index, which you will use for alignment.
+```{bash}
 GEO="GSE128905"
-cd data/raw/${GEO}
-echo $(ls *.fastq.gz | head -n 1) 
-numLines=$(gunzip -c $(ls *.fastq.gz | head -n 1) | wc -l)
-echo $(($numLines/4)) reads
-echo $(ls *.fastq.gz | head -n 2 | tail -n 1)
-numLines=$(gunzip -c $(ls *.fastq.gz | head -n 2 | tail -n 1) | wc -l)
-echo $(($numLines/4)) reads
-```
-They have the same number of reads because these two fastq files contain paired-end reads.
-
-###Task 3
-
-```{bash qc}
-echo $(ls *.fastq.gz) | xargs -n 1 -P 4 fastqc
+mkdir -p metadata/$GEO/kallisto_index
+cd metadata/$GEO/kallisto_index
+IDX_URL="https://github.com/pachterlab/kallisto-transcriptome-indices/releases/download/ensembl-96/saccharomyces_cerevisiae.tar.gz"
+wget -c $IDX_URL
+tar -xzvf saccharomyces_cerevisiae.tar.gz # Expands into a new directory called saccharomyces_cerevisiae
 ```
 
+### Question 3.1 
+What are some advantages to using Kallisto here over other alignment methods?
 
+### Question 3.2
+This dataset includes RNA-seq data from yeast where A$\beta$42 has been introduced via transformation. Given the pre-built index that you have downloaded, will you be able to map reads to the A$\beta$42 sequence? Why or why not?
 
+### Question 3.3
+This is an RNA-sequencing data set. What if you had an ATAC-seq dataset? Which aligner might you choose and why? 
+
+### Task 4
+Run kallisto pseudoalignments on your 4 samples. You will not need to visualize your mapping in IGV (so choose your run options accordingly). 
 ```{bash}
+# Build dir structure for results
+mkdir -p results/$GEO/kallisto
+cd results/$GEO/kallisto
 
+# Run kallisto pseudoalignments
+for fastq in $(ls ../../../data/raw/$GEO/*1.fastq.gz); 
+    do
+        fastq_pair=../../../data/raw/$GEO/$(basename $fastq 1.fastq.gz)2.fastq.gz 
+        SAMPLE_NAME=$(basename $fastq _1.fastq.gz);
+        echo "Performing kalliso pseudoalignment for $SAMPLE_NAME";
+        mkdir $SAMPLE_NAME
+        time kallisto quant -i ../../../metadata/$GEO/kallisto_index/saccharomyces_cerevisiae/transcriptome.idx -o $SAMPLE_NAME $fastq $fastq_pair 2>$SAMPLE_NAME/$SAMPLE_NAME.log;
+    done 
 ```
 
+### Question 4.1
+Question about what the arguments correspond to for Kallisto and Bowtie calls
 
-
+### Task 5
+Use multiqc to generate a project QC report in your working directory. You will use this report to answer the questions that follow.
 ```{bash}
- 
+multiqc .
 ```
 
-
-
-```{bash}
-
-```
-
-
-
-```{bash}
-
-```
-
-
-
-```{bash}
-
-```
-
-
-
-```{bash}
-
-```
-
-## Part 2: 
-
-```{r}
-
-```
+### Question 5.1
+Questions about the QC documents.
 
 
 ## PSet Submission
