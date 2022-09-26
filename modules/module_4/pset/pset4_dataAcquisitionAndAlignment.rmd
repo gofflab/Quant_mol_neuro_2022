@@ -1,0 +1,185 @@
+---
+title: "Problemset 4"
+subtitle: "ME.440.825 Quantitative Neurogenomics"
+author: "<Your Name Here>"
+date: ''
+output:
+  html_document:
+    toc: yes
+    toc_level: 3
+    toc_float: yes
+    theme: yeti
+    df_print: paged
+  pdf_document: default
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For this problem set, you will perform pre-processing of the data by pseudoalignment on RNA-seq data from S. cerevisiae (baker's yeast),
+which has a conveniently small genome.
+Yeast has been used as a model to study protein aggregation in neurodegenerative disorders.
+In Chen et al. 2020 (https://doi.org/10.1038/s41467-020-14525-4),
+the authors use a yeast model of consitutive amyloid-$\beta$42 (A$\beta$42),
+which is more prone to aggregation than the more common form, A$\beta$40.
+They found that flavin mononucleotide (FMN) supplementation reduced A$\beta$ toxicity,
+and used RNA-seq to investigate whether FMN supplementation caused transcriptional changes.
+
+
+### If you get stuck, your _friendly_ TAs are here to help!
+
+## Task 1
+
+## Ensure that you have installed all of the necessary tools in your conda environment. Use this README (https://github.com/gofflab/Quant_mol_neuro_2022/tree/main/modules/module_4/notebooks)
+
+## Task 2
+Download FASTQ files with their metadata from the paper using the code chunk below.
+GEO series number: GSE128905.
+
+**Check out https://github.com/gofflab/Quant_mol_neuro_2022/blob/main/modules/module_4/notebooks/RNA-Seq_pseudoalignment.sh as a template.**
+
+For time's sake, just download the files corresponding to 4 out of the 48 total samples (1 per condition):
+GSM3688093: Control
+GSM3688105: Control + FMN
+GSM3688117: A$\beta$42
+GSM3688129: A$\beta$42 + FMN
+
+```{bash getData}
+conda activate qmn
+
+# Create accession variable and directory structure
+GEOS=("GSM3688093" "GSM3688105" "GSM3688117" "GSM3688129")
+GEO="GSE128905"
+mkdir -p data/raw/${GEO}
+cd data/raw/${GEO}
+
+for g in ${GEOS[@]}; do
+  # Get .json file with metadata for all samples
+  # This operation sometimes fails with errors because of rate limiting at NCBI.  If it fails, just try again.
+  ffq $g > $g.json
+
+  # Use jq to extract the ftp links for the fastq files for your desired samples from the .json and pass to wget to download (4 at a time)
+  jq -r ' .[].samples | .[].experiments | .[].runs | .[].files.ftp | .[].url ' $g.json | xargs -n 1 -P 4 wget -c
+
+# Use jq to extract the metadata for each sample and write to a .tsv file
+  jq -r ' .[].samples | .[] | [.accession, (.experiments | .[].runs | .[] | .files.ftp | .[] | .[]), (.attributes | .[])] | @tsv' $g.json > $g.tsv
+done
+
+```
+
+### Question 2.1
+What does the "|" symbol do in the above script? Use the words `STDOUT` and `STDIN` in your answer.
+
+### Question 2.2
+What are the differences between data ID starting with 'GSM' and 'SRX' ?
+
+### Question 2.3
+In your raw data directory, you should have 8 FASTQ files, where four filenames end with "_1.fastq.gz" and the other four end with "_2.fastq.gz.
+Why are there two files for each SRR ID number?
+
+### Question 2.4
+Try uncompressing one `*.fq.gz` file you've just downloaded (`tar xvzf`).
+What is on the first line of the file (i.e. the description of what that line means, not the actual texts)?
+(the command `head -5` can be used to look at the first 5 lines of a file)
+
+
+## Task 3
+
+Run `fastQC` on all the downloaded samples.
+
+### Question 3.1
+Check out the report of `SRR8788763_1.fastq.gz`.
+What is the percent of sequences remaining after deduplication?
+
+### Question 3.2-3.3
+What is actually duplicated? If the data is not deduplicated, how might it affect our analysis?
+
+
+## Task 4
+For alignment, download and expand the pre-built S. cerevisiae kallisto index
+The links can be found [here](https://github.com/pachterlab/kallisto-transcriptome-indices/releases).
+
+Use the template as a guide.
+
+### Question 4.1
+What is this an index for?
+
+### Question 4.2
+Why do we align in the first place?
+
+### Question 4.3
+What information does an aligner take in and what does it send to us?
+
+
+## Task 5
+Run kallisto pseudoalignments on your 4 samples. You will not need to visualize your mapping in IGV.
+
+```{bash}
+conda activate qmn
+currDir=$(pwd)
+# Build dir structure for results
+mkdir -p $currDir/results/$GEO/kallisto
+cd $currDir/results/$GEO/kallisto
+
+# Run kallisto pseudoalignments
+for fastq in $(ls $currDir/data/raw/$GEO/*1.fastq.gz);
+    do
+        fastq_pair=$currDir/data/raw/$GEO/$(basename $fastq 1.fastq.gz)2.fastq.gz
+        SAMPLE_NAME=$(basename $fastq _1.fastq.gz);
+        echo "Performing kallisto pseudoalignment for $SAMPLE_NAME";
+        mkdir $SAMPLE_NAME
+        time kallisto quant [FILL IN THE BLANK]
+done
+```
+
+### Question 5.1
+Fill in the kallisto argument and try to explain each of them.
+
+### Question 5.2
+What are some advantages to using the pseudoaligner kallisto over other non-pseudo alignment methods?
+
+### Question 5.3
+This dataset includes yeast where A$\beta$42 has been introduced via transformation.
+Would it be possible to quantify the amount of A$\beta$42 in these yeasts? Why or why not?
+
+### Question 5.4-5.6
+What is ATAC-Seq and what does it aim to measure?
+Experimentally, what are the similarities and differences between an RNA-Seq and ATAC-Seq?
+Can we use kallisto for an ATAC-Seq dataset? Which aligner might you choose instead and why?
+
+## Task 6
+Use `multiqc` to generate a project QC report in your working directory.
+
+**Make sure that your `multiqc` report includes data from both `kallisto` and `fastqc`.**
+
+### Question 6.1
+What does `multiqc` do? Where does it get its information,
+specifically what kind of files is it looking for?
+
+### Question 6.2
+How many reads are pseudoaligned in sample `SRR8788727_1`?
+
+### Question 6.3
+In broad terms and using the results of our alignment, what would you do next to check if FMN supplementation caused transcriptional changes?
+
+
+## PSet Submission
+
+When you have completed the above exercises, please make sure that you have added your name and date into the yaml header at the top and "knit" this document.
+
+![](images/paste-70D156D7.png)
+
+When you are "knitting" please make sure that you set the knit directory to: "Document Directory" to that RStudio knows where to find all of the accessory files associated with this problemset.
+
+![](images/paste-5760B0D6.png)
+
+Once this completes without error, please upload the compiled .html document to the "Problem Set 1" assignment on Canvas.
+
+## Session Information
+
+```{r}
+sessionInfo()
+```
