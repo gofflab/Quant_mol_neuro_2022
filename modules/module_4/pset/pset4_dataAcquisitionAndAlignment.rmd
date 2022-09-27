@@ -74,48 +74,51 @@ done
 What does the "|" symbol do in the above script? Use the words `STDOUT` and `STDIN` in your answer.
 
 ### Question 2.2
-What are the differences between data ID starting with 'GSM' and 'SRX' ?
+Describe the differences between data ID starting with 'GSM' and 'SRX' ?
 
 ### Question 2.3
 In your raw data directory, you should have 8 FASTQ files, where four filenames end with "_1.fastq.gz" and the other four end with "_2.fastq.gz.
 Why are there two files for each SRR ID number?
 
 ### Question 2.4
-Try uncompressing one `*.fq.gz` file you've just downloaded (`tar xvzf`).
-What is on the first line of the file (i.e. the description of what that line means, not the actual texts)?
+Try uncompressing one `*.fq.gz` file you've just downloaded (`tar -xvzf <filename>`).
+What information is on the first line of the file (i.e. Describe what that line represents, not the actual texts)?
 (the command `head -5` can be used to look at the first 5 lines of a file)
 
 
 ## Task 3
 
-Run `fastQC` on all the downloaded samples.
+Run `fastQC` on all the downloaded sample fastq files (`fastqc *.fastq.gz`).
 
 ### Question 3.1
-Check out the report of `SRR8788763_1.fastq.gz`.
-What is the percent of sequences remaining after deduplication?
+Open the report for the fastq file `SRR8788763_1.fastq.gz`. Two of the QC parameters failed for this run. Which two?
+
 
 ### Question 3.2-3.3
-What is actually duplicated? If the data is not deduplicated, how might it affect our analysis?
+What is the percent of sequences remaining after deduplication?
 
+What might be a likely cause of read duplication? 
+
+If the data are not deduplicated, how might this affect our analysis?
 
 ## Task 4
-For alignment, download and expand the pre-built S. cerevisiae kallisto index
-The links can be found [here](https://github.com/pachterlab/kallisto-transcriptome-indices/releases).
+For pseudoalignment, download and expand the pre-built S. cerevisiae kallisto index corresponding to Ensembl v96. The links can be found [here](https://github.com/pachterlab/kallisto-transcriptome-indices/releases).
 
-Use the template as a guide.
+Once you've expanded the downloaded archive (`tar -zxvf <downloaded file>`), there should be a new subfolder containing four files. Run `kallisto inspect` on the kallisto index file (`transcriptome.idx`) to generate a summary report about the reference index. Use this information to answer the questions below.
 
 ### Question 4.1
-What is this an index for?
+What reference sequence/information was used to generate this kallisto index?
 
 ### Question 4.2
-Why do we align in the first place?
+What is the k-mer length used to make this index?
 
 ### Question 4.3
-What information does an aligner take in and what does it send to us?
-
+How many total k-mers are in the index?
 
 ## Task 5
-Run kallisto pseudoalignments on your 4 samples. You will not need to visualize your mapping in IGV.
+Run kallisto pseudoalignments on your 4 samples. You will not need to visualize your mapping in IGV. Complete the script below to perform your pseudoalignment using the paired end reads you downloaded for each sample. You can use the provided scripts for this week to guide you, and `kallisto quant --help` for information on available arguments. [Getting Started](https://pachterlab.github.io/kallisto/starting) instructions for kallisto and the [kallisto manual](https://pachterlab.github.io/kallisto/manual) are available as well.
+
+_Note: Remember these are paired-end reads and both reads will need to be passed to kallisto together_
 
 ```{bash}
 conda activate qmn
@@ -131,24 +134,19 @@ for fastq in $(ls $currDir/data/raw/$GEO/*1.fastq.gz);
         SAMPLE_NAME=$(basename $fastq _1.fastq.gz);
         echo "Performing kallisto pseudoalignment for $SAMPLE_NAME";
         mkdir $SAMPLE_NAME
-        time kallisto quant [FILL IN THE BLANK]
+        kallisto quant [FILL IN THE BLANK] 2> $SAMPLE_NAME.log
 done
 ```
 
 ### Question 5.1
-Fill in the kallisto argument and try to explain each of them.
+Fill in the kallisto arguments and explain what each is doing.
 
 ### Question 5.2
-What are some advantages to using the pseudoaligner kallisto over other non-pseudo alignment methods?
+What are some advantages to using the pseudoaligner kallisto over other non-pseudoalignment methods?
 
 ### Question 5.3
 This dataset includes yeast where A$\beta$42 has been introduced via transformation.
-Would it be possible to quantify the amount of A$\beta$42 in these yeasts? Why or why not?
-
-### Question 5.4-5.6
-What is ATAC-Seq and what does it aim to measure?
-Experimentally, what are the similarities and differences between an RNA-Seq and ATAC-Seq?
-Can we use kallisto for an ATAC-Seq dataset? Which aligner might you choose instead and why?
+Would it be possible to quantify the amount of A$\beta$42 in these yeasts with the provided reference index? Why or why not?
 
 ## Task 6
 Use `multiqc` to generate a project QC report in your working directory.
@@ -156,18 +154,12 @@ Use `multiqc` to generate a project QC report in your working directory.
 **Make sure that your `multiqc` report includes data from both `kallisto` and `fastqc`.**
 
 ### Question 6.1
-What does `multiqc` do? Where does it get its information,
-specifically what kind of files is it looking for?
+What does `multiqc` do?
 
 ### Question 6.2
-How many reads are pseudoaligned in sample `SRR8788727_1`?
-
-### Question 6.3
-In broad terms and using the results of our alignment, what would you do next to check if FMN supplementation caused transcriptional changes?
-
+How many reads are pseudoaligned from sample `SRR8788727_1`?
 
 ## PSet Submission
-
 When you have completed the above exercises, please make sure that you have added your name and date into the yaml header at the top and "knit" this document.
 
 ![](images/paste-70D156D7.png)
