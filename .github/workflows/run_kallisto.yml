@@ -26,16 +26,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: mamba-org/provision-with-micromamba@main
+      - uses: conda-incubator/setup-miniconda@v2
         with:
-          cache-downloads: true
-          cache-env: true
-          environment-name: qmn
-          environment-file: environment.yml
+          miniconda-version: "latest"
 
       - name: Install dependencies
         run: |
-          micromamba install -y -c bioconda multiqc fastqc kallisto igv
+          conda install -y -c bioconda multiqc fastqc kallisto igv
           pip install ffq gget
 
       - name: Run
