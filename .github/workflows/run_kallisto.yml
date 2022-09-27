@@ -35,7 +35,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          micromamba install -y fq
           micromamba install -y -c bioconda multiqc fastqc kallisto igv
           pip install ffq gget
 
