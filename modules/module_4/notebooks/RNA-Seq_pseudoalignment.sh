@@ -80,20 +80,23 @@ mkdir -p $currDir/results/$GEO/kallisto
 cd $currDir/results/$GEO/kallisto
 
 # Run kallisto pseudoalignments
-# Note: here we are running kallisto with the --genomebam and --gtf options to generate a alignment (.bam) file from the pseudoaligned reads.
+# Note: here we are not running kallisto with the --genomebam and --gtf options to generate a alignment (.bam) file from the pseudoaligned reads.
 # This is actually the longest part of the pseudoalignment process, and will take a while to complete.
-# We are doing this here to demonstrate the use of these options, and to produce a mapping of the reads that can be visualized in IGV.
+# These are the options you need to produce a mapping of the reads that can be visualized in IGV.
+# --gtf $currDir/metadata/$GEO/kallisto_index/mus_musculus/Mus_musculus.GRCm38.96.gtf \
+# --genomebam \
 # However, this is not necessary for the downstream analysis, and can generally be omitted to save time and disk space.
+
 for fastq in $(ls $currDir/data/raw/$GEO/*.fastq.gz); do
     SAMPLE_NAME=$(basename $fastq .fastq.gz)
-    echo "Performing kalliso pseudoalignment for $SAMPLE_NAME"
+    echo "Performing kallisto pseudoalignment for $SAMPLE_NAME."
     time kallisto quant \
         -i $currDir/metadata/$GEO/kallisto_index/mus_musculus/transcriptome.idx \
         -o $SAMPLE_NAME \
         --single -l 200 -s 20 \
-        --genomebam \
+        --threads=8 \
         $fastq \
-        2>$SAMPLE_NAME/$SAMPLE_NAME.log # Necessary for multiQC!
+        2> >(tee $SAMPLE_NAME.log) # Necessary for multiQC!
 done
 
 # Run MultiQC to generate a project QC report

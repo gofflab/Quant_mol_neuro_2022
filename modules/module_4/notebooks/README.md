@@ -37,6 +37,12 @@ chmod +x Mambaforge-MacOSX-[arm64 if M1 or x86_64 if Intel].sh
 
 Enter yes for the license and install at the default directory.
 
+For Mac users, also install `homebrew`, a Mac package manager.
+```sh
+xcode-select --install
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
 ## Create an environment and install packages
 
 ```sh
@@ -47,6 +53,18 @@ conda install -y -c bioconda multiqc fastqc kallisto igv
 pip install ffq gget
 ```
 
+### M1 users
+
+`kallisto` won't install. Instead, use `brew` that we installed earlier to install kallisto.
+Also install `samtools`, this is something we'll need.
+```sh
+brew install kallisto samtools
+```
+
 > mamba is the same as conda but much faster.
 
-**You need to run `conda activate qmn` at the start of every terminal session to use the installed packages.**
+**You need to run `conda activate qmn` at the start of every terminal session to use the installed conda packages.**
+
+
+# FAQs
+- M
