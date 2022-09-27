@@ -5,9 +5,11 @@ on:
     branches: [ "main" ]
     paths:
       - modules/module_4/notebooks/RNA-Seq_pseudoalignment.sh
+      - .github/workflows/run_kallisto.yml
   pull_request:
     paths:
       - modules/module_4/notebooks/RNA-Seq_pseudoalignment.sh
+      - .github/workflows/run_kallisto.yml
   workflow_dispatch:
 
 defaults:
@@ -33,8 +35,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          mamba install -y fq
-          mamba install -y -c bioconda multiqc fastqc kallisto igv
+          micromamba install -y fq
+          micromamba install -y -c bioconda multiqc fastqc kallisto igv
           pip install ffq gget
 
       - name: Run
