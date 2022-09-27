@@ -1,0 +1,43 @@
+name: Kallisto
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - modules/module_4/notebooks/RNA-Seq_pseudoalignment.sh
+  pull_request:
+    paths:
+      - modules/module_4/notebooks/RNA-Seq_pseudoalignment.sh
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  jupyter-build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest] #, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: mamba-org/provision-with-micromamba@main
+        with:
+          cache-downloads: true
+          cache-env: true
+          environment-name: qmn
+          environment-file: environment.yml
+
+      - name: Install dependencies
+        run: |
+          mamba install -y fq
+          mamba install -y -c bioconda multiqc fastqc kallisto igv
+          pip install ffq gget
+
+      - name: Run
+        run: |
+          cd modules/module_4/notebooks
+          chmod +x RNA-Seq_pseudoalignment.sh
+          ./RNA-Seq_pseudoalignment.sh
