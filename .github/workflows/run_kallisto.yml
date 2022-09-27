@@ -25,6 +25,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
+      - name: Condition Ubuntu
+        run: sudo apt update && sudo apt upgrade
 
       - uses: conda-incubator/setup-miniconda@v2
         with:
