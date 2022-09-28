@@ -65,4 +65,6 @@ brew install kallisto samtools
 
 
 # FAQs
-- M
+- `kallisto` does not install.
+  - If you're a Windows user, please use WSL 2.
+  - If you're a Mac user, use Homebrew. Installation guide above.
