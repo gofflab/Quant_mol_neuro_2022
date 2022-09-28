@@ -7,9 +7,10 @@ which conda
 ```
 
 If something gets returned, you already have conda.
+### Windows user: conda must be installed in WSL 2.
 
-## Install miniconda (ONLY IF YOU DO NOT ALREADY HAVE CONDA)
 
+## Install miniconda (if you do not already have conda)
 
 ### Windows user [use WSL 2]
 Download [this](https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh).
@@ -65,4 +66,6 @@ brew install kallisto samtools
 
 
 # FAQs
-- M
+- `kallisto` does not install.
+  - If you're a Windows user, please use WSL 2.
+  - If you're a Mac user, use Homebrew. Installation guide above.
