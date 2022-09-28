@@ -11,12 +11,10 @@ If something gets returned, you already have conda.
 ## Install miniconda (ONLY IF YOU DO NOT ALREADY HAVE CONDA)
 
 
-### Windows user
-
+### Windows user [use WSL 2]
 Download [this](https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh).
 In terminal,
 ```sh
-# **Use WSL 2**
 # If possible, try using /home/[YOUR USERNAME], the internal WSL drive, as the directory for scripts.
 # There is significant disk read/write penalty when using anything in /mnt/c/.
 # You can access your WSL drive from Windows Explorer at \\wsl$.
