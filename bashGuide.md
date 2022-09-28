@@ -37,13 +37,13 @@ https://www.rozmichelle.com/pipes-forks-dups/
   Using the argument -n 1, `head` spits out through STDOUT only the first line it received.
 
 Go here: cd
-	- Absolute paths always start with `/`.
-	- Your home directory (think of it as desktop) is at `/home/$USERNAME`
-	- Relative paths (not started with `/`) are related to where you are, use `pwd`.
-	- `.` (the dot) means current directory.
-	- `..` (two dots) mean the parent directory (directory above).
-	- To go to a sibling folder, you can do `cd ../folder/`
-	- Directory paths can end with `/` but not files.
+- Absolute paths always start with `/`.
+- Your home directory (think of it as desktop) is at `/home/$USERNAME`
+- Relative paths (not started with `/`) are related to where you are, use `pwd`.
+- `.` (the dot) means current directory.
+- `..` (two dots) mean the parent directory (directory above).
+- To go to a sibling folder, you can do `cd ../folder/`
+- Directory paths can end with `/` but not files.
 
 I don't want to type this again and again. Use variables. = defines a variable.
 You don't need to quote the thing you're setting if you're not using spaces or some weird characters.
