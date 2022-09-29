@@ -10,6 +10,29 @@ If something gets returned, you already have conda.
 ### Windows user: conda must be installed in WSL 2.
 
 
+## If you have conda: Create an environment and install packages
+
+```sh
+source ~/.bashrc
+conda create -y -n qmn -c conda-forge -c bioconda  python=3.10 multiqc fastqc kallisto igv jq
+conda activate qmn
+pip install ffq gget
+```
+
+### M1 users
+
+`kallisto` won't install. Instead, use `brew` that we installed earlier to install kallisto.
+Also install `samtools`, this is something we'll need.
+```sh
+brew install kallisto samtools
+```
+
+> mamba is the same as conda but much faster.
+
+**You need to run `conda activate qmn` at the start of every terminal session to use the installed conda packages.**
+
+
+
 ## Install miniconda (if you do not already have conda)
 
 ### Windows user [use WSL 2]
@@ -41,28 +64,6 @@ For Mac users, also install `homebrew`, a Mac package manager.
 xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
-
-## Create an environment and install packages
-
-```sh
-source ~/.bashrc
-conda create -y -n qmn -c conda-forge -c bioconda  python=3.10 multiqc fastqc kallisto igv jq
-conda activate qmn
-pip install ffq gget
-```
-
-### M1 users
-
-`kallisto` won't install. Instead, use `brew` that we installed earlier to install kallisto.
-Also install `samtools`, this is something we'll need.
-```sh
-brew install kallisto samtools
-```
-
-> mamba is the same as conda but much faster.
-
-**You need to run `conda activate qmn` at the start of every terminal session to use the installed conda packages.**
-
 
 # FAQs
 - `kallisto` does not install.
