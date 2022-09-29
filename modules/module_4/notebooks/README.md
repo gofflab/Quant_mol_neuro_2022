@@ -46,9 +46,8 @@ xcode-select --install
 
 ```sh
 source ~/.bashrc
-conda create -y -n qmn -c conda-forge python=3.10
+conda create -y -n qmn -c conda-forge -c bioconda  python=3.10 multiqc fastqc kallisto igv jq
 conda activate qmn
-conda install -y -c bioconda -c conda-forge multiqc fastqc kallisto igv
 pip install ffq gget
 ```
 
