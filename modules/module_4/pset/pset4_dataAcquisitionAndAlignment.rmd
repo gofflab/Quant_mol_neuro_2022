@@ -62,7 +62,7 @@ for g in ${GEOS[@]}; do
   ffq $g > $g.json
 
   # Use jq to extract the ftp links for the fastq files for your desired samples from the .json and pass to wget to download (4 at a time)
-  jq -r ' .[].samples | .[].experiments | .[].runs | .[].files.ftp | .[].url ' $g.json | xargs -n 1 -P 4 wget -c
+  jq -r ' .[].samples | .[].experiments | .[].runs | .[].files.ftp | .[].url ' $g.json | xargs -n 1 -P 4 wget -c -q
 
 # Use jq to extract the metadata for each sample and write to a .tsv file
   jq -r ' .[].samples | .[] | [.accession, (.experiments | .[].runs | .[] | .files.ftp | .[] | .[]), (.attributes | .[])] | @tsv' $g.json > $g.tsv
