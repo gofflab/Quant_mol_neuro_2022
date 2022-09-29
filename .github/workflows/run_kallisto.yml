@@ -36,8 +36,13 @@ jobs:
           conda install -y -c bioconda  -c conda-forge multiqc fastqc kallisto igv
           pip install ffq gget
 
-      - name: Run
+      - name: Run shell version
         run: |
           cd modules/module_4/notebooks
           chmod +x RNA-Seq_pseudoalignment.sh
           ./RNA-Seq_pseudoalignment.sh
+
+      - name: Run Python version
+        run: |
+          cd modules/module_4/notebooks
+          python RNA-Seq_pseudoalignment.py
