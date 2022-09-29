@@ -47,7 +47,7 @@ GSM3688105: Control + FMN
 GSM3688117: A$\beta$42
 GSM3688129: A$\beta$42 + FMN
 
-```{bash getData}
+```{bash engine.opts='-l'}
 conda activate qmn
 
 # Create accession variable and directory structure
@@ -97,7 +97,7 @@ Open the report for the fastq file `SRR8788763_1.fastq.gz`. Two of the QC parame
 ### Question 3.2-3.3
 What is the percent of sequences remaining after deduplication?
 
-What might be a likely cause of read duplication? 
+What might be a likely cause of read duplication?
 
 If the data are not deduplicated, how might this affect our analysis?
 
@@ -120,7 +120,7 @@ Run kallisto pseudoalignments on your 4 samples. You will not need to visualize 
 
 _Note: Remember these are paired-end reads and both reads will need to be passed to kallisto together_
 
-```{bash}
+```{bash engine.opts='-l'}
 conda activate qmn
 currDir=$(pwd)
 # Build dir structure for results
