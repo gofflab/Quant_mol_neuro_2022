@@ -17,7 +17,7 @@ dependencies:
     - ffq
     - gget
 # R stuffs
-  - r-base
+  - r-base=4.1
   - r-formatr
   - r-ggridges
   - r-here
