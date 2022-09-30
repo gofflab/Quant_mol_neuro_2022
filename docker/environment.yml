@@ -12,6 +12,7 @@ dependencies:
   - multiqc
   - pip
   - samtools
+  - radian
   - pip:
     - ffq
     - gget
