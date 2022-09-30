@@ -1,0 +1,17 @@
+name: qmn
+
+channels:
+  - conda-forge
+  - bioconda
+
+dependencies:
+  - python=3.10
+  - fastqc
+  - jq
+  - kallisto
+  - multiqc
+  - pip
+  - samtools
+  - pip:
+    - ffq
+    - gget
