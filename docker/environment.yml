@@ -15,3 +15,14 @@ dependencies:
   - pip:
     - ffq
     - gget
+# R stuffs
+  - r-formatr
+  - r-ggridges
+  - r-here
+  - r-lintr
+  - r-markdown
+  - r-tidyverse
+  - bioconductor-scater
+  - bioconductor-scrnaseq
+  - bioconductor-scran
+  - bioconductor-bluster
