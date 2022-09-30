@@ -19,12 +19,13 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-For this problem set, you will perform pre-processing of the data by pseudoalignment on RNA-seq data from S. cerevisiae (baker's yeast),
+For this problem set, you will perform pre-processing of the data by
+pseudoalignment on RNA-seq data from S. cerevisiae (baker's yeast),
 which has a conveniently small genome.
 Yeast has been used as a model to study protein aggregation in neurodegenerative disorders.
-In Chen et al. 2020 (https://doi.org/10.1038/s41467-020-14525-4),
-the authors use a yeast model of consitutive amyloid-$\beta$42 (A$\beta$42),
-which is more prone to aggregation than the more common form, A$\beta$40.
+In Chen et al. 2020 (<https://doi.org/10.1038/s41467-020-14525-4>),
+the authors use a yeast model of constitutive amyloid-$\beta$ 42 (A$\beta$ 42),
+which is more prone to aggregation than the more common form, A$\beta40$.
 They found that flavin mononucleotide (FMN) supplementation reduced A$\beta$ toxicity,
 and used RNA-seq to investigate whether FMN supplementation caused transcriptional changes.
 
