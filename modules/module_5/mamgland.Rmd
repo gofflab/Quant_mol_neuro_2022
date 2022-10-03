@@ -1,0 +1,80 @@
+```{r}
+library(edgeR)
+load("mamgland.rda")
+mamgland
+dge <- edgeR::SE2DGEList(mamgland[, mamgland$group %in% c("Basal", "LP")])
+```
+
+Here, we perform multidimensional scaling,
+an embedding technique that takes in the distances between samples
+and tries to find a low-dimensional representation of the data
+that preserves the distances between samples.
+
+The `plotMDS` function plots the first two dimensions of the embedding.
+
+```{r}
+colData(mamgland)
+head(rowData(mamgland))
+# Plot samples on a two-dimensional scatterplot so that
+# distances on the plot approximate the typical log2 fold changes
+# between the samples.
+limma::plotMDS(dge, label = dge$samples$group)
+```
+
+```{r}
+# Determine which genes have sufficiently large counts to be retained in a statistical analysis.
+keep.exprs <- edgeR::filterByExpr(dge, group = dge$samples$group)
+sum(keep.exprs)
+
+dge <- dge[keep.exprs, , keep.lib.sizes = FALSE]
+
+# Calculate scaling factors to convert raw library sizes into effective library sizes.
+dge <- edgeR::calcNormFactors(dge, method = "TMM")
+```
+
+```{r}
+# model.matrix creates a design (or model) matrix,
+# e.g., by expanding factors to a set of dummy variables
+# (depending on the contrasts) and expanding interactions similarly.
+design <- model.matrix(~group, data = dge$samples)
+
+# gsub performs string replacement of all matches.
+colnames(design) <- gsub("group", "", colnames(design))
+design
+```
+
+```{r}
+# Transform count data to log2-counts per million (logCPM),
+# estimate the mean-variance relationship
+# and use this to compute appropriate observation-level weights.
+# The data are then ready for linear modelling.
+v <- limma::voom(dge, design, plot = TRUE)
+```
+
+```{r}
+# Fit linear model for each gene given a series of arrays
+vfit <- limma::lmFit(v, design)
+
+# Given a linear model fit from lmFit,
+# compute moderated t-statistics, moderated F-statistic,
+# and log-odds of differential expression by empirical Bayes moderation
+# of the standard errors towards a global value.
+vfit <- limma::eBayes(vfit)
+plotSA(vfit)
+```
+
+```{r}
+limma::topTable(vfit, n = 5)
+
+# Identify which genes are significantly differentially expressed
+# for each contrast from a fit object containing p-values and test statistics.
+dt <- limma::decideTests(vfit)
+
+# Creates a mean-difference plot (aka MA plot)
+# with color coding for highlighted points.
+limma::plotMD(vfit, status = dt[, 2])
+```
+
+```{r}
+hist(topTable(vfit, n = Inf)$P.Value)
+```
