@@ -14603,8 +14603,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>
 
-<span class="n">here</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">here</span> <span class="o">/</span> <span class="s2">"data"</span>
+<span class="n">here</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">here</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span>
 <span class="n">data</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 
@@ -14622,8 +14622,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># This is a dataframe (like tibble).</span>
-<span class="n">spotify_songs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data</span> <span class="o">/</span> <span class="s2">"spotify_songs.csv"</span><span class="p">)</span>
-<span class="n">spotify_songs</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">data</span> <span class="o">/</span> <span class="s1">'spotify_songs.csv'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">spotify_songs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data</span> <span class="o">/</span> <span class="s2">&quot;spotify_songs.csv&quot;</span><span class="p">)</span>
+<span class="n">spotify_songs</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">data</span> <span class="o">/</span> <span class="s1">&#39;spotify_songs.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">spotify_songs</span>
 </pre></div>
@@ -14973,7 +14973,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## How many songs are in each genre?</span>
-<span class="n">spotify_songs</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'playlist_genre'</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+<span class="n">spotify_songs</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;playlist_genre&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
 </pre></div>
 
      </div>
@@ -15020,17 +15020,17 @@ dtype: int64</pre>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">## What is average value of energy and acousticness in the latin genre in this dataset?</span>
-<span class="n">spotify_songs</span><span class="p">[</span><span class="n">spotify_songs</span><span class="p">[</span><span class="s1">'playlist_genre'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'latin'</span><span class="p">][[</span><span class="s1">'energy'</span><span class="p">,</span> <span class="s1">'acousticness'</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">spotify_songs</span><span class="p">[</span><span class="n">spotify_songs</span><span class="p">[</span><span class="s1">&#39;playlist_genre&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;latin&#39;</span><span class="p">][[</span><span class="s1">&#39;energy&#39;</span><span class="p">,</span> <span class="s1">&#39;acousticness&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 
 <span class="c1">## Calculate the average duration of song (in minutes) across all subgenres. Which subgenre has the longest song on average?</span>
-<span class="n">spotify_songs</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'playlist_subgenre'</span><span class="p">)[</span><span class="s1">'duration_ms'</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">/</span> <span class="mi">60000</span>
+<span class="n">spotify_songs</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;playlist_subgenre&#39;</span><span class="p">)[</span><span class="s1">&#39;duration_ms&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">/</span> <span class="mi">60000</span>
 
 <span class="c1"># Make two boxplots side-by-side of the danceability of songs stratifying by whether a song has a fast or slow tempo.</span>
 <span class="c1"># Define fast tempo as any song that has a tempo above its median value.</span>
-<span class="n">median</span> <span class="o">=</span> <span class="n">spotify_songs</span><span class="p">[</span><span class="s1">'tempo'</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
-<span class="n">spotify_songs</span><span class="p">[</span><span class="s1">'tempo_type'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">spotify_songs</span><span class="p">[</span><span class="s1">'tempo'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">median</span><span class="p">,</span> <span class="s1">'fast'</span><span class="p">,</span> <span class="s1">'slow'</span><span class="p">)</span>
+<span class="n">median</span> <span class="o">=</span> <span class="n">spotify_songs</span><span class="p">[</span><span class="s1">&#39;tempo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+<span class="n">spotify_songs</span><span class="p">[</span><span class="s1">&#39;tempo_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">spotify_songs</span><span class="p">[</span><span class="s1">&#39;tempo&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">median</span><span class="p">,</span> <span class="s1">&#39;fast&#39;</span><span class="p">,</span> <span class="s1">&#39;slow&#39;</span><span class="p">)</span>
 
-<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">spotify_songs</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">'tempo_type'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">'danceability'</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">spotify_songs</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;tempo_type&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;danceability&#39;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15085,7 +15085,7 @@ class="
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">spotify_songs</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">'tempo_type'</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">'danceability'</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">violinplot</span><span class="p">(</span><span class="n">spotify_songs</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;tempo_type&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;danceability&#39;</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15174,7 +15174,7 @@ The dataset can be procured as followed:</p>
 
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr">
-<pre>100%|██████████| 5.58M/5.58M [00:01&lt;00:00, 3.43MB/s]
+<pre>100%|██████████| 5.58M/5.58M [00:01&lt;00:00, 3.39MB/s]
 </pre>
 </div>
 </div>
