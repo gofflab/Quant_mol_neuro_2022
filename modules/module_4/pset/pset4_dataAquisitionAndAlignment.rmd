@@ -37,6 +37,7 @@ GSM3688093: Control
 GSM3688105: Control + FMN
 GSM3688117: A$\beta$42
 GSM3688129: A$\beta$42 + FMN
+
 ```{bash getData}
 
 # Create accession variable and directory structure
