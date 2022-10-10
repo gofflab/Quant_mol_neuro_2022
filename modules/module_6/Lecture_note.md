@@ -109,4 +109,3 @@ After open an Rstudio session, execute each line in `../Script/makeCountTable.R`
 # 4. Differential expression analysis
 I usually download the rda file that has generated in the above step to my mac/PC and analyze it locally to avoid connection issue. You can also use Rstudio session on portal.rockfish.edu. Follow `DE.Rmd`.
 
-
