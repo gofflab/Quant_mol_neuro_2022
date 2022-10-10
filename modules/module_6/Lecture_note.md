@@ -81,7 +81,7 @@ genome index then run STAR for fastq files.
 ### (1) Creating a genome index
 
 **This steps takes time, so we will use a pre-made index in
-`/home/thwang12/ME-440/taeyoung/Genome/STAR_index` in the class.**
+`/data/lgoff2/ME-440/taeyoung/Genome/STAR_index` in the class.**
 
 First, check the batch script and modify it necessarily. **Modify the script
 according to your working directory.**
