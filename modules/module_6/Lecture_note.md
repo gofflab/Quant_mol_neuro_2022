@@ -39,7 +39,7 @@ exit
 # (optional) Trimming adapters
 You can still use an interactive mode, but this time, we will submit a job to use computational nodes.
 
-First, check the batch script and modify it necessarily. Here, I use an editor, nano, but you can use your preferred editior, or you can edit it at your local machine and upload it.
+First, check the batch script and modify it necessarily. Here, I use an editor, nano, but you can use your preferred editior, or you can edit it at your local machine and upload it. **Modify the script according to your working directory.**
 ```sh
 nano ./Script/cutadapt.sbatch
 ```
@@ -55,7 +55,7 @@ To map RNA-seq reads on the genome, we will use STAR. You first need to create a
 
 ### (1) Creating a genome index 
 **This steps takes time, so we will use a pre-made index in `/home/thwang12/ME-440/taeyoung/Genome/STAR_index` in the class.**  
-First, check the batch script and modify it necessarily.
+First, check the batch script and modify it necessarily. **Modify the script according to your working directory.**
 ```sh
 nano ./Script/star_index.sbatch
 ```
@@ -66,7 +66,7 @@ sbatch ../Script/star_index.sbatch
 sacct # check the status of your job.
 ```
 ### (2) Mapping
-First, check the batch script and modify it necessarily.
+First, check the batch script and modify it necessarily. **Modify the script according to your working directory.**
 ```sh
 nano ./Script/star_align.sbatch
 ```
@@ -79,7 +79,7 @@ sacct # check the status of your job.
 # 3. Counting
 
 ### (1) featureCounts
-First, check the batch script and modify it necessarily.
+First, check the batch script and modify it necessarily. **Modify the script according to your working directory.**
 ```sh
 nano ./Script/featureCounts.sbatch
 ```
@@ -104,7 +104,7 @@ module load R
 Execute each line in `../Script/makeCountTable.R`.
 
 #### Rstudio on portal.rockfish.edu
-After open an Rstudio session, execute each line in `../Script/makeCountTable.R`.
+After open an Rstudio session, execute each line in `../Script/makeCountTable.R`. **Modify the script according to your working directory.**
 
 # 5. Differential expression analysis
 I usually download the rda file that has generated in the above step to my mac/PC and analyze it locally to avoid connection issue. You can also use Rstudio session on portal.rockfish.edu. Follow `DE.Rmd`.
