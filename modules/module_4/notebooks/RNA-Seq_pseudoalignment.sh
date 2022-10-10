@@ -9,40 +9,51 @@
 #
 #########
 
-# install needed components (uncomment and run if needed).  You will need to have anaconda installed.
-#conda install -c bioconda fastqc kallisto igv
-#conda install jq
-#pip install ffq gget multiqc
-
 # Stop script on any errors.
 set -e
 
-# Create acceession variable and directory structure
-GEO="GSE74985"
-mkdir -p data/raw/${GEO}
-cd data/raw/${GEO}
+# Create accession variable and directory structure
+GEO="GSM1939675"
+currDir=$(pwd)
+mkdir -p $currDir/data/raw/${GEO}
+cd $currDir/data/raw/${GEO}
 
 # Get .json file with metadata for all samples
-# This operation sometimes fails with errors because of rate limiting at NCBI.  If it fails, just try again.
-ffq $GEO > $GEO.json
+# This operation sometimes fails with errors because of rate limiting at NCBI.
+# If it fails, just try again.
+# This runs ffq with the accession number and the -O flag to specify the output file name.
+# Only runs if the output file does not exist.
+if [ -n ${GEO}.json ]; then
+    ffq -o ${GEO}.json ${GEO}
+fi
+echo 'Gotten metadata!'
 
+# A JSON file is a text file that contains a dictionary of key-value pairs.
 # Use jq to extract the ftp links for the fastq files from the .json and pass to wget to download (4 at a time)
-# Note: this will download all fastq files, and will be approximately 60 Gb (24 * 2.5Gb) of raw data. Please be sure you have sufficient disk space available.
-jq -r '.[].geo_samples | .[].samples | .[].experiments | .[].runs | .[].files.ftp | .[].url ' $GEO.json | xargs -n 1 -P 4 wget -c
+# Note: this will download ONLY the first two runs. If you want to download all runs, remove the head -n 2.
+# Just ignore the long first argument for now.
+echo 'Getting fastq files...'
+
+jq -r ' .[].samples | .[].experiments | .[].runs | .[].files.ftp | .[].url ' $GEO.json |
+    head -2 |
+    xargs -n 1 -P 2 wget -c
 
 # Use jq to extract the metadata for each sample and write to a .tsv file
-jq -r '.[].geo_samples | .[].samples | .[] | [.accession, (.experiments | .[].runs | .[] | .files.ftp | .[] | .[]), (.attributes | .[])] | @tsv' $GEO.json > $GEO.tsv
+# A tsv file is tab-separated values, which is a text file with columns.
+echo 'Getting sample metadata...'
+jq -r ' .[].samples | .[] | [.accession, (.experiments | .[].runs | .[] | .files.ftp | .[] | .[]), (.attributes | .[])] | @tsv' $GEO.json |
+    head -2 >$GEO.tsv
 
 # Run FastQC on all fastq files (4 at a time)
 # This too will take some time to run on all fastq files
 echo $(ls *.fastq.gz) | xargs -n 1 -P 4 fastqc
 
 # Step back to main directory
-cd ../../../
+cd $currDir
 
 # Build dir structure for metadata including kallisto reference & index
-mkdir -p metadata/$GEO/kallisto_index
-cd metadata/$GEO/kallisto_index
+mkdir -p $currDir/metadata/$GEO/kallisto_index
+cd $currDir/metadata/$GEO/kallisto_index
 
 # Fetch the mouse reference transcriptome and annotation from GENCODE
 #vM30_FASTA_URL="https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M30/gencode.vM30.transcripts.fa.gz"
@@ -55,30 +66,39 @@ cd metadata/$GEO/kallisto_index
 #kallisto index -i gencode.vM30.idx gencode.vM30.transcripts.fa.gz
 #kallisto inspect gencode.vM30.idx
 
-# Download pre-built mouse kallisto index
+# Download pre-built mouse kallisto index to save time.
+# !This file is 1.6 GB!
 IDX_URL="https://github.com/pachterlab/kallisto-transcriptome-indices/releases/download/ensembl-96/mus_musculus.tar.gz"
 wget -c $IDX_URL
 tar -xzvf mus_musculus.tar.gz # Expands into a new directory called mus_musculus
 
 # Step back to main directory
-cd ../../../
+cd $currDir/
+
 # Build dir structure for results
-mkdir -p results/$GEO/kallisto
-cd results/$GEO/kallisto
+mkdir -p $currDir/results/$GEO/kallisto
+cd $currDir/results/$GEO/kallisto
 
 # Run kallisto pseudoalignments
-# Note: here we are running kallisto with the --genomebam and --gtf options to generate a alignment (.bam) file from the pseudoaligned reads. This is actually the longest part of the pseudoalignment process, and will take a while to complete.
-# We are doing this here to demonstrate the use of these options, and to produce a mapping of the reads that can be visualized in IGV.
+# Note: here we are not running kallisto with the --genomebam and --gtf options to generate a alignment (.bam) file from the pseudoaligned reads.
+# This is actually the longest part of the pseudoalignment process, and will take a while to complete.
+# These are the options you need to produce a mapping of the reads that can be visualized in IGV.
+# --gtf $currDir/metadata/$GEO/kallisto_index/mus_musculus/Mus_musculus.GRCm38.96.gtf \
+# --genomebam \
 # However, this is not necessary for the downstream analysis, and can generally be omitted to save time and disk space.
-for fastq in $(ls ../../../data/raw/$GEO/*.fastq.gz); 
-    do 
-        SAMPLE_NAME=$(basename $fastq .fastq.gz);
-        echo "Performing kalliso pseudoalignment for $SAMPLE_NAME";
-        time kallisto quant -i ../../../metadata/$GEO/kallisto_index/mus_musculus/transcriptome.idx -o $SAMPLE_NAME --single -l 200 -s 20 $fastq 2>$SAMPLE_NAME/$SAMPLE_NAME.log; 
-        #kallisto quant -i ../../../metadata/$GEO/kallisto_index/mus_musculus/transcriptome.idx --genomebam -g ../../../metadata/$GEO/kallisto_index/mus_musculus/Mus_musculus.GRCm38.96.gtf -o $SAMPLE_NAME --single -l 200 -s 20 $fastq 2>$SAMPLE_NAME/$SAMPLE_NAME.log; 
-    done
+
+for fastq in $(ls $currDir/data/raw/$GEO/*.fastq.gz); do
+    SAMPLE_NAME=$(basename $fastq .fastq.gz)
+    echo "Performing kallisto pseudoalignment for $SAMPLE_NAME."
+    time kallisto quant \
+        -i $currDir/metadata/$GEO/kallisto_index/mus_musculus/transcriptome.idx \
+        -o $SAMPLE_NAME \
+        --single -l 200 -s 20 \
+        --threads=8 \
+        $fastq \
+        2> >(tee $SAMPLE_NAME.log) # Necessary for multiQC!
+done
 
 # Run MultiQC to generate a project QC report
-cd ../../../
+cd $currDir/
 multiqc .
-

@@ -1,0 +1,178 @@
+---
+title: "Problemset 4"
+subtitle: "ME.440.825 Quantitative Neurogenomics"
+author: "<Your Name Here>"
+date: ''
+output:
+  html_document:
+    toc: yes
+    toc_level: 3
+    toc_float: yes
+    theme: yeti
+    df_print: paged
+  pdf_document: default
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For this problem set, you will perform pre-processing of the data by
+pseudoalignment on RNA-seq data from S. cerevisiae (baker's yeast),
+which has a conveniently small genome.
+Yeast has been used as a model to study protein aggregation in neurodegenerative disorders.
+In Chen et al. 2020 (<https://doi.org/10.1038/s41467-020-14525-4>),
+the authors use a yeast model of constitutive amyloid-$\beta$ 42 (A$\beta$ 42),
+which is more prone to aggregation than the more common form, A$\beta40$.
+They found that flavin mononucleotide (FMN) supplementation reduced A$\beta$ toxicity,
+and used RNA-seq to investigate whether FMN supplementation caused transcriptional changes.
+
+
+### If you get stuck, your _friendly_ TAs are here to help!
+
+## Task 1
+
+## Ensure that you have installed all of the necessary tools in your conda environment. Use this README (https://github.com/gofflab/Quant_mol_neuro_2022/tree/main/modules/module_4/notebooks)
+
+## Task 2
+Download FASTQ files with their metadata from the paper using the code chunk below.
+GEO series number: GSE128905.
+
+**Check out https://github.com/gofflab/Quant_mol_neuro_2022/blob/main/modules/module_4/notebooks/RNA-Seq_pseudoalignment.sh as a template.**
+
+For time's sake, just download the files corresponding to 4 out of the 48 total samples (1 per condition):
+GSM3688093: Control
+GSM3688105: Control + FMN
+GSM3688117: A$\beta$42
+GSM3688129: A$\beta$42 + FMN
+
+```{bash engine.opts='-l'}
+conda activate qmn
+
+# Create accession variable and directory structure
+GEOS=("GSM3688093" "GSM3688105" "GSM3688117" "GSM3688129")
+GEO="GSE128905"
+mkdir -p data/raw/${GEO}
+cd data/raw/${GEO}
+
+for g in ${GEOS[@]}; do
+  # Get .json file with metadata for all samples
+  # This operation sometimes fails with errors because of rate limiting at NCBI.  If it fails, just try again.
+  ffq $g > $g.json
+
+  # Use jq to extract the ftp links for the fastq files for your desired samples from the .json and pass to wget to download (4 at a time)
+  jq -r ' .[].samples | .[].experiments | .[].runs | .[].files.ftp | .[].url ' $g.json | xargs -n 1 -P 4 wget -c -q
+
+# Use jq to extract the metadata for each sample and write to a .tsv file
+  jq -r ' .[].samples | .[] | [.accession, (.experiments | .[].runs | .[] | .files.ftp | .[] | .[]), (.attributes | .[])] | @tsv' $g.json > $g.tsv
+done
+
+```
+
+### Question 2.1
+What does the "|" symbol do in the above script? Use the words `STDOUT` and `STDIN` in your answer.
+
+### Question 2.2
+Describe the differences between data ID starting with 'GSM' and 'SRX' ?
+
+### Question 2.3
+In your raw data directory, you should have 8 FASTQ files, where four filenames end with "_1.fastq.gz" and the other four end with "_2.fastq.gz.
+Why are there two files for each SRR ID number?
+
+### Question 2.4
+Try uncompressing one `*.fq.gz` file you've just downloaded (`tar -xvzf <filename>`).
+What information is on the first line of the file (i.e. Describe what that line represents, not the actual texts)?
+(the command `head -5` can be used to look at the first 5 lines of a file)
+
+
+## Task 3
+
+Run `fastQC` on all the downloaded sample fastq files (`fastqc *.fastq.gz`).
+
+### Question 3.1
+Open the report for the fastq file `SRR8788763_1.fastq.gz`. Two of the QC parameters failed for this run. Which two?
+
+
+### Question 3.2-3.3
+What is the percent of sequences remaining after deduplication?
+
+What might be a likely cause of read duplication?
+
+If the data are not deduplicated, how might this affect our analysis?
+
+## Task 4
+For pseudoalignment, download and expand the pre-built S. cerevisiae kallisto index corresponding to Ensembl v96. The links can be found [here](https://github.com/pachterlab/kallisto-transcriptome-indices/releases).
+
+Once you've expanded the downloaded archive (`tar -zxvf <downloaded file>`), there should be a new subfolder containing four files. Run `kallisto inspect` on the kallisto index file (`transcriptome.idx`) to generate a summary report about the reference index. Use this information to answer the questions below.
+
+### Question 4.1
+What reference sequence/information was used to generate this kallisto index?
+
+### Question 4.2
+What is the k-mer length used to make this index?
+
+### Question 4.3
+How many total k-mers are in the index?
+
+## Task 5
+Run kallisto pseudoalignments on your 4 samples. You will not need to visualize your mapping in IGV. Complete the script below to perform your pseudoalignment using the paired end reads you downloaded for each sample. You can use the provided scripts for this week to guide you, and `kallisto quant --help` for information on available arguments. [Getting Started](https://pachterlab.github.io/kallisto/starting) instructions for kallisto and the [kallisto manual](https://pachterlab.github.io/kallisto/manual) are available as well.
+
+_Note: Remember these are paired-end reads and both reads will need to be passed to kallisto together_
+
+```{bash engine.opts='-l'}
+conda activate qmn
+currDir=$(pwd)
+# Build dir structure for results
+mkdir -p $currDir/results/$GEO/kallisto
+cd $currDir/results/$GEO/kallisto
+
+# Run kallisto pseudoalignments
+for fastq in $(ls $currDir/data/raw/$GEO/*1.fastq.gz);
+    do
+        fastq_pair=$currDir/data/raw/$GEO/$(basename $fastq 1.fastq.gz)2.fastq.gz
+        SAMPLE_NAME=$(basename $fastq _1.fastq.gz);
+        echo "Performing kallisto pseudoalignment for $SAMPLE_NAME";
+        mkdir $SAMPLE_NAME
+        kallisto quant [FILL IN THE BLANK] 2> $SAMPLE_NAME.log
+done
+```
+
+### Question 5.1
+Fill in the kallisto arguments and explain what each is doing.
+
+### Question 5.2
+What are some advantages to using the pseudoaligner kallisto over other non-pseudoalignment methods?
+
+### Question 5.3
+This dataset includes yeast where A$\beta$42 has been introduced via transformation.
+Would it be possible to quantify the amount of A$\beta$42 in these yeasts with the provided reference index? Why or why not?
+
+## Task 6
+Use `multiqc` to generate a project QC report in your working directory.
+
+**Make sure that your `multiqc` report includes data from both `kallisto` and `fastqc`.**
+
+### Question 6.1
+What does `multiqc` do?
+
+### Question 6.2
+How many reads are pseudoaligned from sample `SRR8788727_1`?
+
+## PSet Submission
+When you have completed the above exercises, please make sure that you have added your name and date into the yaml header at the top and "knit" this document.
+
+![](images/paste-70D156D7.png)
+
+When you are "knitting" please make sure that you set the knit directory to: "Document Directory" to that RStudio knows where to find all of the accessory files associated with this problemset.
+
+![](images/paste-5760B0D6.png)
+
+Once this completes without error, please upload the compiled .html document to the "Problem Set 1" assignment on Canvas.
+
+## Session Information
+
+```{r}
+sessionInfo()
+```

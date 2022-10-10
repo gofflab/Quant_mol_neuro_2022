@@ -1,0 +1,46 @@
+name: Kallisto
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - modules/module_4/notebooks/RNA-Seq_pseudoalignment.sh
+      - .github/workflows/run_kallisto.yml
+  pull_request:
+    paths:
+      - modules/module_4/notebooks/RNA-Seq_pseudoalignment.sh
+      - .github/workflows/run_kallisto.yml
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  jupyter-build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest] #, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Conda environment with Micromamba
+        uses: mamba-org/provision-with-micromamba@main
+        with:
+          cache-env: true
+          cache-downloads: true
+          environment-file: docker/environment.yml
+          environment-name: qmn
+
+      - name: Run shell version
+        run: |
+          cd modules/module_4/notebooks
+          chmod +x RNA-Seq_pseudoalignment.sh
+          ./RNA-Seq_pseudoalignment.sh
+
+      - name: Run Python version
+        run: |
+          cd modules/module_4/notebooks
+          python RNA-Seq_pseudoalignment.py
