@@ -101,7 +101,7 @@ Use an interactive mode to run R script line by line or use an Rstudio session t
 interact -n 1 -m 3g -t 01:00:00
 module load R  
 ``` 
-Execute each line in `../Script/makeCountTable.R`.
+Execute each line in `../Script/makeCountTable.R`. **Modify the script according to your working directory.**
 
 #### Rstudio on portal.rockfish.edu
 After open an Rstudio session, execute each line in `../Script/makeCountTable.R`. **Modify the script according to your working directory.**
