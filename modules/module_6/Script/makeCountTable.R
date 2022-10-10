@@ -1,4 +1,4 @@
-setwd("/home/thwang12/ME-440/taeyoung")
+setwd("/home/thwang12/ME-440/taeyoung") # modify to your project directory ("Module_6")
 
 # Read GTF files
 gtf <- read.table("./Genome/gencode.vM30.annotation.gtf", header=F, sep="\t", stringsAsFactors = F, colClasses = c("character", "NULL", "character", "numeric", "numeric", "NULL", "character", "NULL", "character"))
@@ -23,7 +23,8 @@ gtf$gene_name <- select.annot("gene_name")
 gtf$mgi_id <- select.annot("mgi_id")
 gtf$annot <- NULL
 
-# Read sampleList
+# Read sampleList (a list of sample names)
+# First, copy the "/data/lgoff2/ME-440/taeyoung/sampleList" text file to your project directory.
 sampleList <- scan("./sampleList", what="character", sep="\n")
 
 # Read featureCounts output
