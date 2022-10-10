@@ -10,7 +10,7 @@
 #SBATCH -t 10:00:00 # requested time, hh:mm:ss.
 
 module load STAR
-cd /data/lgoff2/ME-440/taeyoung/
+cd /data/lgoff2/ME-440/taeyoung/ # change this to your working directory
 
 STAR --runMode genomeGenerate \
 --runThreadN 6 \
