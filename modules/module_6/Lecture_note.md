@@ -80,11 +80,10 @@ sacct # check the status of your job.
 # 3. Counting
 
 ### (1) featureCounts
-First, check the batch script and modify it necessarily. **Modify the script according to your working directory.**
+First, check the batch script and modify it necessarily. **Modify the script according to your working directory.** At rockfish, featureCounts is not installed by default, so you need to install it first under your home directory. But you can use the installed one that is available from my home directory. This script will use featureCounts installed under my home directory.  
 ```sh
 nano ./Script/featureCounts.sbatch
 ```
-At rockfish, featureCounts is not installed by default, so you need to install it first under your home directory. But you can use the installed one that is available from my home directory. This script will use featureCounts installed under my home directory.  
 
 Then, go to the folder and submit a job.  
 ```sh
