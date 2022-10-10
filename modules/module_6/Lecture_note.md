@@ -19,7 +19,7 @@ Copy 6 fastq files to your FASTQ directory.
 cp /home/thwang12/ME-440/taeyoung/1.Fastq/*[0-9].fastq.gz YOUR_FASTQ_DIRECOTRY
 ```
 
-# 1. To run Fastqc
+# 1. To run FastQC
 To run Fastqc, we will use an interactive session to use compute nodes at rockfish. An interactive session is useful to perform small tasks and test workflows. Let's request 3 cores (-n 4) and 3GB RAM (-m 3G) and 1 hr working time (-t 1hr).
 ```sh
 interact -n 4 -m 3g -t 01:00:00
