@@ -19,11 +19,15 @@ dependencies:
 # R stuffs
   - r-base=4.1
   - r-formatr
+  - r-ggrepel
   - r-ggridges
   - r-here
   - r-lintr
   - r-markdown
+  - r-pheatmap
   - r-tidyverse
+  - r-uwot
+  - bioconductor-deseq2
   - bioconductor-scater
   - bioconductor-scrnaseq
   - bioconductor-scran
