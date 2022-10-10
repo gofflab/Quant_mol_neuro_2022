@@ -83,6 +83,8 @@ First, check the batch script and modify it necessarily.
 ```sh
 nano ./Script/featureCounts.sbatch
 ```
+At rockfish, featureCounts is not installed by default, so you need to install it first under your home directory. But you can use the installed one that is available from my home directory. This script will use featureCounts installed under my home directory.  
+
 Then, go to the folder and submit a job.  
 ```sh
 cd 3.Count  
