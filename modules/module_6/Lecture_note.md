@@ -7,7 +7,7 @@ several sub-folders. It is just the best practice to use my script in the class.
 Of course, you can have your own structure for your project.
 
 ```
-taeyoung (at my home directory)
+MODUE_6
 +-- Software
 +-- Genome
 +-- Results
@@ -22,6 +22,7 @@ taeyoung (at my home directory)
 Copy 6 fastq files to your FASTQ directory.
 
 ```sh
+cd 1.Fastq
 cp /home/thwang12/ME-440/taeyoung/1.Fastq/*[0-9].fastq.gz YOUR_FASTQ_DIRECOTRY
 ```
 
