@@ -25,12 +25,14 @@ dependencies:
   - r-lintr
   - r-markdown
   - r-pheatmap
+  - r-seurat
   - r-tidyverse
   - r-uwot
+  - bioconductor-bluster
   - bioconductor-deseq2
+  - bioconductor-monocle3
   - bioconductor-scater
   - bioconductor-scrnaseq
   - bioconductor-scran
-  - bioconductor-bluster
-  - bioconductor-monocle3
   - bioconductor-singler
+  - bioconductor-spatiallibd
