@@ -61,7 +61,7 @@ if (!require("BiocManager", quietly = TRUE)) {
 #Install other accessory bioconductor packages
 packages <- c("Matrix","monocle3","RcppML","biomaRt","tidyverse","celldex","SingleR","ensembldb")
 packages_not_installed<-setdiff(packages,rownames(installed.packages()))
-if (length(packages_not_installed > 0)) {BiocManager::install(packages_not_installed)}
+if (length(packages_not_installed > 0)) {BiocManager::install(packages_not_installed,update=FALSE,ask=FALSE)}
 ```
 
 ## Load packages
@@ -370,7 +370,7 @@ if (!do_annot) {
 
 And then, we can use this dataset to compare our single cell expression profiles against to apply coarse cell type labels.
 ```{r singleR_annotation, eval=do_annot}
-rownames(dat) <- str_remove(rownames(dat), "\\.\\d+")
+rownames(dat) <- stringr::str_remove(rownames(dat), "\\.\\d+")
 system.time(annots<-SingleR(test = dat,
                 ref = mouse.rnaseq, labels = colData(mouse.rnaseq)$label,
                 assay.type.test=1, clusters = dat@clusters$UMAP$clusters)
