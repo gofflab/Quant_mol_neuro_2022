@@ -24,13 +24,13 @@ dependencies:
   - r-here
   - r-lintr
   - r-markdown
+  - r-monocle3
   - r-pheatmap
   - r-seurat
   - r-tidyverse
   - r-uwot
   - bioconductor-bluster
   - bioconductor-deseq2
-  - bioconductor-monocle3
   - bioconductor-scater
   - bioconductor-scrnaseq
   - bioconductor-scran
