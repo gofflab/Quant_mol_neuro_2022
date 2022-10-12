@@ -32,3 +32,5 @@ dependencies:
   - bioconductor-scrnaseq
   - bioconductor-scran
   - bioconductor-bluster
+  - bioconductor-monocle3
+  - bioconductor-singler
