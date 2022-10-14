@@ -72,15 +72,14 @@ You can still use an interactive mode, but this time, we will submit a job to
 use computational nodes.
 
 First, check the batch script and modify it necessarily. Here, I use an editor,
-nano, but you can use your preferred editior, or you can edit it at your local
-machine and upload it. **Modify the script according to your working
+nano, but you can use your preferred editior, for example, use Rstudio editor, just click the file in Rstudio to open it, and modify it. **Modify the script according to your working
 directory (modify the line starting "cd" to change the directory to your working directory).**
 
 ```sh
 nano ./Script/cutadapt.sbatch # assuming that you are currently at "Module_6" folder
 ```
 
-Then, go to the folder and submit a job.
+Then, go to the folder and submit a job. Submitting a job should be done in login node. Use terminal, not Rstudio session at rockfish.
 
 ```sh
 cd 1.Fastq # assuming that you are currently at "Module_6" folder
@@ -105,7 +104,7 @@ according to your working directory (modify the line starting "cd" to change the
 nano ./Script/star_index.sbatch # assuming that you are currently at "Module_6" folder
 ```
 
-Then, go to the folder and submit a job.
+Then, go to the folder and submit a job. Submitting a job should be done in login node. Use terminal, not Rstudio session at rockfish.
 
 ```
 cd Genome
@@ -122,7 +121,7 @@ according to your working directory (modify the line starting "cd" to change the
 nano ./Script/star_align.sbatch # assuming that you are currently at "Module_6" folder
 ```
 
-Then, go to the folder and submit a job.
+Then, go to the folder and submit a job. Submitting a job should be done in login node. Use terminal, not Rstudio session at rockfish.
 
 ```sh
 cd 2.Alignment # assuming that you are currently at "Module_6" folder
@@ -144,7 +143,7 @@ script will use featureCounts installed under my home directory.
 nano ./Script/featureCounts.sbatch # assuming that you are currently at "Module_6" folder
 ```
 
-Then, go to the folder and submit a job.
+Then, go to the folder and submit a job. Submitting a job should be done in login node. Use terminal, not Rstudio session at rockfish.
 
 ```sh
 cd 3.Count # assuming that you are currently at "Module_6" folder
