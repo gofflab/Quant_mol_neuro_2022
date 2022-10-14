@@ -19,7 +19,21 @@ MODUE_6
 
 
 
-# 1. Go to RStudio Server
+# 1. Go to RStudio Server at portal.rockfish.jhu.edu
+
+<img width="1340" alt="image" src="https://user-images.githubusercontent.com/34997334/195887394-088d935c-66a7-4df5-9a16-ec4c91a5dde8.png">
+
+Use these settings
+
+<img width="488" alt="image" src="https://user-images.githubusercontent.com/34997334/195887680-c8b918b7-96f4-4dd8-a917-bd5a9fb05ee6.png">
+
+
+<img width="599" alt="image" src="https://user-images.githubusercontent.com/34997334/195887484-25775aa1-6446-42d7-a978-75fa4ce55eee.png">
+
+Wait until the box turn green and click Launch RStudio server
+
+<img width="717" alt="image" src="https://user-images.githubusercontent.com/34997334/195887791-2861a1a0-1769-416a-95b7-a18212a0dac5.png">
+
 
 
 # 2. Go to the folder you created on Monday
