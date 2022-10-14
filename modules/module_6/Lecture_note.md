@@ -17,6 +17,12 @@ MODUE_6
 +-- 3.Count
 ```
 
+
+
+# 1. Go to RStudio Server
+
+
+# 2. Go to the folder you created on Monday
 ### Fastq files
 
 Copy 6 fastq files to your FASTQ directory.
@@ -26,24 +32,10 @@ cd 1.Fastq
 cp /data/lgoff2/ME-440/taeyoung/1.Fastq/*[0-9].fastq.gz YOUR_FASTQ_DIRECOTRY
 ```
 
-# 1. To run FastQC
-
-To run Fastqc, we will use an interactive session to use compute nodes at
-rockfish. An interactive session is useful to perform small tasks and test
-workflows. Let's request 3 cores (-n 4) and 3GB RAM (-m 3G) and 1 hr working
-time (-t 1hr).
-
-```sh
-interact -n 4 -m 3g -t 01:00:00
-```
-
-Now you are at the compute nodes. The prompt should be seen as
-`[thwang12@c[NUMBER]_taeyoung]$`, not a login node like
-`[thwang12@login01 taeyoung]$`.
+Run fastqc
 
 ```sh
 cd 1.Fastq
-module load fastqc
 fastqc --help
 fastqc -t 3 *.fastq.gz
 exit
@@ -144,11 +136,6 @@ Use an interactive mode to run R script line by line or use an Rstudio session
 through portal.rockfish.jhu.edu
 
 #### Interactive mode
-
-```sh
-interact -n 1 -m 3g -t 01:00:00
-module load R
-```
 
 Execute each line in `../Script/makeCountTable.R`. **Modify the script according
 to your working directory.**
