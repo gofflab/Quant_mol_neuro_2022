@@ -39,7 +39,7 @@ cp /data/lgoff2/ME-440/taeyoung/Script/* . # . means the current directory, you 
 Here, I use an editor, nano, but you can use your preferred editior, for example, Rstudio editor on rockfish. In case you use Rstudio server, just click the file name in Rstudio file panel to open it, and modify it. 
 
 
-### Go to RStudio Server at portal.rockfish.jhu.edu
+### How to use RStudio Server at portal.rockfish.jhu.edu
 
 <img width="1340" alt="image" src="https://user-images.githubusercontent.com/34997334/195887394-088d935c-66a7-4df5-9a16-ec4c91a5dde8.png">
 
