@@ -167,7 +167,11 @@ Use an interactive mode to run R script line by line or use an Rstudio session
 through portal.rockfish.jhu.edu
 
 #### Interactive mode
-
+If you are still at an interactive mode that was initated during the fastqc step above, you don't have to run the following lines on your terminal.
+```sh
+interact -n 1 -m 3g -t 01:00:00
+module load R  
+``` 
 Execute each line in `../Script/makeCountTable.R`. **Modify the script according
 to your working directory** (line starting with "cd").
 
