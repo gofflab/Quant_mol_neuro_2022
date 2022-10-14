@@ -64,8 +64,10 @@ To run Fastqc, we will use an interactive mode to use compute nodes at rockfish.
 ```sh
 interact -n 4 -m 3g -t 01:00:00
 ```
+Now you are at the compute nodes. The promot should be seen as `[thwang12@c714_teyoung]$`, not a log-in node like `[thwang12@login01 taeyoung]$`.  
 
-Run fastqc
+**Run fastqc**
+Note that 3 fastq files are processed at a time.
 
 ```sh
 cd 1.Fastq # assuming that you are currently at "Module_6" folder
@@ -74,7 +76,6 @@ fastqc -t 3 *.fastq.gz
 exit
 ```
 
-**Note that 3 fastq files are processed at a time.**
 
 ### (2) Trimming adapters
 
