@@ -17,6 +17,23 @@ MODUE_6
 +-- 3.Count
 ```
 
+### Fastq files
+
+Copy 6 fastq files to your FASTQ directory.
+
+```sh
+cd 1.Fastq  # assuming that you are currently at "Module_6" folder
+cp /data/lgoff2/ME-440/taeyoung/1.Fastq/*[0-9].fastq.gz . # . means the current directory, you can modify it if necessary.
+```
+
+### Script files
+
+Copy script files to your Script directory. 
+
+```sh
+cd Script # assuming that you are currently at "Module_6" folder
+cp /data/lgoff2/ME-440/taeyoung/Script/* . # . means the current directory, you can modify it if necessary.
+```
 
 
 # 1. Go to RStudio Server at portal.rockfish.jhu.edu
@@ -36,20 +53,12 @@ Wait until the box turn green and click Launch RStudio server
 
 
 
-# 2. Go to the folder you created on Monday
-### Fastq files
-
-Copy 6 fastq files to your FASTQ directory.
-
-```sh
-cd 1.Fastq
-cp /data/lgoff2/ME-440/taeyoung/1.Fastq/*[0-9].fastq.gz . # . means the current directory, you can modify it if necessary.
-```
+# 2. FastQC
 
 Run fastqc
 
 ```sh
-cd 1.Fastq # you don't have to run this line if you are already at "1.Fastq" folder.
+cd 1.Fastq # assuming that you are currently at "Module_6" folder
 fastqc --help
 fastqc -t 3 *.fastq.gz
 exit
@@ -68,13 +77,13 @@ machine and upload it. **Modify the script according to your working
 directory (modify the line starting "cd" to change the directory to your working directory).**
 
 ```sh
-nano ./Script/cutadapt.sbatch
+nano ./Script/cutadapt.sbatch # assuming that you are currently at "Module_6" folder
 ```
 
 Then, go to the folder and submit a job.
 
 ```sh
-cd 1.Fastq
+cd 1.Fastq # assuming that you are currently at "Module_6" folder
 sbatch ../Script/cutadapt.sbatch
 sacct # check the status of your job.
 ```
@@ -93,7 +102,7 @@ First, check the batch script and modify it necessarily. **Modify the script
 according to your working directory (modify the line starting "cd" to change the directory to your working directory).**
 
 ```sh
-nano ./Script/star_index.sbatch
+nano ./Script/star_index.sbatch # assuming that you are currently at "Module_6" folder
 ```
 
 Then, go to the folder and submit a job.
@@ -110,13 +119,13 @@ First, check the batch script and modify it necessarily. **Modify the script
 according to your working directory (modify the line starting "cd" to change the directory to your working directory).**
 
 ```sh
-nano ./Script/star_align.sbatch
+nano ./Script/star_align.sbatch # assuming that you are currently at "Module_6" folder
 ```
 
 Then, go to the folder and submit a job.
 
 ```sh
-cd 2.Alignment
+cd 2.Alignment # assuming that you are currently at "Module_6" folder
 sbatch ../Script/star_align.sbatch
 sacct # check the status of your job.
 ```
@@ -132,13 +141,13 @@ But you can use the installed one that is available from my home directory. This
 script will use featureCounts installed under my home directory.
 
 ```sh
-nano ./Script/featureCounts.sbatch
+nano ./Script/featureCounts.sbatch # assuming that you are currently at "Module_6" folder
 ```
 
 Then, go to the folder and submit a job.
 
 ```sh
-cd 3.Count
+cd 3.Count # assuming that you are currently at "Module_6" folder
 sbatch ../Script/featureCounts.sbatch
 sacct # check the status of your job.
 ```
