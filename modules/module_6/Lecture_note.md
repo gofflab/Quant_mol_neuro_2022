@@ -82,7 +82,7 @@ You can still use an interactive mode, but this time, we will submit a job to
 use computational nodes. Make sure that you are at the login node, not terminal node.
 
 First, check the batch script and modify it necessarily. **Modify the script according to your working
-directory.** (modify the line starting "cd" to change the directory to your working directory.)
+directory** (modify the line starting "cd" to change the directory to your working directory.)
 
 ```sh
 nano ./Script/cutadapt.sbatch # assuming that you are currently at "Module_6" folder
@@ -107,7 +107,7 @@ genome index then run STAR for fastq files.
 `/data/lgoff2/ME-440/taeyoung/Genome/STAR_index` in the class. Skip this step. **
 
 First, check the batch script and modify it necessarily. **Modify the script
-according to your working directory.** (modify the line starting "cd" to change the directory to your working directory.)
+according to your working directory** (modify the line starting "cd" to change the directory to your working directory.)
 
 ```sh
 nano ./Script/star_index.sbatch # assuming that you are currently at "Module_6" folder
@@ -124,7 +124,7 @@ sacct # check the status of your job.
 ### (2) Mapping
 
 First, check the batch script and modify it necessarily. **Modify the script
-according to your working directory.** (modify the line starting "cd" to change the directory to your working directory.)
+according to your working directory** (modify the line starting "cd" to change the directory to your working directory.)
 
 ```sh
 nano ./Script/star_align.sbatch # assuming that you are currently at "Module_6" folder
@@ -143,7 +143,7 @@ sacct # check the status of your job.
 ### (1) featureCounts
 
 First, check the batch script and modify it necessarily. **Modify the script
-according to your working directory.** (modify the line starting "cd" to change the directory to your working directory).  At rockfish, featureCounts is not
+according to your working directory** (modify the line starting "cd" to change the directory to your working directory).  At rockfish, featureCounts is not
 installed by default, so you need to install it first under your home directory.
 But you can use the installed one that is available from my home directory. Note that this
 script will use featureCounts installed under my home directory.
