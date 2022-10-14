@@ -43,7 +43,7 @@ Copy 6 fastq files to your FASTQ directory.
 
 ```sh
 cd 1.Fastq
-cp /data/lgoff2/ME-440/taeyoung/1.Fastq/*[0-9].fastq.gz YOUR_FASTQ_DIRECOTRY
+cp /data/lgoff2/ME-440/taeyoung/1.Fastq/*[0-9].fastq.gz . # . means the current directory, you can modify it if necessary.
 ```
 
 Run fastqc
