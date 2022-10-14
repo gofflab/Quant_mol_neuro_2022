@@ -35,6 +35,9 @@ cd Script # assuming that you are currently at "Module_6" folder
 cp /data/lgoff2/ME-440/taeyoung/Script/* . # . means the current directory, you can modify it if necessary.
 ```
 
+### Editor to modify sbatch or text files
+Here, I use an editor, nano, but you can use your preferred editior, for example, Rstudio editor on rockfish. In case you use Rstudio, just click the file name in Rstudio file panel to open it, and modify it. 
+
 
 # 1. Go to RStudio Server at portal.rockfish.jhu.edu
 
@@ -71,8 +74,7 @@ exit
 You can still use an interactive mode, but this time, we will submit a job to
 use computational nodes.
 
-First, check the batch script and modify it necessarily. Here, I use an editor,
-nano, but you can use your preferred editior, for example, use Rstudio editor, just click the file in Rstudio to open it, and modify it. **Modify the script according to your working
+First, check the batch script and modify it necessarily. **Modify the script according to your working
 directory (modify the line starting "cd" to change the directory to your working directory).**
 
 ```sh
