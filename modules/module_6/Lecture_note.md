@@ -49,7 +49,7 @@ cp /data/lgoff2/ME-440/taeyoung/1.Fastq/*[0-9].fastq.gz . # . means the current 
 Run fastqc
 
 ```sh
-cd 1.Fastq
+cd 1.Fastq # you don't have to run this line if you are already at "1.Fastq" folder.
 fastqc --help
 fastqc -t 3 *.fastq.gz
 exit
@@ -70,6 +70,7 @@ directory.**
 ```sh
 nano ./Script/cutadapt.sbatch
 ```
+Modify the line starting "cd" to change the directory to your working directory.  
 
 Then, go to the folder and submit a job.
 
@@ -95,6 +96,7 @@ according to your working directory.**
 ```sh
 nano ./Script/star_index.sbatch
 ```
+Modify the line starting "cd" to change the directory to your working directory.  
 
 Then, go to the folder and submit a job.
 
@@ -112,6 +114,7 @@ according to your working directory.**
 ```sh
 nano ./Script/star_align.sbatch
 ```
+Modify the line starting "cd" to change the directory to your working directory.  
 
 Then, go to the folder and submit a job.
 
@@ -134,6 +137,7 @@ script will use featureCounts installed under my home directory.
 ```sh
 nano ./Script/featureCounts.sbatch
 ```
+Modify the line starting "cd" to change the directory to your working directory.  
 
 Then, go to the folder and submit a job.
 
@@ -152,13 +156,13 @@ through portal.rockfish.jhu.edu
 #### Interactive mode
 
 Execute each line in `../Script/makeCountTable.R`. **Modify the script according
-to your working directory.**
+to your working directory (line starting with "cd") **
 
 #### Rstudio on portal.rockfish.edu
 
 After open an Rstudio session, execute each line in
 `../Script/makeCountTable.R`. **Modify the script according to your working
-directory.**
+directory (line starting with "cd") .**
 
 # 4. Differential expression analysis
 
