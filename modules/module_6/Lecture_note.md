@@ -56,7 +56,14 @@ Wait until the box turn green and click Launch RStudio server
 
 
 
-# 2. FastQC
+# 2. QC Fastq files
+
+### (1) FastQC
+To run Fastqc, we will use an interactive mode to use compute nodes at rockfish. An interactive mode is useful to perform small tasks and test workflows. Let's request 3 cores (-n 4) and 3GB RAM (-m 3G) and 1 hr working time (-t 1hr). Put this line on your terminal, not Rstudio terminal panel.
+
+```sh
+interact -n 4 -m 3g -t 01:00:00
+```
 
 Run fastqc
 
@@ -69,13 +76,13 @@ exit
 
 **Note that 3 fastq files are processed at a time.**
 
-# (optional) Trimming adapters
+### (2) Trimming adapters
 
 You can still use an interactive mode, but this time, we will submit a job to
-use computational nodes.
+use computational nodes. Make sure that you are at the login node, not terminal node.
 
 First, check the batch script and modify it necessarily. **Modify the script according to your working
-directory (modify the line starting "cd" to change the directory to your working directory).**
+directory.** (modify the line starting "cd" to change the directory to your working directory.)
 
 ```sh
 nano ./Script/cutadapt.sbatch # assuming that you are currently at "Module_6" folder
@@ -100,7 +107,7 @@ genome index then run STAR for fastq files.
 `/data/lgoff2/ME-440/taeyoung/Genome/STAR_index` in the class. Skip this step. **
 
 First, check the batch script and modify it necessarily. **Modify the script
-according to your working directory (modify the line starting "cd" to change the directory to your working directory).**
+according to your working directory.** (modify the line starting "cd" to change the directory to your working directory.)
 
 ```sh
 nano ./Script/star_index.sbatch # assuming that you are currently at "Module_6" folder
@@ -117,7 +124,7 @@ sacct # check the status of your job.
 ### (2) Mapping
 
 First, check the batch script and modify it necessarily. **Modify the script
-according to your working directory (modify the line starting "cd" to change the directory to your working directory).**
+according to your working directory.** (modify the line starting "cd" to change the directory to your working directory.)
 
 ```sh
 nano ./Script/star_align.sbatch # assuming that you are currently at "Module_6" folder
@@ -136,9 +143,9 @@ sacct # check the status of your job.
 ### (1) featureCounts
 
 First, check the batch script and modify it necessarily. **Modify the script
-according to your working directory (modify the line starting "cd" to change the directory to your working directory).** At rockfish, featureCounts is not
+according to your working directory.** (modify the line starting "cd" to change the directory to your working directory).  At rockfish, featureCounts is not
 installed by default, so you need to install it first under your home directory.
-But you can use the installed one that is available from my home directory. This
+But you can use the installed one that is available from my home directory. Note that this
 script will use featureCounts installed under my home directory.
 
 ```sh
@@ -162,13 +169,13 @@ through portal.rockfish.jhu.edu
 #### Interactive mode
 
 Execute each line in `../Script/makeCountTable.R`. **Modify the script according
-to your working directory (line starting with "cd") **
+to your working directory** (line starting with "cd").
 
 #### Rstudio on portal.rockfish.edu
 
 After open an Rstudio session, execute each line in
 `../Script/makeCountTable.R`. **Modify the script according to your working
-directory (line starting with "cd") .**
+directory** (line starting with "cd").
 
 # 4. Differential expression analysis
 
