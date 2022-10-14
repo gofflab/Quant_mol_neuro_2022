@@ -64,7 +64,7 @@ To run Fastqc, we will use an interactive mode to use compute nodes at rockfish.
 ```sh
 interact -n 4 -m 3g -t 01:00:00
 ```
-Now you are at the compute nodes. The promot should be seen like `[YOUR_JEHD_ID@c714]$`, not a log-in node like `[YOUR_JEHD_ID@login01]$`. Note that you are compute node if your prompt has **@c** while you are at the login node if your prompt has **@login01**.
+Now you are at the compute nodes. The promot should be seen like `[YOUR_JEHD_ID@c714]$`, not a log-in node like `[YOUR_JEHD_ID@login01]$`. Note that you are at compute node if your prompt has **@c** while you are at the login node if your prompt has **@login01**.
 
 **Run fastqc**
 Note that 3 fastq files are processed at a time.
