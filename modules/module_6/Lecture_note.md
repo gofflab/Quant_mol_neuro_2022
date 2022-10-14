@@ -65,12 +65,11 @@ use computational nodes.
 First, check the batch script and modify it necessarily. Here, I use an editor,
 nano, but you can use your preferred editior, or you can edit it at your local
 machine and upload it. **Modify the script according to your working
-directory.**
+directory (modify the line starting "cd" to change the directory to your working directory).**
 
 ```sh
 nano ./Script/cutadapt.sbatch
 ```
-Modify the line starting "cd" to change the directory to your working directory.  
 
 Then, go to the folder and submit a job.
 
@@ -91,12 +90,11 @@ genome index then run STAR for fastq files.
 `/data/lgoff2/ME-440/taeyoung/Genome/STAR_index` in the class.**
 
 First, check the batch script and modify it necessarily. **Modify the script
-according to your working directory.**
+according to your working directory (modify the line starting "cd" to change the directory to your working directory).**
 
 ```sh
 nano ./Script/star_index.sbatch
 ```
-Modify the line starting "cd" to change the directory to your working directory.  
 
 Then, go to the folder and submit a job.
 
@@ -109,12 +107,11 @@ sacct # check the status of your job.
 ### (2) Mapping
 
 First, check the batch script and modify it necessarily. **Modify the script
-according to your working directory.**
+according to your working directory (modify the line starting "cd" to change the directory to your working directory).**
 
 ```sh
 nano ./Script/star_align.sbatch
 ```
-Modify the line starting "cd" to change the directory to your working directory.  
 
 Then, go to the folder and submit a job.
 
@@ -129,7 +126,7 @@ sacct # check the status of your job.
 ### (1) featureCounts
 
 First, check the batch script and modify it necessarily. **Modify the script
-according to your working directory.** At rockfish, featureCounts is not
+according to your working directory (modify the line starting "cd" to change the directory to your working directory).** At rockfish, featureCounts is not
 installed by default, so you need to install it first under your home directory.
 But you can use the installed one that is available from my home directory. This
 script will use featureCounts installed under my home directory.
@@ -137,7 +134,6 @@ script will use featureCounts installed under my home directory.
 ```sh
 nano ./Script/featureCounts.sbatch
 ```
-Modify the line starting "cd" to change the directory to your working directory.  
 
 Then, go to the folder and submit a job.
 
