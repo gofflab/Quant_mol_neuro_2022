@@ -36,10 +36,10 @@ cp /data/lgoff2/ME-440/taeyoung/Script/* . # . means the current directory, you 
 ```
 
 ### Editor to modify sbatch or text files
-Here, I use an editor, nano, but you can use your preferred editior, for example, Rstudio editor on rockfish. In case you use Rstudio, just click the file name in Rstudio file panel to open it, and modify it. 
+Here, I use an editor, nano, but you can use your preferred editior, for example, Rstudio editor on rockfish. In case you use Rstudio server, just click the file name in Rstudio file panel to open it, and modify it. 
 
 
-# 1. Go to RStudio Server at portal.rockfish.jhu.edu
+### Go to RStudio Server at portal.rockfish.jhu.edu
 
 <img width="1340" alt="image" src="https://user-images.githubusercontent.com/34997334/195887394-088d935c-66a7-4df5-9a16-ec4c91a5dde8.png">
 
@@ -56,7 +56,7 @@ Wait until the box turn green and click Launch RStudio server
 
 
 
-# 2. QC Fastq files
+# 1. QC Fastq files
 
 ### (1) FastQC
 To run Fastqc, we will use an interactive mode to use compute nodes at rockfish. An interactive mode is useful to perform small tasks and test workflows. Let's request 3 cores (-n 4) and 3GB RAM (-m 3G) and 1 hr working time (-t 1hr). Put this line on your terminal, not Rstudio terminal panel.
