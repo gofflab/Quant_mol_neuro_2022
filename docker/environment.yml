@@ -24,11 +24,21 @@ dependencies:
   - r-here
   - r-lintr
   - r-markdown
+  - r-matrix
+  - r-monocle3
   - r-pheatmap
+  - r-rcpp
+  - r-sleuth
+  - r-seurat
   - r-tidyverse
   - r-uwot
+  - bioconductor-biomart
+  - bioconductor-bluster
+  - bioconductor-celldex
   - bioconductor-deseq2
+  - bioconductor-ensembldb
   - bioconductor-scater
   - bioconductor-scrnaseq
   - bioconductor-scran
-  - bioconductor-bluster
+  - bioconductor-singler
+  - bioconductor-spatiallibd

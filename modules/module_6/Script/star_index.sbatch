@@ -13,9 +13,8 @@ module load STAR
 cd /data/lgoff2/ME-440/taeyoung/ # change this to your working directory
 
 STAR --runMode genomeGenerate \
---runThreadN 6 \
---genomeFastaFiles ./Genome/GRCm39.primary_assembly.genome.fa \
---sjdbGTFfile ./Genome/gencode.vM30.annotation.gtf \
---sjdbOverhang 99 \
---genomeDir ./Genome/STAR_index
-
+    --runThreadN 6 \
+    --genomeFastaFiles ./Genome/GRCm39.primary_assembly.genome.fa \
+    --sjdbGTFfile ./Genome/gencode.vM30.annotation.gtf \
+    --sjdbOverhang 99 \
+    --genomeDir ./Genome/STAR_index

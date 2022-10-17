@@ -5,10 +5,9 @@ mamgland
 dge <- edgeR::SE2DGEList(mamgland[, mamgland$group %in% c("Basal", "LP")])
 ```
 
-Here, we perform multidimensional scaling,
-an embedding technique that takes in the distances between samples
-and tries to find a low-dimensional representation of the data
-that preserves the distances between samples.
+Here, we perform multidimensional scaling, an embedding technique that takes in
+the distances between samples and tries to find a low-dimensional representation
+of the data that preserves the distances between samples.
 
 The `plotMDS` function plots the first two dimensions of the embedding.
 
