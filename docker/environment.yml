@@ -6,17 +6,22 @@ channels:
 
 dependencies:
   - python=3.10
+  - bustools
   - fastqc
   - jq
   - kallisto
   - multiqc
+  - pandas
   - pip
   - samtools
+  - scanpy
+  - scipy
   - radian
   - pip:
-    - ffq
-    - gget
-# R stuffs
+      - kb-python
+      - ffq
+      - gget
+  # R stuffs
   - r-base=4.1
   - r-formatr
   - r-ggrepel
