@@ -26,11 +26,7 @@ Single cell analysis is a rapidly growing field in biology. The ability to analy
 
 
 ## Data
-
-
 ### Description
-
-### Data
 The dataset we are using is [10x 10k neurons from an E18 mouse](https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0/neuron_10k_v3) (This is a large dataset ~25Gb).
 
 Cells for this sample are from a combined cortex, hippocampus and sub ventricular zone of an E18 mouse.
@@ -298,8 +294,6 @@ colData(dat)$Total_mRNA<-Matrix::colSums(assay(dat))
 hist(colData(dat)$Total_mRNA,col="darkblue",breaks=50,main="Total mRNAs sequenced per cell")
 ```
 
-* What shape is this distribution?
-
 * What cellular features might be correlated with total mRNA abundance?
 
 * How many mRNAs do we *expect* are in a given eukaryotic cell?
@@ -372,19 +366,19 @@ And then, we can use this dataset to compare our single cell expression profiles
 ```{r singleR_annotation, eval=do_annot}
 rownames(dat) <- stringr::str_remove(rownames(dat), "\\.\\d+")
 system.time(annots<-SingleR(test = dat,
-                ref = mouse.rnaseq, labels = colData(mouse.rnaseq)$label,
-                assay.type.test=1, clusters = dat@clusters$UMAP$clusters)
+                ref = mouse.rnaseq, labels = colData(mouse.rnaseq)$label.fine,
+                clusters = dat@clusters$UMAP$clusters)
 )
 ```
 
 ```{r annotation_save, include = FALSE, eval=do_annot}
-saveRDS(annots, "./data/cell_type.rds")
+saveRDS(annots, "data/cell_type.rds")
 ```
 
 ## Apply learned annotations to cell_data_set object
-Once we've learned labels for each cell, we can then add this information into the phenotypeData (`pData()`) slot of our main object.
+Once we've learned labels for each learned cluster, we can then add this information into the colData of our main object.
 ```{r annotation_assign}
-colData(dat)$cell_type <- annots$pruned.labels
+colData(dat)$cell_type <-annots$pruned.labels[dat@clusters$UMAP$clusters]
 plot_cells(dat,color_cells_by="cell_type", group_cells_by = "cluster", cell_size=0.75, label_cell_groups = FALSE)
 table(pData(dat)$cell_type)
 ```
@@ -392,11 +386,10 @@ table(pData(dat)$cell_type)
 The algorithm does a *_reasonable_* job at identifying major cell types, and identifies a number of different cell types in our dataset. Before we go any further, lets filter the dataset down to only cell types that we might be interested in for downstream analysis.
 
 ```{r annotation_filter}
-inds <- annots$pruned.labels %in% c("NPCs", "Neurons", "Neurons activated", "OPCs", "Oligodendrocytes",
-                                    "qNSCs", "aNSCs", "Astrocytes", "Ependymal", "Microglia")
+cells_use_idx <- colData(dat)$cell_type  %in% c("NPCs", "Neurons", "Microglia")
 # Only keep these cell types
-cells_use <- row.names(annots)[inds]
-dat <- dat[,cells_use]
+
+dat <- dat[,cells_use_idx]
 table(colData(dat)$cell_type)
 # Preprocess again on filtered dataset
 nDims <- 20
@@ -476,7 +469,7 @@ How do we find the genes that are differentially expressed on the different path
 (This can take some time so we don't necessarily have to run it in real time).
 ```{r pr_test, cache=TRUE, results='hide', eval=FALSE,message=FALSE, echo=FALSE}
 #trace('calculateLW', edit = T, where = asNamespace("monocle3")) this is a temp fix to help debug if below throws an error for Matrix:rBind()
-system.time(pseudotime_pr_test_res<-graph_test(dat[sample(expressed_genes,40),],
+system.time(pseudotime_pr_test_res<-graph_test(dat[sample(rownames(dat),40),],
                                                neighbor_graph="principal_graph",
                                                cores=1)
 )
