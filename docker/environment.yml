@@ -28,6 +28,7 @@ dependencies:
   - r-monocle3
   - r-pheatmap
   - r-rcpp
+  - r-sleuth
   - r-seurat
   - r-tidyverse
   - r-uwot
