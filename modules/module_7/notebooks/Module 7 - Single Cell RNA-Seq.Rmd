@@ -468,7 +468,11 @@ Here we are also setting the 'root' of this trajectory to begin at a node in the
 How do we find the genes that are differentially expressed on the different paths through the trajectory? How do we find the ones that are restricted to the beginning of the trajectory? Or excluded from it? Monocle3 uses a 'principal graph test' to test whether cells at similar positions on the trajectory have correlated expression
 (This can take some time so we don't necessarily have to run it in real time).
 ```{r pr_test, cache=TRUE, results='hide', eval=FALSE,message=FALSE, echo=FALSE}
-#trace('calculateLW', edit = T, where = asNamespace("monocle3")) this is a temp fix to help debug if below throws an error for Matrix:rBind()
+#trace('calculateLW', edit = T, where = asNamespace("monocle3")) #this is a temp fix to help debug if below throws an error for Matrix::rBind()
+# You can uncomment the line above which will open the code for monocle3.  Find the line that says:
+# tmp <- Matrix::rBind(tmp, cur_tmp)
+# and change it to the following:
+# tmp <- rbind(tmp, cur_tmp)
 system.time(pseudotime_pr_test_res<-graph_test(dat[sample(rownames(dat),40),],
                                                neighbor_graph="principal_graph",
                                                cores=1)
@@ -523,7 +527,7 @@ Importantly, these patterns are 'data driven' and often yield insights into the 
 seed<-19790119
 nPatterns<-30
 # Takes about ~3-4 minutes...
-system.time(dat.nnmf<-RcppML::nmf(assay(dat,'logcounts')[expressed_genes,], 
+system.time(dat.nnmf<-RcppML::nmf(assay(dat,'logcounts'), 
                                   k = nPatterns,
                                   tol = 1e-04,
                                   maxit = 100,
@@ -541,14 +545,14 @@ dim(dat.nnmf$h)
 patterns.df<-data.frame(t(dat.nnmf$h))
 colnames(patterns.df)<-paste0("Pattern_",c(1:nPatterns))
 colData(dat)<-cbind(colData(dat),patterns.df)
-pdf("figures/patterns.pdf",width=5,height=5)
+pdf("patterns.pdf",width=5,height=5)
 lapply(c(1:nPatterns),function(i){
 plot_cells(dat, color_cells_by=paste0("Pattern_",i), cell_size=0.75) +
     ggtitle(paste0("Pattern_",i))  +
     coord_equal(1)
 })
 dev.off()
-targetPattern<-7
+targetPattern<-12
 plot_cells(dat, color_cells_by=paste0("Pattern_",targetPattern), cell_size=0.75) +
     ggtitle(paste0("Pattern ",targetPattern))  +
     coord_equal(1)
@@ -559,8 +563,8 @@ plot_cells(dat, color_cells_by=paste0("Pattern_",targetPattern), cell_size=0.75)
 geneWeights.df<-data.frame(dat.nnmf$w)
 colnames(geneWeights.df)<-paste0("Pattern_",c(1:nPatterns))
 #fData(dat)[head(rownames(dat.nnmf$W)[order(dat.nnmf$W[,patternOfInterest],decreasing=TRUE)]),]
-tmp<-as.data.frame(cbind(rowData(dat)[expressed_genes,c("gene_id","gene_short_name")],geneWeights.df))
-targetPatterns<-c(5,9,10,23,targetPattern)
+tmp<-as.data.frame(cbind(rowData(dat)[,c("gene_id","gene_short_name")],geneWeights.df))
+targetPatterns<-c(1,2,4,13,22,targetPattern)
 DT::datatable(tmp[,c("gene_id","gene_short_name",
                      unlist(lapply(targetPatterns,function(i){paste0("Pattern_",i)
                        }))
