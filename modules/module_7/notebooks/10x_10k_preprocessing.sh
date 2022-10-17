@@ -1,5 +1,5 @@
 #!/bin/bash
-#Setup environment
+# Setup environment
 conda activate kallistobus
 
 # Fetch data
@@ -17,10 +17,7 @@ cd ..
 mkdir kallisto
 cd kallisto
 kb count --h5ad -i ../index/index.idx -g ../index/t2g.txt -x 10xv3 -o output --filter bustools -t 2 \
-../neuron_10k_v3_fastqs/neuron_10k_v3_S1_L001_R1_001.fastq.gz \
-../neuron_10k_v3_fastqs/neuron_10k_v3_S1_L001_R2_001.fastq.gz \
-../neuron_10k_v3_fastqs/neuron_10k_v3_S1_L002_R1_001.fastq.gz \
-../neuron_10k_v3_fastqs/neuron_10k_v3_S1_L002_R2_001.fastq.gz
-
-
-
+    ../neuron_10k_v3_fastqs/neuron_10k_v3_S1_L001_R1_001.fastq.gz \
+    ../neuron_10k_v3_fastqs/neuron_10k_v3_S1_L001_R2_001.fastq.gz \
+    ../neuron_10k_v3_fastqs/neuron_10k_v3_S1_L002_R1_001.fastq.gz \
+    ../neuron_10k_v3_fastqs/neuron_10k_v3_S1_L002_R2_001.fastq.gz

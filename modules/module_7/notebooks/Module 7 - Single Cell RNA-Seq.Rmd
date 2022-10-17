@@ -3,7 +3,7 @@ title: "Module 7 - Single Cell Analysis"
 author: "Loyal A. Goff"
 date: "October 17, 2022"
 output:
-  html_document: 
+  html_document:
     toc: true
     toc_depth: 3
     number_sections: true
@@ -14,53 +14,72 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 knitStart <- Sys.time()
 ```
-# Overview
-Single cell analysis is a rapidly growing field in biology. The ability to analyze individual cells has allowed researchers to gain a better understanding of the heterogeneity of cells within a population. This module will introduce the basic concepts of single cell analysis and provide an overview of a select number of tools available for single cell analysis.
 
+# Overview
+
+Single cell analysis is a rapidly growing field in biology. The ability to
+analyze individual cells has allowed researchers to gain a better understanding
+of the heterogeneity of cells within a population. This module will introduce
+the basic concepts of single cell analysis and provide an overview of a select
+number of tools available for single cell analysis.
 
 ## Learning Objectives
-• Understand the basic steps of single cell RNA-Sequencing analysis workflows
-• Develop a baseline awareness of cellular heterogeneity both between and within cell 'types'.
-• Learn to identify and examine cell state transitions via pseudotime analysis
-• Understanding the application of dimensionality reduction to visualization and high-dimensional sequencing data analysis.
 
+- Understand the basic steps of single cell RNA-Sequencing analysis workflows
+- Develop a baseline awareness of cellular heterogeneity both between and within
+  cell 'types'.
+- Learn to identify and examine cell state transitions via pseudotime analysis
+- Understanding the application of dimensionality reduction to visualization and
+  high-dimensional sequencing data analysis.
 
 ## Data
-### Description
-The dataset we are using is [10x 10k neurons from an E18 mouse](https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0/neuron_10k_v3) (This is a large dataset ~25Gb).
 
-Cells for this sample are from a combined cortex, hippocampus and sub ventricular zone of an E18 mouse.
+### Description
+
+The dataset we are using is
+[10x 10k neurons from an E18 mouse](https://support.10xgenomics.com/single-cell-gene-expression/datasets/3.0.0/neuron_10k_v3)
+(This is a large dataset ~25Gb).
+
+Cells for this sample are from a combined cortex, hippocampus and sub
+ventricular zone of an E18 mouse.
+
 - 11,869 cells detected
 - Sequenced on Illumina NovaSeq with approximately 30,000 reads per cell
-- 28bp read1 (16bp Chromium barcode and 12bp UMI), 91bp read2 (transcript), and 8bp I7 sample barcode
+- 28bp read1 (16bp Chromium barcode and 12bp UMI), 91bp read2 (transcript), and
+  8bp I7 sample barcode
 
 ![10x Genomics sequencing workflow overview](https://dnacore.missouri.edu/images/10xschematic.jpg)
 
 Experimental questions:
+
 - What types of cells do we expect to find?
 - What/how many cellular 'states' do we observe at the transcriptional level?
 - How well defined are different cell types
-  * What do 'transitioning' cell types/states look like?
-- Can we identify differentially expressed and/or marker genes between cell types?
+  - What do 'transitioning' cell types/states look like?
+- Can we identify differentially expressed and/or marker genes between cell
+  types?
 - What genes change expression over the course of neuronal development?
-
 
 # Library imports
 
 ## Install packages
+
 ```{r install_packages}
-#Install BiocManager
+# Install BiocManager
 if (!require("BiocManager", quietly = TRUE)) {
-    install.packages("BiocManager")
-    BiocManager::install(version = "3.14")
+  install.packages("BiocManager")
+  BiocManager::install(version = "3.14")
 }
-#Install other accessory bioconductor packages
-packages <- c("Matrix","monocle3","RcppML","biomaRt","tidyverse","celldex","SingleR","ensembldb")
-packages_not_installed<-setdiff(packages,rownames(installed.packages()))
-if (length(packages_not_installed > 0)) {BiocManager::install(packages_not_installed,update=FALSE,ask=FALSE)}
+# Install other accessory bioconductor packages
+packages <- c("Matrix", "monocle3", "RcppML", "biomaRt", "tidyverse", "celldex", "SingleR", "ensembldb")
+packages_not_installed <- setdiff(packages, rownames(installed.packages()))
+if (length(packages_not_installed > 0)) {
+  BiocManager::install(packages_not_installed, update = FALSE, ask = FALSE)
+}
 ```
 
 ## Load packages
+
 ```{r}
 library(Matrix)
 library(monocle3)
@@ -72,284 +91,414 @@ library(SingleR)
 ```
 
 # Importing and cleaning raw preprocessed data
-Since the preprocessing is a time-consuming step, I've already performed this operation for you (you can see how this is done by looking at the `scripts/10x_10k_preprocessing.sh` bash script for reference). The important output of this preprocessing operation is a set of three matrices that contain information about the number of mRNAs (specifically Unique Molecular Identifiers (UMIs)) contained within each droplet of the 10x emulsion.
 
-The first is the `geneMetadata` which describes any associated information for each gene within the reference transcriptome:
+Since the preprocessing is a time-consuming step, I've already performed this
+operation for you (you can see how this is done by looking at the
+`scripts/10x_10k_preprocessing.sh` bash script for reference). The important
+output of this preprocessing operation is a set of three matrices that contain
+information about the number of mRNAs (specifically Unique Molecular Identifiers
+(UMIs)) contained within each droplet of the 10x emulsion.
 
-|     |gene_id |gene_short_name |chromosome |
-|-----|-----:|-----:|-----:|
-|gene1|  ENSMUSG00000005583   | Mef2c    |  chr13  |
-|gene2|  ENSMUSG00000097063  |  Pantr2   |  chr1  |
-|gene3|  ENSMUSG00000045515   | Pou3f3    |  chr1  |
+The first is the `geneMetadata` which describes any associated information for
+each gene within the reference transcriptome:
+
+|       |            gene_id | gene_short_name | chromosome |
+| ----- | -----------------: | --------------: | ---------: |
+| gene1 | ENSMUSG00000005583 |           Mef2c |      chr13 |
+| gene2 | ENSMUSG00000097063 |          Pantr2 |       chr1 |
+| gene3 | ENSMUSG00000045515 |          Pou3f3 |       chr1 |
+
 ...
 
-The second is the `cellMetadata` which describes any associated information for each cell/droplet from our single cell sample:
+The second is the `cellMetadata` which describes any associated information for
+each cell/droplet from our single cell sample:
 
-|     |barcode|celltype|scaleFactor|
-|-----|-----:|-----:|-----:|
-|barcode1|  AGCTATGCGATAGCTAC   |     |    |
-|barcode2|  GCTACGCGATCGATCGA  |     |    |
-|barcode3|  ATCATACTGCGATACGC   |     |    |
+|          |           barcode | celltype | scaleFactor |
+| -------- | ----------------: | -------: | ----------: |
+| barcode1 | AGCTATGCGATAGCTAC |          |             |
+| barcode2 | GCTACGCGATCGATCGA |          |             |
+| barcode3 | ATCATACTGCGATACGC |          |             |
+
 ...
 
-The third is the `counts` matrix which is a geneXcell matrix where the values represent the raw counts for each gene in each cell:
+The third is the `counts` matrix which is a geneXcell matrix where the values
+represent the raw counts for each gene in each cell:
 
-|     |cell1 |cell2 |cell3 |
-|-----|-----:|-----:|-----:|
-|gene1|  0   |2     |    0|
-|gene2|  15  |7     |    3|
-|gene3|  1   |0     |    2|
+|       | cell1 | cell2 | cell3 |
+| ----- | ----: | ----: | ----: |
+| gene1 |     0 |     2 |     0 |
+| gene2 |    15 |     7 |     3 |
+| gene3 |     1 |     0 |     2 |
+
 ...
 
-Since this pre-processing was performed earlier, I've made these three matrices available for direct download.
+Since this pre-processing was performed earlier, I've made these three matrices
+available for direct download.
 
 ```{r import_preprocessed_matrices}
-geneMetadata<-as.data.frame(read_csv(url("https://dl.dropboxusercontent.com/s/5wqxsxdck9d5unh/cells_x_genes.genes.txt?dl=0"),col_names=c("gene_id")))
-cellMetadata<-as.data.frame(read_csv(url("https://dl.dropboxusercontent.com/s/icm1qf1z6ayvz89/cells_x_genes.barcodes.txt?dl=0"),col_names=c("barcode")))
-counts<-Matrix::readMM(url("https://dl.dropboxusercontent.com/s/hd5h7ihcrte0mlv/cells_x_genes.mtx?dl=0"))
-counts<-t(counts) # matrix is provided in the wrong orientation so need to transpose
+geneMetadata <- as.data.frame(read_csv(url("https://dl.dropboxusercontent.com/s/5wqxsxdck9d5unh/cells_x_genes.genes.txt?dl=0"), col_names = c("gene_id")))
+cellMetadata <- as.data.frame(read_csv(url("https://dl.dropboxusercontent.com/s/icm1qf1z6ayvz89/cells_x_genes.barcodes.txt?dl=0"), col_names = c("barcode")))
+counts <- Matrix::readMM(url("https://dl.dropboxusercontent.com/s/hd5h7ihcrte0mlv/cells_x_genes.mtx?dl=0"))
+counts <- t(counts) # matrix is provided in the wrong orientation so need to transpose
 ```
 
 ```{r}
 head(geneMetadata)
 head(cellMetadata)
-head(counts)[1:6,1:6]
+head(counts)[1:6, 1:6]
 dim(geneMetadata)
 dim(cellMetadata)
 dim(counts)
 ```
 
 Most barcodes (cells) only have 0 or 1 UMIs detected.
+
 ```{r}
 tot_count <- Matrix::colSums(counts)
 summary(tot_count)
 ```
 
 # Monocle3 secondary analysis
-Now that we have collected the count matrix and accessory matrices, we will need to organize these into a single cell analysis framework for downstream/secondary analysis. Here we will be using the monocle3 framework.
+
+Now that we have collected the count matrix and accessory matrices, we will need
+to organize these into a single cell analysis framework for downstream/secondary
+analysis. Here we will be using the monocle3 framework.
 
 ## Create Monocle `cell_data_set` object from spliced matrix
-The `cell_data_set` class defines how the single cell data are stored, indexed, manipulated, and sliced. The three components that we need to create a `cell_data_set` instance are 1) the sparse count matrix, 2) gene-level annotation, and 3) cell-level annotation.  We don't have much for #'s 2 or 3 at this point other than ids, but it's enough to get started.
+
+The `cell_data_set` class defines how the single cell data are stored, indexed,
+manipulated, and sliced. The three components that we need to create a
+`cell_data_set` instance are 1) the sparse count matrix, 2) gene-level
+annotation, and 3) cell-level annotation. We don't have much for #'s 2 or 3 at
+this point other than ids, but it's enough to get started.
 
 ```{r monocle3_create_cds}
-rownames(cellMetadata)<-cellMetadata$barcode
-rownames(geneMetadata)<-geneMetadata$gene_id
-colnames(counts)<-rownames(cellMetadata)
-rownames(counts)<-rownames(geneMetadata)
+rownames(cellMetadata) <- cellMetadata$barcode
+rownames(geneMetadata) <- geneMetadata$gene_id
+colnames(counts) <- rownames(cellMetadata)
+rownames(counts) <- rownames(geneMetadata)
 dat <- monocle3::new_cell_data_set(counts,
-                         cell_metadata = cellMetadata,
-                         gene_metadata = geneMetadata)
+  cell_metadata = cellMetadata,
+  gene_metadata = geneMetadata
+)
 ```
-We have now created our base monocle3 `cell_data_set` object called `dat`. Lets peek around to see what's inside:
+
+We have now created our base monocle3 `cell_data_set` object called `dat`. Lets
+peek around to see what's inside:
 
 ```{r}
 dat
 ```
+
 This is a summary report of `dat`.
 
 To access the expression matrix we use the `assay()` method:
+
 ```{r}
-assay(dat,'counts')[1:6,1:6]
+assay(dat, "counts")[1:6, 1:6]
 ```
-We can create multiple different 'assays' in the same dataset that might reflect different transformations of the raw 'counts' data (e.g. 'logcounts','normcounts', etc). Each of these must have the same dimensions as the 'count' assay.
+
+We can create multiple different 'assays' in the same dataset that might reflect
+different transformations of the raw 'counts' data (e.g.
+'logcounts','normcounts', etc). Each of these must have the same dimensions as
+the 'count' assay.
 
 ```{r make_logcounts}
-assay(dat,'logcounts')<-log10(assay(dat,'counts')+1)
+assay(dat, "logcounts") <- log10(assay(dat, "counts") + 1)
 ```
 
 To access the cell annotations we use the `colData()` method:
+
 ```{r}
 colData(dat)
 ```
 
 To access the gene annotations we use the `rowData()` method:
+
 ```{r}
 rowData(dat)
 ```
 
-There's not much annotation in there yet for either the genes or the cells, lets see what we can add.
+There's not much annotation in there yet for either the genes or the cells, lets
+see what we can add.
 
 ## Add gene-level annotation from BioMaRt
-Using the `gene_id` information in the featureData slot, we can fetch external annotations for each gene and merge them so we can get more meaningful gene information.  `biomaRt` is an interface in Bioconductor to get information associated with various types of gene_ids.
+
+Using the `gene_id` information in the featureData slot, we can fetch external
+annotations for each gene and merge them so we can get more meaningful gene
+information. `biomaRt` is an interface in Bioconductor to get information
+associated with various types of gene_ids.
+
 ```{r feature_annotation}
-mart <- biomaRt::useMart(biomart = "ENSEMBL_MART_ENSEMBL",
-                         dataset = "mmusculus_gene_ensembl",
-                         host = 'ensembl.org')
-t2g <- biomaRt::getBM(attributes = c("ensembl_gene_id",
-                                     "external_gene_name",
-                                     "chromosome_name",
-                                     "start_position",
-                                     "end_position"
-                                     ), mart = mart) # Fetch annotation information for all gene_ids
-fData(dat)$gene_id_trimmed<-stringr::str_split_fixed(fData(dat)$gene_id,pattern="\\.",2)[,1] #Trim off the version identifier from the gene_ids
-fData(dat)<-dplyr::left_join(as.data.frame(fData(dat)),t2g,by=c("gene_id_trimmed" = "ensembl_gene_id"),sort=FALSE,all.x=TRUE,keep=TRUE) # merge annotation into existing fData().
-fData(dat)$gene_short_name<-fData(dat)$external_gene_name # make a field named "gene_short_name" in fData()
-head(fData(dat)) #Inspect
+mart <- biomaRt::useMart(
+  biomart = "ENSEMBL_MART_ENSEMBL",
+  dataset = "mmusculus_gene_ensembl",
+  host = "ensembl.org"
+)
+t2g <- biomaRt::getBM(attributes = c(
+  "ensembl_gene_id",
+  "external_gene_name",
+  "chromosome_name",
+  "start_position",
+  "end_position"
+), mart = mart) # Fetch annotation information for all gene_ids
+fData(dat)$gene_id_trimmed <- stringr::str_split_fixed(fData(dat)$gene_id, pattern = "\\.", 2)[, 1] # Trim off the version identifier from the gene_ids
+fData(dat) <- dplyr::left_join(as.data.frame(fData(dat)), t2g, by = c("gene_id_trimmed" = "ensembl_gene_id"), sort = FALSE, all.x = TRUE, keep = TRUE) # merge annotation into existing fData().
+fData(dat)$gene_short_name <- fData(dat)$external_gene_name # make a field named "gene_short_name" in fData()
+head(fData(dat)) # Inspect
 ```
+
 Now we have a bit more useful information associated with each gene.
 
 ## Monocle3 preprocessing
-The term 'preprocessing' comes up again even though we're past the initial hurdle of generating the matrix. Standard secondary preprocessing for single cell RNA-Seq involves projecting expression data into the top principal components to identify ranked sources of variation. This is usually done after log-transforming the data to stabilize the variance across the dynamic range of gene expression. Monocle3 conveniently provides a function `preprocess_cds()` that will do this transform and PCA analysis. We start with a relatively high number of principal components to estimate, 100.
+
+The term 'preprocessing' comes up again even though we're past the initial
+hurdle of generating the matrix. Standard secondary preprocessing for single
+cell RNA-Seq involves projecting expression data into the top principal
+components to identify ranked sources of variation. This is usually done after
+log-transforming the data to stabilize the variance across the dynamic range of
+gene expression. Monocle3 conveniently provides a function `preprocess_cds()`
+that will do this transform and PCA analysis. We start with a relatively high
+number of principal components to estimate, 100.
 
 ```{r initial_preprocessing}
-nDims<-40
+nDims <- 40
 dat <- monocle3::preprocess_cds(dat,
-                      num_dim = nDims,
-                      method = "PCA",
-                      norm_method = "log",
-                      verbose=T)
+  num_dim = nDims,
+  method = "PCA",
+  norm_method = "log",
+  verbose = T
+)
 plot_pc_variance_explained(dat)
 ```
-If we look at the variance explained for each principle component, we can see that it starts to trail off after a point.  We probably won't get much more useful information after 20 or so components. So we subset to only the first 20 components and preprocess again.
+
+If we look at the variance explained for each principle component, we can see
+that it starts to trail off after a point. We probably won't get much more
+useful information after 20 or so components. So we subset to only the first 20
+components and preprocess again.
 
 ```{r nDims_preprocessing}
 nDims <- 20 # or 20 works here too downstream
 dat <- preprocess_cds(dat,
-                      num_dim = nDims,
-                      method = "PCA",
-                      norm_method = "log",
-                      verbose=T)
+  num_dim = nDims,
+  method = "PCA",
+  norm_method = "log",
+  verbose = T
+)
 ```
 
-
 ## QC metrics
-Next we can actually start to assess some of the important quality metrices for each gene and each cell.
+
+Next we can actually start to assess some of the important quality metrices for
+each gene and each cell.
 
 ### Gene-wise QC metrics
+
 #### Minimum number of cells expressing a given gene
-It's a good idea, and saves time/effort to identify and only consider genes whose expression levels are detected in a certain number or proportion of cells within your assay.
+
+It's a good idea, and saves time/effort to identify and only consider genes
+whose expression levels are detected in a certain number or proportion of cells
+within your assay.
 
 ```{r gene_qc_1}
-dat<-detect_genes(dat)
-cellCutoff<-20 # This number is arbitrary
-expressed_genes <- row.names(subset(rowData(dat),
-    num_cells_expressed >= cellCutoff))
+dat <- detect_genes(dat)
+cellCutoff <- 20 # This number is arbitrary
+expressed_genes <- row.names(subset(
+  rowData(dat),
+  num_cells_expressed >= cellCutoff
+))
 length(expressed_genes)
 ```
 
-Once we've detected the number of cells expressing each gene, we can look at the distribution to get a better feel
-```{r}
-hist(rowData(dat)$num_cells_expressed,col="red",breaks=50,main="Number of cells expressing a given gene")
-```
-Most genes are not detectably expressed in more than one cell (this is the nature of single cell gene expression assays, and gene expression in general)
-
-Lets log transform and look again. This time, we'll add a threshold line showing our cutoff for 'expressed genes'.
-```{r}
-hist(log10(rowData(dat)$num_cells_expressed),col="red",breaks=50,main="log10 Number of cells expressing a given gene")
-abline(v=log10(cellCutoff),lty="dashed")
-```
-
-We have now identified a total of `r length(expressed_genes)` that are detectably expressed in at least `r cellCutoff` cells in our dataset.
-
-Let's go ahead and subset our cell_data_set object to only those genes that are expressed in more than `r cellCutoff` cells.
+Once we've detected the number of cells expressing each gene, we can look at the
+distribution to get a better feel
 
 ```{r}
-dat<-dat[expressed_genes,]
+hist(rowData(dat)$num_cells_expressed, col = "red", breaks = 50, main = "Number of cells expressing a given gene")
 ```
 
+Most genes are not detectably expressed in more than one cell (this is the
+nature of single cell gene expression assays, and gene expression in general)
+
+Lets log transform and look again. This time, we'll add a threshold line showing
+our cutoff for 'expressed genes'.
+
+```{r}
+hist(log10(rowData(dat)$num_cells_expressed), col = "red", breaks = 50, main = "log10 Number of cells expressing a given gene")
+abline(v = log10(cellCutoff), lty = "dashed")
+```
+
+We have now identified a total of `r length(expressed_genes)` that are
+detectably expressed in at least `r cellCutoff` cells in our dataset.
+
+Let's go ahead and subset our cell_data_set object to only those genes that are
+expressed in more than `r cellCutoff` cells.
+
+```{r}
+dat <- dat[expressed_genes, ]
+```
 
 #### Distribution of gene mean copies per cell
-What is the average expression level (in mRNA Copies per cell) for each gene?
-```{r gene_qc_2}
-rowData(dat)$mean_cpc<-Matrix::rowMeans(assay(dat))
-hist(log10(rowData(dat[expressed_genes,])$mean_cpc),col="purple",breaks=50,main="Mean RNA copies per cell")
-```
-* What can this distribution tell us about the average mRNA expression/abundance of a gene? about single cell RNA-Seq efficiency in general?
 
-* What is the 'expected' number of mRNA copies per cell for an 'average' gene?
+What is the average expression level (in mRNA Copies per cell) for each gene?
+
+```{r gene_qc_2}
+rowData(dat)$mean_cpc <- Matrix::rowMeans(assay(dat))
+hist(log10(rowData(dat[expressed_genes, ])$mean_cpc), col = "purple", breaks = 50, main = "Mean RNA copies per cell")
+```
+
+- What can this distribution tell us about the average mRNA expression/abundance
+  of a gene? about single cell RNA-Seq efficiency in general?
+
+- What is the 'expected' number of mRNA copies per cell for an 'average' gene?
 
 ### Cell QC metrics
 
 #### Distribution of detected genes across cells
-How many genes are expressed in a given cell?
-```{r cell_qc_1}
-hist(colData(dat)$num_genes_expressed,col="darkgreen",breaks=50,main="Number of genes expressed per cell")
-```
 
+How many genes are expressed in a given cell?
+
+```{r cell_qc_1}
+hist(colData(dat)$num_genes_expressed, col = "darkgreen", breaks = 50, main = "Number of genes expressed per cell")
+```
 
 #### Mt-genome proportion
-A high proportion of mitochondrial genes may indicate a lower than ideal capture efficiency for a given cell. Here we identify the subset of mitochondrial genes and look at the proportion of reads mapping to 'mt-' genes vs genomic genes.
-```{r cell_qc_mito}
-mito_genes<-rowData(dat)$gene_id[grepl("^mt-",rowData(dat)$gene_short_name)]
-colData(dat)$mt_reads <- Matrix::colSums(assay(dat)[mito_genes,])
-colData(dat)$total_reads  <- Matrix::colSums(assay(dat))
-colData(dat)$mito_ratio <- colData(dat)$mt_reads/colData(dat)$total_reads
-ggplot(as.data.frame(colData(dat)),
-       aes(x = num_genes_expressed, y = mito_ratio)) +
-       geom_point() +
-       labs(x = "Number of genes", y = "Mitochondrial ratio") +
-       scale_color_brewer(palette = "Set1") +
-       theme(legend.position = "none") +
-       ggtitle("Number of genes vs Mitochondrial ratio") +
-       monocle3:::monocle_theme_opts()
-```
-Indeed we see that the proportion of MT reads for some cells increases as the total information content decreases (ie. lower 'quality' cells have a greater fraction of MT reads). Often it can be advisable to set a threshold (~20%) to eliminate lower quality cells.
 
-* When might you _not_ want to apply a threshold for MT-ratio? 
+A high proportion of mitochondrial genes may indicate a lower than ideal capture
+efficiency for a given cell. Here we identify the subset of mitochondrial genes
+and look at the proportion of reads mapping to 'mt-' genes vs genomic genes.
+
+```{r cell_qc_mito}
+mito_genes <- rowData(dat)$gene_id[grepl("^mt-", rowData(dat)$gene_short_name)]
+colData(dat)$mt_reads <- Matrix::colSums(assay(dat)[mito_genes, ])
+colData(dat)$total_reads <- Matrix::colSums(assay(dat))
+colData(dat)$mito_ratio <- colData(dat)$mt_reads / colData(dat)$total_reads
+ggplot(
+  as.data.frame(colData(dat)),
+  aes(x = num_genes_expressed, y = mito_ratio)
+) +
+  geom_point() +
+  labs(x = "Number of genes", y = "Mitochondrial ratio") +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.position = "none") +
+  ggtitle("Number of genes vs Mitochondrial ratio") +
+  monocle3:::monocle_theme_opts()
+```
+
+Indeed we see that the proportion of MT reads for some cells increases as the
+total information content decreases (ie. lower 'quality' cells have a greater
+fraction of MT reads). Often it can be advisable to set a threshold (~20%) to
+eliminate lower quality cells.
+
+- When might you _not_ want to apply a threshold for MT-ratio?
 
 #### Total mRNAs per cell
-To get a general picture of the capture efficiency and depth of information for each cell we can look at the total mRNA mass recovered per cell.
+
+To get a general picture of the capture efficiency and depth of information for
+each cell we can look at the total mRNA mass recovered per cell.
+
 ```{r total_mRNAs}
-colData(dat)$Total_mRNA<-Matrix::colSums(assay(dat))
-hist(colData(dat)$Total_mRNA,col="darkblue",breaks=50,main="Total mRNAs sequenced per cell")
+colData(dat)$Total_mRNA <- Matrix::colSums(assay(dat))
+hist(colData(dat)$Total_mRNA, col = "darkblue", breaks = 50, main = "Total mRNAs sequenced per cell")
 ```
 
-* What cellular features might be correlated with total mRNA abundance?
+- What cellular features might be correlated with total mRNA abundance?
 
-* How many mRNAs do we *expect* are in a given eukaryotic cell?
+- How many mRNAs do we _expect_ are in a given eukaryotic cell?
 
-For each of the above QC 'criterion' we can define thresholds that can be used to filter cells/genes to improve the quality of the dataset.  Here is usually where obvious doublet cells (more than one cell is associated with a single barcode sequence) or low-quality cells are removed prior to doing any further statistical interpretations.
+For each of the above QC 'criterion' we can define thresholds that can be used
+to filter cells/genes to improve the quality of the dataset. Here is usually
+where obvious doublet cells (more than one cell is associated with a single
+barcode sequence) or low-quality cells are removed prior to doing any further
+statistical interpretations.
 
 # Reduce dimensionality to visualize the cell relationships
-Now we're ready to visualize the cells. To do so, you can use either t-SNE, which is very popular in single-cell RNA-seq, or UMAP, which is increasingly common. Monocle 3 uses UMAP by default, since it is both faster and better suited for clustering and trajectory analysis in RNA-seq. To reduce the dimensionality of the data down into the X, Y plane so we can plot it easily, we call `reduce_dimension()`:
+
+Now we're ready to visualize the cells. To do so, you can use either t-SNE,
+which is very popular in single-cell RNA-seq, or UMAP, which is increasingly
+common. Monocle 3 uses UMAP by default, since it is both faster and better
+suited for clustering and trajectory analysis in RNA-seq. To reduce the
+dimensionality of the data down into the X, Y plane so we can plot it easily, we
+call `reduce_dimension()`:
+
 ```{r dim_reduction}
 dat <- reduce_dimension(dat,
-                        verbose=TRUE,
-                        reduction_method="UMAP",
-                        cores = 4)
+  verbose = TRUE,
+  reduction_method = "UMAP",
+  cores = 4
+)
 ```
 
 To visualize the dimensionality reduction we use `plot_cells()`:
+
 ```{r plot_dim_reduction}
 plot_cells(dat)
 ```
 
-And we can look at how different features of the cells are distributed across this embedding. For now we only have technical features to view.
+And we can look at how different features of the cells are distributed across
+this embedding. For now we only have technical features to view.
+
 ```{r plot_dim_reduction_params}
-plot_cells(dat,color_cells_by="num_genes_expressed",cell_size=0.75)
-plot_cells(dat,color_cells_by="Total_mRNA",cell_size=0.75)
-plot_cells(dat,color_cells_by="mito_ratio",cell_size=0.75)
+plot_cells(dat, color_cells_by = "num_genes_expressed", cell_size = 0.75)
+plot_cells(dat, color_cells_by = "Total_mRNA", cell_size = 0.75)
+plot_cells(dat, color_cells_by = "mito_ratio", cell_size = 0.75)
 ```
-What can we deduce/hypothesize about the embedding (we will formally test later)?  Number of cell types?  Diversity of cell types?
+
+What can we deduce/hypothesize about the embedding (we will formally test
+later)? Number of cell types? Diversity of cell types?
 
 ### Embedding shapes
-* Sometimes, clearly defined cell types are obvious puncta in a 2D embedding
-* Other times, what you think of as a single cell type may be broken up into several 'subtypes'
-* Still more, a single cell 'type' may consist of several 'cell states' that might present as more of an amorphous shape in an embedding
-* Cells in an ergodic transitioning state may be represented as a 'pseeudotemporal trajectory' as different cells pass through different phases of the transition.   - These trajectories can be _*very*_ useful as a high-resolution timecourse for how cells respond to changes or cues.
-* What types of shape:stories might be represented in these clusters? What cell types/states do we expect to find in an E18.5 developing mouse cortex?
 
-We can also map the expression level of individual genes (markers) onto this embedding to start to parse out meaning.
+- Sometimes, clearly defined cell types are obvious puncta in a 2D embedding
+- Other times, what you think of as a single cell type may be broken up into
+  several 'subtypes'
+- Still more, a single cell 'type' may consist of several 'cell states' that
+  might present as more of an amorphous shape in an embedding
+- Cells in an ergodic transitioning state may be represented as a
+  'pseeudotemporal trajectory' as different cells pass through different phases
+  of the transition. - These trajectories can be _*very*_ useful as a
+  high-resolution timecourse for how cells respond to changes or cues.
+- What types of shape:stories might be represented in these clusters? What cell
+  types/states do we expect to find in an E18.5 developing mouse cortex?
+
+We can also map the expression level of individual genes (markers) onto this
+embedding to start to parse out meaning.
+
 ```{r known_genes_1}
-plot_cells(dat,genes=c("Pax6","Gad1","Slc17a6","Slc17a7"),cell_size=0.75)
-plot_cells(dat,genes=c("Pax6","Eomes","Fezf2","Tle4","Satb2","Pou3f2"),cell_size=0.75)
+plot_cells(dat, genes = c("Pax6", "Gad1", "Slc17a6", "Slc17a7"), cell_size = 0.75)
+plot_cells(dat, genes = c("Pax6", "Eomes", "Fezf2", "Tle4", "Satb2", "Pou3f2"), cell_size = 0.75)
 ```
 
 # Cluster similar cells into 'cell types'
-We next want to impose a clustering solution onto this embedding to group cells with similar transcriptional profiles together. We use `cluster_cells()` to perform this function in monocle3:
+
+We next want to impose a clustering solution onto this embedding to group cells
+with similar transcriptional profiles together. We use `cluster_cells()` to
+perform this function in monocle3:
+
 ```{r cluster_leiden}
 dat <- cluster_cells(dat,
-                     verbose=TRUE,
-                     resolution=5e-5)
-plot_cells(dat, color_cells_by="cluster", cell_size=0.75, group_label_size = 5, show_trajectory_graph=FALSE)
+  verbose = TRUE,
+  resolution = 5e-5
+)
+plot_cells(dat, color_cells_by = "cluster", cell_size = 0.75, group_label_size = 5, show_trajectory_graph = FALSE)
 
-plot_cells(dat, color_cells_by="partition", cell_size=0.75, group_label_size = 5, show_trajectory_graph=FALSE)
+plot_cells(dat, color_cells_by = "partition", cell_size = 0.75, group_label_size = 5, show_trajectory_graph = FALSE)
 ```
-Remember, clustering is a useful _tool_ but is also _*arbitrary*_ for continuous cell-cell transitions.
+
+Remember, clustering is a useful _tool_ but is also _*arbitrary*_ for continuous
+cell-cell transitions.
 
 # De Novo cell type annotation
+
 ## (May skip this section)
-As a crude first-pass annotation, we can leverage publicly available, bulk RNA-Seq gene expression information for specific cell types to try and 'learn' cell type annotations for each cell. This 'transfer learning' approach can provide a reasonable starting point for coarse cell type identification. The `SingleR` package  leverages reference transcriptomic datasets of pure cell types to infer the cell of origin of each of the single cells independently. First we need to fetch a reference dataset of bulk RNA-Seq expression profiles.
+
+As a crude first-pass annotation, we can leverage publicly available, bulk
+RNA-Seq gene expression information for specific cell types to try and 'learn'
+cell type annotations for each cell. This 'transfer learning' approach can
+provide a reasonable starting point for coarse cell type identification. The
+`SingleR` package leverages reference transcriptomic datasets of pure cell types
+to infer the cell of origin of each of the single cells independently. First we
+need to fetch a reference dataset of bulk RNA-Seq expression profiles.
 
 ```{r singleR_ref_fetch}
 mouse.rnaseq <- celldex::MouseRNAseqData(ensembl = TRUE)
@@ -362,13 +511,16 @@ if (!do_annot) {
 }
 ```
 
-And then, we can use this dataset to compare our single cell expression profiles against to apply coarse cell type labels.
+And then, we can use this dataset to compare our single cell expression profiles
+against to apply coarse cell type labels.
+
 ```{r singleR_annotation, eval=do_annot}
 rownames(dat) <- stringr::str_remove(rownames(dat), "\\.\\d+")
-system.time(annots<-SingleR(test = dat,
-                ref = mouse.rnaseq, labels = colData(mouse.rnaseq)$label.fine,
-                clusters = dat@clusters$UMAP$clusters)
-)
+system.time(annots <- SingleR(
+  test = dat,
+  ref = mouse.rnaseq, labels = colData(mouse.rnaseq)$label.fine,
+  clusters = dat@clusters$UMAP$clusters
+))
 ```
 
 ```{r annotation_save, include = FALSE, eval=do_annot}
@@ -376,211 +528,263 @@ saveRDS(annots, "data/cell_type.rds")
 ```
 
 ## Apply learned annotations to cell_data_set object
-Once we've learned labels for each learned cluster, we can then add this information into the colData of our main object.
+
+Once we've learned labels for each learned cluster, we can then add this
+information into the colData of our main object.
+
 ```{r annotation_assign}
-colData(dat)$cell_type <-annots$pruned.labels[dat@clusters$UMAP$clusters]
-plot_cells(dat,color_cells_by="cell_type", group_cells_by = "cluster", cell_size=0.75, label_cell_groups = FALSE)
+colData(dat)$cell_type <- annots$pruned.labels[dat@clusters$UMAP$clusters]
+plot_cells(dat, color_cells_by = "cell_type", group_cells_by = "cluster", cell_size = 0.75, label_cell_groups = FALSE)
 table(pData(dat)$cell_type)
 ```
 
-The algorithm does a *_reasonable_* job at identifying major cell types, and identifies a number of different cell types in our dataset. Before we go any further, lets filter the dataset down to only cell types that we might be interested in for downstream analysis.
+The algorithm does a _reasonable_ job at identifying major cell types, and
+identifies a number of different cell types in our dataset. Before we go any
+further, lets filter the dataset down to only cell types that we might be
+interested in for downstream analysis.
 
 ```{r annotation_filter}
-cells_use_idx <- colData(dat)$cell_type  %in% c("NPCs", "Neurons", "Microglia")
+cells_use_idx <- colData(dat)$cell_type %in% c("NPCs", "Neurons", "Microglia")
 # Only keep these cell types
 
-dat <- dat[,cells_use_idx]
+dat <- dat[, cells_use_idx]
 table(colData(dat)$cell_type)
 # Preprocess again on filtered dataset
 nDims <- 20
 dat <- preprocess_cds(dat,
-                      num_dim = nDims,
-                      method = "PCA",
-                      verbose=TRUE)
+  num_dim = nDims,
+  method = "PCA",
+  verbose = TRUE
+)
 dat <- reduce_dimension(dat,
-                        verbose=TRUE,
-                        reduction_method="UMAP",
-                        umap.n_neighbors=20,
-                        cores = 4)
+  verbose = TRUE,
+  reduction_method = "UMAP",
+  umap.n_neighbors = 20,
+  cores = 4
+)
 dat <- cluster_cells(dat,
-                     verbose=TRUE,
-                     resolution=1e-5)
-plot_cells(dat,color_cells_by="cell_type", group_cells_by = "cluster", cell_size=0.75, label_cell_groups = FALSE) + scale_color_brewer(palette="Set1")
-plot_cells(dat,color_cells_by="cluster",cell_size=0.75)
-plot_cells(dat,color_cells_by="partition",cell_size=0.75)
-plot_cells(dat,genes=c("Pax6","Eomes","Fezf2","Tle4","Satb2","Pou3f2"),cell_size=0.75)
+  verbose = TRUE,
+  resolution = 1e-5
+)
+plot_cells(dat, color_cells_by = "cell_type", group_cells_by = "cluster", cell_size = 0.75, label_cell_groups = FALSE) + scale_color_brewer(palette = "Set1")
+plot_cells(dat, color_cells_by = "cluster", cell_size = 0.75)
+plot_cells(dat, color_cells_by = "partition", cell_size = 0.75)
+plot_cells(dat, genes = c("Pax6", "Eomes", "Fezf2", "Tle4", "Satb2", "Pou3f2"), cell_size = 0.75)
 ```
 
 # Finding marker genes
-One of our objectives is to find marker genes expressed by each cluster/cell type.
-Once cells have been clustered, we can ask what genes makes them different from one another. To do that, start by calling the `top_markers()` function:
+
+One of our objectives is to find marker genes expressed by each cluster/cell
+type. Once cells have been clustered, we can ask what genes makes them different
+from one another. To do that, start by calling the `top_markers()` function:
 
 ```{r marker_genes_1, message=FALSE, warning=FALSE, results='hide'}
 system.time(
-  marker_test_res <- top_markers(dat, group_cells_by="cluster",
-                               reference_cells=500, cores=4)
+  marker_test_res <- top_markers(dat,
+    group_cells_by = "cluster",
+    reference_cells = 500, cores = 4
   )
+)
 ```
 
 ```{r}
 top_specific_markers <- marker_test_res %>%
-                           dplyr::filter(fraction_expressing >= 0.30) %>%
-                            group_by(cell_group) %>%
-                            top_n(5, pseudo_R2)
+  dplyr::filter(fraction_expressing >= 0.30) %>%
+  group_by(cell_group) %>%
+  top_n(5, pseudo_R2)
+
 top_specific_marker_ids <- unique(top_specific_markers %>% pull(gene_id))
+
 plot_genes_by_group(dat,
-                    top_specific_marker_ids,
-                    group_cells_by="cluster",
-                    ordering_type="maximal_on_diag",
-                    max.size=4)
-plot_cells(dat,color_cells_by="cluster",cell_size=0.75, group_label_size = 8)
+  top_specific_marker_ids,
+  group_cells_by = "cluster",
+  ordering_type = "maximal_on_diag",
+  max.size = 4
+)
+plot_cells(dat, color_cells_by = "cluster", cell_size = 0.75, group_label_size = 8)
 ```
 
 # Pseudotime analysis
-Pseudotime is a measure of how much progress an individual cell has made through a process such as cell differentiation. Since we have at least one population of cells that is transitioning from a progenitor state to a series of mature neurons, can we identify potential differentiation trajectories?
+
+Pseudotime is a measure of how much progress an individual cell has made through
+a process such as cell differentiation. Since we have at least one population of
+cells that is transitioning from a progenitor state to a series of mature
+neurons, can we identify potential differentiation trajectories?
 
 ## Learn trajectory graph
-First we must learn a 'trajectory graph' across each partition (contiguous group of cells) in the data.
+
+First we must learn a 'trajectory graph' across each partition (contiguous group
+of cells) in the data.
+
 ```{r pseudotime_1}
 dat <- learn_graph(dat)
 plot_cells(dat,
-           color_cells_by = "cell_type",
-           label_groups_by_cluster=FALSE,
-           label_leaves=TRUE,
-           label_branch_points=TRUE,
-           label_principal_points=TRUE,
-           label_cell_groups = FALSE,
-           graph_label_size=3,
-           cell_size=0.75) + scale_color_brewer(palette="Set1")
+  color_cells_by = "cell_type",
+  label_groups_by_cluster = FALSE,
+  label_leaves = TRUE,
+  label_branch_points = TRUE,
+  label_principal_points = TRUE,
+  label_cell_groups = FALSE,
+  graph_label_size = 3,
+  cell_size = 0.75
+) + scale_color_brewer(palette = "Set1")
 dat <- order_cells(dat,
-                   root_pr_nodes="Y_1")
+  root_pr_nodes = "Y_1"
+)
 plot_cells(dat,
-           color_cells_by = "pseudotime",
-           label_cell_groups=FALSE,
-           label_leaves=FALSE,
-           label_branch_points=FALSE,
-           graph_label_size=3,
-           cell_size=0.75)
+  color_cells_by = "pseudotime",
+  label_cell_groups = FALSE,
+  label_leaves = FALSE,
+  label_branch_points = FALSE,
+  graph_label_size = 3,
+  cell_size = 0.75
+)
 ```
-Here we are also setting the 'root' of this trajectory to begin at a node in the NPC cells.
+
+Here we are also setting the 'root' of this trajectory to begin at a node in the
+NPC cells.
 
 ## Differential gene expression with respect to pseudotime
-How do we find the genes that are differentially expressed on the different paths through the trajectory? How do we find the ones that are restricted to the beginning of the trajectory? Or excluded from it? Monocle3 uses a 'principal graph test' to test whether cells at similar positions on the trajectory have correlated expression
-(This can take some time so we don't necessarily have to run it in real time).
+
+How do we find the genes that are differentially expressed on the different
+paths through the trajectory? How do we find the ones that are restricted to the
+beginning of the trajectory? Or excluded from it? Monocle3 uses a 'principal
+graph test' to test whether cells at similar positions on the trajectory have
+correlated expression (This can take some time so we don't necessarily have to
+run it in real time).
+
 ```{r pr_test, cache=TRUE, results='hide', eval=FALSE,message=FALSE, echo=FALSE}
-#trace('calculateLW', edit = T, where = asNamespace("monocle3")) #this is a temp fix to help debug if below throws an error for Matrix::rBind()
+# trace('calculateLW', edit = T, where = asNamespace("monocle3")) #this is a temp fix to help debug if below throws an error for Matrix::rBind()
 # You can uncomment the line above which will open the code for monocle3.  Find the line that says:
 # tmp <- Matrix::rBind(tmp, cur_tmp)
 # and change it to the following:
 # tmp <- rbind(tmp, cur_tmp)
-system.time(pseudotime_pr_test_res<-graph_test(dat[sample(rownames(dat),40),],
-                                               neighbor_graph="principal_graph",
-                                               cores=1)
-)
+system.time(pseudotime_pr_test_res <- graph_test(dat[sample(rownames(dat), 40), ],
+  neighbor_graph = "principal_graph",
+  cores = 1
+))
 pr_deg_ids <- row.names(subset(pseudotime_pr_test_res, q_value < 1e-50))
 ```
 
-Here are some high-scoring differentially-expressed genes along the pseudotime trajectory in their UMAP embedding
+Here are some high-scoring differentially-expressed genes along the pseudotime
+trajectory in their UMAP embedding
+
 ```{r pr_de_genes_UMAP}
-pseudotime_genes <- c("Pax6","Btg2","Snap25","Fezf2","Hes6","Cux1","Eomes","Sox9")
-#pseudotime_genes <- head(pseudotime_pr_test_res[order(pseudotime_pr_test_res$q_value),])$external_gene_name
-plot_cells(dat, genes=pseudotime_genes,
-           show_trajectory_graph=TRUE,
-           label_cell_groups=FALSE,
-           label_leaves=FALSE,
-           cell_size=0.5)
+pseudotime_genes <- c("Pax6", "Btg2", "Snap25", "Fezf2", "Hes6", "Cux1", "Eomes", "Sox9")
+# pseudotime_genes <- head(pseudotime_pr_test_res[order(pseudotime_pr_test_res$q_value),])$external_gene_name
+plot_cells(dat,
+  genes = pseudotime_genes,
+  show_trajectory_graph = TRUE,
+  label_cell_groups = FALSE,
+  label_leaves = FALSE,
+  cell_size = 0.5
+)
 ```
 
-We can also explicitly look at how the expression of these genes along the pseudotime trajectory. The function `plot_genes_in_pseudotime()` takes a small set of genes and shows you their dynamics as a function of pseudotime:
+We can also explicitly look at how the expression of these genes along the
+pseudotime trajectory. The function `plot_genes_in_pseudotime()` takes a small
+set of genes and shows you their dynamics as a function of pseudotime:
+
 ```{r pr_de_genes_pseudotime}
-pseudotime_lineage_cds <- dat[fData(dat)$gene_short_name %in% pseudotime_genes,
-                       pData(dat)$cell_type %in% c("NPCs","Neurons")]
+pseudotime_lineage_cds <- dat[
+  fData(dat)$gene_short_name %in% pseudotime_genes,
+  pData(dat)$cell_type %in% c("NPCs", "Neurons")
+]
 plot_genes_in_pseudotime(pseudotime_lineage_cds,
-                         color_cells_by="cell_type",
-                         min_expr=0.5,
-                         ncol=2)
+  color_cells_by = "cell_type",
+  min_expr = 0.5,
+  ncol = 2
+)
 ```
 
 ### Bonus: 3D trajectories
+
 ```{r pseudotime_3d_trajectory}
-dat_3d <- reduce_dimension(dat, max_components = 3, cores=4)
-dat_3d <- cluster_cells(dat_3d,resolution = 1e-5)
+dat_3d <- reduce_dimension(dat, max_components = 3, cores = 4)
+dat_3d <- cluster_cells(dat_3d, resolution = 1e-5)
 dat_3d <- learn_graph(dat_3d)
-#dat_3d <- order_cells(dat_3d)
-plot_cells_3d(dat_3d, color_cells_by="cell_type")
+# dat_3d <- order_cells(dat_3d)
+plot_cells_3d(dat_3d, color_cells_by = "cell_type")
 ```
 
 # Pattern Discovery (NMF)
-Finally, we can step beyond marker gene analysis, and use some 'latent space' discovery methods to learn patterns of co-regulated gene expression.
+
+Finally, we can step beyond marker gene analysis, and use some 'latent space'
+discovery methods to learn patterns of co-regulated gene expression.
 
 These patterns can be used to identify/define:
-  * Cell type identities
-  * Biological processes
-  * Spatial gradients
-  * Other cellular features
+
+- Cell type identities
+- Biological processes
+- Spatial gradients
+- Other cellular features
 
 ... often with significantly greater resolution and precision than marker genes.
 
-Importantly, these patterns are 'data driven' and often yield insights into the heterogeneity and complexity of a given dataset that were unanticipated.
+Importantly, these patterns are 'data driven' and often yield insights into the
+heterogeneity and complexity of a given dataset that were unanticipated.
 
 ```{r NNMF, warning=FALSE, message=FALSE, cache=FALSE}
-seed<-19790119
-nPatterns<-30
+seed <- 19790119
+nPatterns <- 30
 # Takes about ~3-4 minutes...
-system.time(dat.nnmf<-RcppML::nmf(assay(dat,'logcounts'), 
-                                  k = nPatterns,
-                                  tol = 1e-04,
-                                  maxit = 100,
-                                  seed = seed,
-                                  verbose = TRUE,
-                                  diag = TRUE,
-                                  nonneg = TRUE
-                                  )
-            )
+system.time(dat.nnmf <- RcppML::nmf(assay(dat, "logcounts"),
+  k = nPatterns,
+  tol = 1e-04,
+  maxit = 100,
+  seed = seed,
+  verbose = TRUE,
+  diag = TRUE,
+  nonneg = TRUE
+))
 # Gene x Pattern matrix
 dim(dat.nnmf$w)
 # Pattern x Cell matrix
 dim(dat.nnmf$h)
-#Add patterns to phenotype data for visualization
-patterns.df<-data.frame(t(dat.nnmf$h))
-colnames(patterns.df)<-paste0("Pattern_",c(1:nPatterns))
-colData(dat)<-cbind(colData(dat),patterns.df)
-pdf("patterns.pdf",width=5,height=5)
-lapply(c(1:nPatterns),function(i){
-plot_cells(dat, color_cells_by=paste0("Pattern_",i), cell_size=0.75) +
-    ggtitle(paste0("Pattern_",i))  +
+# Add patterns to phenotype data for visualization
+patterns.df <- data.frame(t(dat.nnmf$h))
+colnames(patterns.df) <- paste0("Pattern_", c(1:nPatterns))
+colData(dat) <- cbind(colData(dat), patterns.df)
+pdf("patterns.pdf", width = 5, height = 5)
+lapply(c(1:nPatterns), function(i) {
+  plot_cells(dat, color_cells_by = paste0("Pattern_", i), cell_size = 0.75) +
+    ggtitle(paste0("Pattern_", i)) +
     coord_equal(1)
 })
 dev.off()
-targetPattern<-12
-plot_cells(dat, color_cells_by=paste0("Pattern_",targetPattern), cell_size=0.75) +
-    ggtitle(paste0("Pattern ",targetPattern))  +
-    coord_equal(1)
+targetPattern <- 12
+plot_cells(dat, color_cells_by = paste0("Pattern_", targetPattern), cell_size = 0.75) +
+  ggtitle(paste0("Pattern ", targetPattern)) +
+  coord_equal(1)
 ```
 
 ## Genes associated with learned patterns
+
 ```{r NNMF_gene_weights}
-geneWeights.df<-data.frame(dat.nnmf$w)
-colnames(geneWeights.df)<-paste0("Pattern_",c(1:nPatterns))
-#fData(dat)[head(rownames(dat.nnmf$W)[order(dat.nnmf$W[,patternOfInterest],decreasing=TRUE)]),]
-tmp<-as.data.frame(cbind(rowData(dat)[,c("gene_id","gene_short_name")],geneWeights.df))
-targetPatterns<-c(1,2,4,13,22,targetPattern)
-DT::datatable(tmp[,c("gene_id","gene_short_name",
-                     unlist(lapply(targetPatterns,function(i){paste0("Pattern_",i)
-                       }))
-                       )])
+geneWeights.df <- data.frame(dat.nnmf$w)
+colnames(geneWeights.df) <- paste0("Pattern_", c(1:nPatterns))
+# fData(dat)[head(rownames(dat.nnmf$W)[order(dat.nnmf$W[,patternOfInterest],decreasing=TRUE)]),]
+tmp <- as.data.frame(cbind(rowData(dat)[, c("gene_id", "gene_short_name")], geneWeights.df))
+targetPatterns <- c(1, 2, 4, 13, 22, targetPattern)
+DT::datatable(tmp[, c(
+  "gene_id", "gene_short_name",
+  unlist(lapply(targetPatterns, function(i) {
+    paste0("Pattern_", i)
+  }))
+)])
 ```
 
-
 ## Knit Time
+
 With caches
+
 ```{r}
 knitEnd <- Sys.time()
 knitEnd - knitStart
 ```
 
 # Session Information
+
 ```{r session}
 sessionInfo()
 ```
-
