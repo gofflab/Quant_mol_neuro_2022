@@ -205,4 +205,4 @@ directory** (line starting with "cd").
 
 I usually download the rda file that has generated in the above step to my
 mac/PC and analyze it locally to avoid connection issue. You can also use
-Rstudio session on portal.rockfish.edu. Follow `DE.Rmd`.
+Rstudio session on portal.rockfish.edu. Follow `DE.Rmd`. You need to download https://github.com/gofflab/Quant_mol_neuro_2022/blob/main/modules/module_6/SampleSheet.csv to run the script.
