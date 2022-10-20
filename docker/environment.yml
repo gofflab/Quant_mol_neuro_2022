@@ -40,8 +40,11 @@ dependencies:
   - bioconductor-biomart
   - bioconductor-bluster
   - bioconductor-celldex
+  - bioconductor-clusterprofiler
   - bioconductor-deseq2
   - bioconductor-ensembldb
+  - bioconductor-org.mm.eg.db
+  - bioconductor-org.hs.eg.db
   - bioconductor-scater
   - bioconductor-scrnaseq
   - bioconductor-scran
