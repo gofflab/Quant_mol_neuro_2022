@@ -158,10 +158,8 @@ sacct # check the status of your job.
 
 First, check the batch script and modify it necessarily. **Modify the script
 according to your working directory** (modify the line starting "cd" to change
-the directory to your working directory). At rockfish, featureCounts is not
-installed by default, so you need to install it first under your home directory.
-But you can use the installed one that is available from my home directory. Note
-that this script will use featureCounts installed under my home directory.
+the directory to your working directory). On rockfish, featureCounts is not
+installed by default, so you should modify featureCounts.sbatch to call an installed version at the following location: /data/lgoff2/ME-440/taeyoung/Software/subread-2.0.3-source/bin/featureCounts
 
 ```sh
 nano ./Script/featureCounts.sbatch # assuming that you are currently at "Module_6" folder
@@ -205,4 +203,4 @@ directory** (line starting with "cd").
 
 I usually download the rda file that has generated in the above step to my
 mac/PC and analyze it locally to avoid connection issue. You can also use
-Rstudio session on portal.rockfish.edu. Follow `DE.Rmd`.
+Rstudio session on portal.rockfish.edu. Follow `DE.Rmd`. You need to download https://github.com/gofflab/Quant_mol_neuro_2022/blob/main/modules/module_6/SampleSheet.csv to run the script.
