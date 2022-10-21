@@ -1,7 +1,6 @@
 ---
 title: "Module 7 - Problem Set"
 output: html_document
-
 ---
 
 ```{r setup, include=FALSE}
@@ -115,9 +114,8 @@ B.3 Describe the difference between a 'cell type' and a 'cell state'.
 
 1. 
 
+## Session
 
-# Session
 ```{r}
 sessionInfo()
 ```
-

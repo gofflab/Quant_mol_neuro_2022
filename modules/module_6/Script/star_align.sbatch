@@ -13,13 +13,11 @@ module load STAR
 
 cd /home/thwang12/ME-440/taeyoung # change this to your working directory
 
-for sample in SRR5715043 SRR5715044 SRR5715045 SRR5715063 SRR5715064 SRR5715065
-do
-STAR --genomeDir ./Genome/STAR_Index \
-     --runThreadN 4 \
-     --readFilesCommand zcat \
-     --readFilesIn ./1.Fastq/${sample}.trimmed.fastq.gz \
-     --outSAMtype BAM SortedByCoordinate \
-     --outFileNamePrefix ./2.Alignment/${sample}. &> ./2.Alignment/${sample}.star.out
+for sample in SRR5715043 SRR5715044 SRR5715045 SRR5715063 SRR5715064 SRR5715065; do
+     STAR --genomeDir ./Genome/STAR_Index \
+          --runThreadN 4 \
+          --readFilesCommand zcat \
+          --readFilesIn ./1.Fastq/${sample}.trimmed.fastq.gz \
+          --outSAMtype BAM SortedByCoordinate \
+          --outFileNamePrefix ./2.Alignment/${sample}. &>./2.Alignment/${sample}.star.out
 done
-

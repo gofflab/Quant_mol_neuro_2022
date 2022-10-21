@@ -6,17 +6,22 @@ channels:
 
 dependencies:
   - python=3.10
+  - bustools
   - fastqc
   - jq
   - kallisto
   - multiqc
+  - pandas
   - pip
   - samtools
+  - scanpy
+  - scipy
   - radian
   - pip:
-    - ffq
-    - gget
-# R stuffs
+      - kb-python
+      - ffq
+      - gget
+  # R stuffs
   - r-base=4.1
   - r-formatr
   - r-ggrepel
@@ -24,13 +29,22 @@ dependencies:
   - r-here
   - r-lintr
   - r-markdown
+  - r-matrix
   - r-monocle3
   - r-pheatmap
+  - r-rcpp
+  - r-sleuth
   - r-seurat
   - r-tidyverse
   - r-uwot
+  - bioconductor-biomart
   - bioconductor-bluster
+  - bioconductor-celldex
+  - bioconductor-clusterprofiler
   - bioconductor-deseq2
+  - bioconductor-ensembldb
+  - bioconductor-org.mm.eg.db
+  - bioconductor-org.hs.eg.db
   - bioconductor-scater
   - bioconductor-scrnaseq
   - bioconductor-scran
