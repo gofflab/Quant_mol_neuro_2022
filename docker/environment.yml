@@ -32,6 +32,7 @@ dependencies:
   - r-markdown
   - r-matrix
   - r-monocle3
+  - r-pak
   - r-pheatmap
   - r-rcpp
   - r-sleuth
