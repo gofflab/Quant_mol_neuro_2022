@@ -16,29 +16,26 @@ A common problem in single cell RNA-Seq is poor cell dissociation. This can lead
     D. Different cell types may be dissociated with different efficiencies, leading to a mixture of cell types that are not representative of the original tissue.
 
 1.1 What methods can be used to reduce the impact of poor cell dissociation on single cell RNA-Seq data?
-```{r answer_1_1}
 
-```
+Answer:
+
+
 1.2 How might you identify a 'doublet' cell in which two cells were assigned to the same cell barcode?
-```{r answer_1_2}
 
-```
+Answer:
 
 # Question 2: Challenges with single cell analysis
 2.1 In 3' end-tagged scRNA-Seq (10x Genomics) what information is used to determine if a read is the product of a PCR artifact? Describe how this is used.
-```{r answer_2_1}
 
-```
+Answer:
 
 2.2 How does the number of genes detected in a single cell RNA-Seq experiment compare to the number of genes detected in a bulk RNA-Seq sample?
-```{r answer_2_2}
 
-```
+Answer:
 
 2.3 Describe one practical implication of this difference for the analysis of single cell RNA-Seq data?
-```{r answer_2_3}
 
-```
+Answer:
 
 2.4 Briefly describe how each of the following methods may be used to address the sparsity challenge:
     A. Cell filtering
@@ -47,76 +44,56 @@ A common problem in single cell RNA-Seq is poor cell dissociation. This can lead
     D. Normalisation
     E. Dimensionality reduction
 
-```{r answer_2_4}
-
-```
+Answer:
+A.
+B.
+C.
+D.
+E.
 
 # Question 3: Data Preprocessing
 3.1 What alignment software can be used for alignment of droplet-based scRNA-Seq data (e.g. 10x) in which multiple cell barcodes are included in a single sequenced sample?
-```{r answer_3_1}
 
-```
+Answer:
 
 3.2 What alignment software could be used for full-length cDNA scRNA-Seq data (e.g. SMART-Seq2)?
-```{r answer_3_2}
 
-```
+Answer:
 
 3.3 Why is the choice of alignment software different between these two types of scRNA-Seq assays?
-```{r answer_3_3}
 
-```
+Answer:
 
 3.4 What does a knee plot describe? What does it tell you about a droplet-based single cell dataset?
-```{r answer_3_4}
 
-```
+Answer:
 
 3.5 Dimensionality reduction can be used several ways in single cell RNA-Seq analysis. Describe two and explain how the use of dimensionality reduction may be beneficial in each case.
-```{r answer_3_5}
 
-```
+Answer:
 
 3.6 Why do you need to normalize single cell RNA-Seq data? What are the potential problems with normalizing single cell RNA-Seq data?
-```{r answer_3_6}
 
-```
+Answer:
 
 # Question 4 - Differential Testing
 4.1 Describe the difference between the wald test and the likelihood ratio test.
-```{r answer_4_1}
 
-```
+Answer:
 
 4.2 List two distribution families that are commonly used for model fitting with droplet-based single cell RNA-Seq data.
-```{r answer_4_2}
 
-```
+Answer:
 
 # Bonus Questions
 B.1 How many mRNA molecules are present in an average single cell (ballpark)?
-```{r answer_B_1}
 
-```
+Answer:
 
 B.2 Why should you not rely on single cell RNA-Seq analysis to accurately reflect the composition of a tissue in terms of cell type proportion?
-```{r answer_B_2}
 
-```
+Answer:
 
 B.3 Describe the difference between a 'cell type' and a 'cell state'.
-```{r answer_B_3}
 
-```
-
-
-
-
-
-1. 
-
-## Session
-
-```{r}
-sessionInfo()
-```
+Answer:
