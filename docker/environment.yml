@@ -23,6 +23,7 @@ dependencies:
       - gget
   # R stuffs
   - r-base=4.1
+  - r-devtools
   - r-formatr
   - r-ggrepel
   - r-ggridges
