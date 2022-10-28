@@ -1,0 +1,31 @@
+---
+title: "Module 8 - Problem Set"
+author: "Your Name"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 1
+Following what we did earlier on Friday, import the data for your project into
+a SummarizedExperiment or SinglecellExperiment object.
+
+For people who want to use scanpy, you could use scanpy in a jupyter notebook to answer these questions instead.
+
+```{r}
+# GEO accession
+geo_acc <- "GSEXXXXXXX"
+
+# Import the data
+# Your code here
+```
+
+## Problem 2
+What are the columns of your sample metadata and what do they mean?
+How many samples are in your dataset?
+
+```{r}
+```
+
