@@ -51,4 +51,3 @@ dependencies:
   - bioconductor-scrnaseq
   - bioconductor-scran
   - bioconductor-singler
-  - bioconductor-spatiallibd
