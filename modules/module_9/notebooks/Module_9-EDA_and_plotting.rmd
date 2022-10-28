@@ -1,0 +1,61 @@
+---
+title: "Module 9 -- Exploratory Data Analysis & plotting"
+author: "Loyal Goff"
+date: '2022-10-25'
+output: 
+  html_document:
+    toc: true
+    toc_level: 3
+    toc_float: true
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Data Import
+
+```{r}
+GEO<-"GSE63482"
+url<-"https://ftp.ncbi.nlm.nih.gov/geo/series/GSE63nnn/GSE63482/suppl/GSE63482_Expression_matrix.tab.txt.gz"
+download.file(url,destfile=paste0(GEO,"_Expression_matrix.txt.gz"))
+
+# Read in the data
+data<-read.table(paste0(GEO,"_Expression_matrix.txt.gz"),header=TRUE,sep="\t",row.names=1)
+
+# Parse header into parameters
+sample_metadata<-as.data.frame(stringr::str_split_fixed(colnames(data),"_",2))
+colnames(sample_metadata)<-c("Age","CellType")
+
+# Create Gene metadata
+gene_metadata<-data.frame(geneName=rownames(data))
+rownames(gene_metadata)<-rownames(data)
+
+# Create a Summarized Experiment object
+library(SummarizedExperiment)
+se<-SummarizedExperiment(assays=list(fpkm=data),
+                          rowData=gene_metadata,
+                          colData=sample_metadata)
+
+```
+
+# Exploratory Data Analysis
+
+## Plot the distribution of gene expression values
+```{r}
+
+```
+
+```{r}
+
+```
+# Grammar of Graphics (ggplot2)
+
+## Plotting with ggplot2
+
+
+# Session Information
+
+```{r session}
+sessionInfo()
+```
