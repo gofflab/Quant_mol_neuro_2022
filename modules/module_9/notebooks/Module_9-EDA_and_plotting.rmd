@@ -112,13 +112,77 @@ se.pca$x %>%
   theme(legend.position = "top")
 ```
 
-
 # Grammar of Graphics (ggplot2)
+
+-   A layer-based framework to describe and construct visualizations in a structured manner.
+
+-   Original grammar of graphics framework proposed by Leland Wilkinson
+
+-   Modern layered grammar of graphics framework was developed by Hadley Wickham (author of ggplot2 package)
+
+    ![](images/paste-96C18E8F.png)
+
+    When designing a visualization, consider these components in hierarchical order:
+
+    1.  **Data**: Exactly *what* data do you plan on representing in your visualization? How does this need to be prepared in order to display your concept?
+
+    2.  **Aesthetics**: What axes are needed for the data dimensions, or positions of various data points in the plot? Also check if any form of encoding is needed including size, shape, color and so on which are useful for plotting multiple data dimensions. These 'aesthetics' will define how your multi-dimensional data will be represented.
+
+    3.  **Scale:** Do we need to scale the potential values, use a specific scale to represent multiple values or a range?
+
+    4.  **Geometric objects:** What \'geometries\' or data visualization types are needed (e.g. points, bars, lines, tiles, etc)? How will you depict the data on the visualization.
+
+    5.  **Statistics:** Do we need to show some statistical measures in the visualization like measures of central tendency, spread, confidence intervals? Will different dimensions of your data be summarized in a specific way?
+
+    6.  **Facets:** Do we need to create subplots based on specific data dimensions (e,g, making the same plot but for different subsets of the data)?
+
+    7.  **Coordinate system:** What kind of a coordinate system should the visualization be based on --- should it be cartesian or polar?
+
+-   [ggplot2 Cheat Sheet](https://www.maths.usyd.edu.au/u/UG/SM/STAT3022/r/current/Misc/data-visualization-2.1.pdf)
 
 ## Plotting with ggplot2
 
-Lets grab the information for a given gene and organize it for plotting with
-ggplot2. First let's grab the gene expression information from assay(se,'fpkm')
+### Start with organizing and planning your data
+
+ggplot2 works by binding a dataset to a ggplot object. For the most effective use of ggplot, data are expected to be in a data.frame-style organization:
+
+![](images/paste-5590FC1F.png)
+
+If we are interested in plotting the expression information for our se object, we might start with looking at the `assay` data:
+
+```{r}
+head(assay(se,'fpkm'))
+```
+
+With this layout we can plot samples (variables) against each other like so.
+
+```{r}
+plotData<-as.data.frame(assay(se,'fpkm'))
+
+p <- ggplot(plotData)
+
+p<- p + geom_point(aes(x=E15_cpn,y=E16_cpn))
+
+p
+```
+
+we can layer-on additional visualizations that might help our interpretation of the data
+
+```{r}
+p <- p + geom_smooth(aes(x=E15_cpn,y=E16_cpn))
+p
+```
+
+We can also change the scale of the axes as needed
+
+```{r}
+p + scale_y_log10() + scale_x_log10()
+```
+
+### Melting a SE object
+
+To add sample information to this plot, we'll need to reorganize the data to make it compatible with ggplot's input expectations, Lets grab the information for a single gene and organize it for plotting with ggplot2. First let's grab the gene expression information from assay(se,'fpkm')
+
 
 ```{r}
 gene <- "Fezf2"
@@ -128,24 +192,23 @@ geneData <- assay(se, "fpkm")[gene, ]
 geneData
 ```
 
-In order to transform these data into a long-form format, we need to 'melt'
-geneData.
+In order to transform these data from a wide-form format into a long-form format, we need to 'melt' geneData.
+
 
 ```{r}
 geneData.melt <- reshape2::melt(geneData)
 geneData.melt
 ```
 
-But in order to add all of the other useful information for each sample, we need
-to retrieve it from colData. We need to `merge` the melted data with the column
-data using a matching key (rownames of the melted expression values and
-colData!)
+Furthermore, to add all of the other useful information for each sample, we need to retrieve it from colData(se). We need to `merge` the melted data with the column data using a matching key (rownames of the melted expression values and colData!)
 
 ```{r}
 geneData.melt <- merge(geneData.melt, colData(se), by.x = 0, by.y = 0)
 geneData.melt <- as.data.frame(geneData.melt)
 geneData.melt
 ```
+
+We can now use this melted & merged data to make a ggplot plot.
 
 ```{r}
 p <- ggplot(geneData.melt, aes(x = SampleID, y = value))
@@ -178,9 +241,7 @@ p +
 
 ## Functionalizing this process
 
-Let's make a new function that takes as arguments a SummarizedExperiment object
-and a gene name, and melts and merges the data as above so that we can quickly
-make a data structure to help with plotting for any single gene
+Let's make a new function that takes as arguments a SummarizedExperiment object and a gene name, and melts and merges the data as above so that we can quickly make a data structure to help with plotting for any single gene
 
 ```{r}
 
@@ -312,10 +373,10 @@ sampleAnnot <- HeatmapAnnotation(
 Heatmap(heatData, top_annotation = sampleAnnot)
 ```
 
-What do the dendrograms represent? What do they tell us about the relationship
-between genes? between samples? Can we improve the sample clustering? Lets try a
-version where we scale the genes (row z-score) so that higher-expressing genes
-don't dominate the clustering.
+What do the dendrograms represent? What do they tell us about the relationship 
+between genes? between samples? Can we improve the sample clustering? 
+Lets try a version where we scale the genes (row z-score) so that 
+higher-expressing genes don't dominate the clustering.
 
 ```{r}
 heatData.scaled <- t(scale(t(heatData)))
