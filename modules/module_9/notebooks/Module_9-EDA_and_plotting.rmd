@@ -151,7 +151,7 @@ ggplot2 works by binding a dataset to a ggplot object. For the most effective us
 If we are interested in plotting the expression information for our se object, we might start with looking at the `assay` data:
 
 ```{r}
-head(assay(se,'fpkm'))
+head(assay(se, "fpkm"))
 ```
 
 With this layout we can plot samples (variables) against each other like so.
@@ -170,6 +170,7 @@ we can layer-on additional visualizations that might help our interpretation of 
 
 ```{r}
 p <- p + geom_smooth(aes(x=E15_subcereb,y=E16_subcereb))
+
 p
 ```
 
@@ -378,7 +379,11 @@ sampleAnnot <- HeatmapAnnotation(
 Heatmap(heatData, top_annotation = sampleAnnot)
 ```
 
-What do the dendrograms represent? What do they tell us about the relationship between genes? between samples? Can we improve the sample clustering? Lets try a version where we scale the genes (row z-score) so that higher-expressing genes don't dominate the clustering.
+
+What do the dendrograms represent? What do they tell us about the relationship
+between genes? between samples? Can we improve the sample clustering?
+Lets try a version where we scale the genes (row z-score) so that
+higher-expressing genes don't dominate the clustering.
 
 ```{r}
 heatData.scaled <- t(scale(t(heatData)))
