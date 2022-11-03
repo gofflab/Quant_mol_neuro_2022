@@ -82,7 +82,7 @@ In your raw data directory, you should have 8 FASTQ files, where four filenames 
 Why are there two files for each SRR ID number?
 
 ### Question 2.4
-Try uncompressing one `*.fq.gz` file you've just downloaded (`tar -xvzf <filename>`).
+Try uncompressing one `*.fq.gz` file you've just downloaded (`gunzip <filename>`).
 What information is on the first line of the file (i.e. Describe what that line represents, not the actual texts)?
 (the command `head -5` can be used to look at the first 5 lines of a file)
 
