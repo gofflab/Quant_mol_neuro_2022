@@ -1,7 +1,7 @@
 ---
 title: "Module 9 -- Exploratory Data Analysis & plotting"
 author: "Loyal Goff"
-date: "2022-10-25"
+date: "2022-10-31"
 output:
   html_document:
     toc: true
@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # setwd("modules/module_9/notebooks")
 library(SummarizedExperiment)
 library(tidyverse)
-GEO <- "GSE63482"
+#GEO <- "GSE63482"
 
 # Read in the data
 data <- read.csv("https://github.com/gofflab/Quant_mol_neuro_2022/raw/main/modules/module_9/notebooks/GSE63482_Expression_matrix.tsv", sep = " ", header = T, row.names = 1)
@@ -130,7 +130,7 @@ se.pca$x %>%
 
     3.  **Scale:** Do we need to scale the potential values, use a specific scale to represent multiple values or a range?
 
-    4.  **Geometric objects:** What \'geometries\' or data visualization types are needed (e.g. points, bars, lines, tiles, etc)? How will you depict the data on the visualization.
+    4.  **Geometric objects:** What 'geometries' or data visualization types are needed (e.g. points, bars, lines, tiles, etc)? How will you depict the data on the visualization.
 
     5.  **Statistics:** Do we need to show some statistical measures in the visualization like measures of central tendency, spread, confidence intervals? Will different dimensions of your data be summarized in a specific way?
 
@@ -157,19 +157,20 @@ head(assay(se, "fpkm"))
 With this layout we can plot samples (variables) against each other like so.
 
 ```{r}
-plotData <- as.data.frame(assay(se, "fpkm"))
+plotData<-as.data.frame(assay(se,'fpkm')+1)
 
 p <- ggplot(plotData)
 
-p <- p + geom_point(aes(x = E15_cpn, y = E16_cpn))
-
+p<- p + geom_point(aes(x=E15_subcereb,y=E16_subcereb))
 p
+
 ```
 
 we can layer-on additional visualizations that might help our interpretation of the data
 
 ```{r}
-p <- p + geom_smooth(aes(x = E15_cpn, y = E16_cpn))
+p <- p + geom_smooth(aes(x=E15_subcereb,y=E16_subcereb))
+
 p
 ```
 
@@ -183,7 +184,6 @@ p + scale_y_log10() + scale_x_log10()
 
 To add sample information to this plot, we'll need to reorganize the data to make it compatible with ggplot's input expectations, Lets grab the information for a single gene and organize it for plotting with ggplot2. First let's grab the gene expression information from assay(se,'fpkm')
 
-
 ```{r}
 gene <- "Fezf2"
 
@@ -193,7 +193,6 @@ geneData
 ```
 
 In order to transform these data from a wide-form format into a long-form format, we need to 'melt' geneData.
-
 
 ```{r}
 geneData.melt <- reshape2::melt(geneData)
@@ -219,7 +218,16 @@ p + geom_point()
 ### Group by Age
 
 ```{r}
+p + geom_line(aes(color=CellType,group=CellType))
 
+p <- ggplot(geneData.melt) +
+  geom_point(aes(x=Age,y=value,color=CellType)) + 
+  geom_line(aes(x=Age,y=value, group=CellType, color=CellType))
+p
+
+p <- ggplot(geneData.melt) + 
+  geom_boxplot(aes(x=CellType,y=value,fill=CellType)) + 
+  geom_point(aes(x=CellType,y=value,size=Age), color="black")
 ```
 
 ### Color by CellType
@@ -246,24 +254,32 @@ Let's make a new function that takes as arguments a SummarizedExperiment object 
 ```{r}
 
 meltSE <- function(se, geneName = "Sox2") {
-  ???
-  ???
-  return(se.melted)
+  tmp<-assay(se,'fpkm')[geneName,]
+  tmp.melt<-reshape2::melt(tmp)
+  tmp.melt<-merge(tmp.melt,colData(se),by.x=0,by.y=0)
+  tmp.melt<-as.data.frame(tmp.melt)
+  return(tmp.melt)
 }
 ```
 
-Use your new function to get the melted gene information for three different
-genes, "Satb2", "Bcl11b", "Tle4" and quickly make line plots by CellType across
-the sample Ages (Age vs. Expression grouped by CellType)
+Use your new function to get the melted gene information for three different genes, "Satb2", "Bcl11b", "Tle4" and quickly make line plots by CellType across the sample Ages (Age vs. Expression grouped by CellType)
 
 ```{r}
+gene<-"Tle4"
 
+gene<-"Sox2"
+plotData<-meltSE(se)
+
+p <- ggplot(plotData,aes(x=Age,y=value))
+p +
+  geom_line(aes(color = CellType, group = CellType)) +
+  geom_point() + 
+  ggtitle(gene)
 ```
 
 ## Multiple genes
 
-Let's see what happens when we try and get the gene information for a handful of
-genes using our meltSE function
+Let's see what happens when we try and get the gene information for a handful of genes using our meltSE function
 
 ```{r}
 geneset <- c("Satb2", "Cux2", "Cux1", "Lhx2")
@@ -271,11 +287,16 @@ genesetData <- meltSE(se, geneName = geneset)
 
 
 # meltSE version for multiple genes
-meltSE <- function(se, genes) {
-
+multiMeltSE <- function(se, geneset) {
+  tmp<-assay(se,'fpkm')[geneset,]
+  tmp.melt<-reshape2::melt(tmp)
+  colnames(tmp.melt)<-c("gene","SampleID","value")
+  tmp.melt<-merge(tmp.melt,colData(se),by.x="SampleID",by.y="SampleID")
+  tmp.melt<-as.data.frame(tmp.melt)
+  return(tmp.melt)
 }
 
-geneset.melt <- meltSE(se, geneset)
+geneset.melt <- multiMeltSE(se, geneset)
 ```
 
 ## Summary plots
@@ -283,7 +304,8 @@ geneset.melt <- meltSE(se, geneset)
 ```{r}
 p <- ggplot(geneset.melt)
 
-p + geom_boxplot(aes(x = Age, y = value, fill = Age))
+p + geom_boxplot(aes(x = Age, y = value, fill = Age)) + 
+  geom_point(aes(x=Age,y=value))
 
 p + geom_boxplot(aes(x = CellType, y = value, fill = CellType))
 p + geom_violin(aes(x = CellType, y = value, fill = CellType))
@@ -301,20 +323,12 @@ p + geom_line(aes(x = Age, y = value, color = CellType, group = CellType)) +
   facet_wrap("gene", scales = "free_y")
 
 p + geom_line(aes(x = Age, y = value, color = CellType, group = CellType)) +
-  facet_grid(gene ~ CellType, scales = "free_y")
+  facet_grid(CellType ~ gene, scales = "free_y")
 ```
 
 ## Heatmaps
 
-Heatmaps are a staple of gene expression analysis and are an information dense
-way of exploring or summarizing the results of many types of tests or gene set
-selections. While you _can_ generate a heatmap using ggplot2 (hint:
-geom_tile()), there are also several specialized tools for generating heatmaps
-that can be used instead. Here we will be using the R package
-'[ComplexHeatmap](https://jokergoo.github.io/ComplexHeatmap-reference/book/index.html)'
-to generate and manipulate heatmaps of a subset of the genes in our SE object.
-The complete manual for ComplexHeatmap can be found
-[here](https://jokergoo.github.io/ComplexHeatmap-reference/book/index.html).
+Heatmaps are a staple of gene expression analysis and are an information dense way of exploring or summarizing the results of many types of tests or gene set selections. While you *can* generate a heatmap using ggplot2 (hint: geom_tile()), there are also several specialized tools for generating heatmaps that can be used instead. Here we will be using the R package '[ComplexHeatmap](https://jokergoo.github.io/ComplexHeatmap-reference/book/index.html)' to generate and manipulate heatmaps of a subset of the genes in our SE object. The complete manual for ComplexHeatmap can be found [here](https://jokergoo.github.io/ComplexHeatmap-reference/book/index.html).
 
 ```{r}
 geneset <- c(
@@ -326,8 +340,7 @@ geneset <- c(
 )
 ```
 
-Again, let's make a subset of the SE assay data for only the genes in this list
-(we can do this because the rownames of the se object are the gene names)
+Again, let's make a subset of the SE assay data for only the genes in this list (we can do this because the rownames of the se object are the gene names)
 
 ```{r}
 se.subset <- se[geneset, ]
@@ -352,16 +365,9 @@ heatData <- assay(se.subset, "logfpkm")
 Heatmap(heatData)
 ```
 
-Let's add some annotation to the top of the heatmap to help us visually identify
-different sample parameterizations. Heatmap annotations are important components
-of a heatmap that it shows additional information that associates with rows or
-columns in the heatmap. ComplexHeatmap package provides very flexible supports
-for setting annotations and defining new annotation graphics. The annotations
-can be put on the four sides of the heatmap, by top_annotation,
-bottom_annotation, left_annotation and right_annotation arguments.
+Let's add some annotation to the top of the heatmap to help us visually identify different sample parameterizations. Heatmap annotations are important components of a heatmap that it shows additional information that associates with rows or columns in the heatmap. ComplexHeatmap package provides very flexible supports for setting annotations and defining new annotation graphics. The annotations can be put on the four sides of the heatmap, by top_annotation, bottom_annotation, left_annotation and right_annotation arguments.
 
-The value for the four arguments should be in the HeatmapAnnotation class and
-should be constructed by HeatmapAnnotation() function
+The value for the four arguments should be in the HeatmapAnnotation class and should be constructed by HeatmapAnnotation() function
 
 ```{r}
 sampleAnnot <- HeatmapAnnotation(
@@ -372,6 +378,7 @@ sampleAnnot <- HeatmapAnnotation(
 
 Heatmap(heatData, top_annotation = sampleAnnot)
 ```
+
 
 What do the dendrograms represent? What do they tell us about the relationship
 between genes? between samples? Can we improve the sample clustering?
