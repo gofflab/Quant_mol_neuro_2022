@@ -1,0 +1,132 @@
+---
+title: "Module 9 -- Problem Set"
+author: "<Your Name Here>"
+date: '<Date Here>'
+output: 
+  html_document:
+    toc: true
+    toc_level: 3
+    toc_float: true
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Import required libraries
+```{r}
+library(tidyverse)
+library(SummarizedExperiment)
+library(reshape2)
+```
+
+# Data Import
+For this problemset we will be using the DeCoN sorted cortical neuron RNA-Seq dataset we have been using this week (GEO: GSE63482). Data will be loaded here and a SummarizedExperiment will be created.
+```{r}
+GEO <- "GSE63482"
+
+# Read in the data
+data <- read.csv("https://github.com/gofflab/Quant_mol_neuro_2022/raw/main/modules/module_9/notebooks/GSE63482_Expression_matrix.tsv", header = TRUE, sep = " ", row.names = 1)
+
+```
+
+```{r}
+# Parse header into parameters
+sample_metadata <- as.data.frame(stringr::str_split_fixed(colnames(data), "_", 2))
+colnames(sample_metadata) <- c("Age", "CellType")
+sample_metadata$SampleID<-colnames(data)
+```
+
+```{r}
+# Create Gene metadata
+gene_metadata <- data.frame(geneName = rownames(data))
+rownames(gene_metadata) <- rownames(data)
+```
+
+```{r}
+# Create a Summarized Experiment object
+se <- SummarizedExperiment(
+  # Multiple assays can be put in but must have same dims.
+  # Here we only have one assay called FPKM, which we assign the data to
+    assays = list(fpkm = data),
+    rowData = gene_metadata,  # From above.
+    colData = sample_metadata
+)
+```
+
+# Problems
+
+## Problem 1
+1a. Create a histogram plot of the average expression of each gene across all samples.
+```{r p1a}
+# Calculate the rowMeans of the assay data for se
+
+# Use this to create a histogram of mean gene expression
+
+```
+
+1b. Create a histogram plot of the log10 average expression of each gene across all samples, but only for genes that have an average expression of at least 1 FPKM.
+```{r p1b}
+
+```
+
+## Problem 2
+2a. Create a boxplot of the log10 + 1 expression of all genes for each sample (ie. 1 boxplot for each sample). 
+```{r p2}
+plotData<-melt(assay(se,'fpkm'))
+p <- ggplot(plotData,aes(x=variable,y=log10(value+1))) + 
+    geom_boxplot() + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+p
+```
+2b. What does this plot tell us about the quality and consistency of the samples?
+
+## Problem 3
+3a. Create a new SummarizedExperiment object that only contains the genes with an average expression of at least 1000 FPKM (most highly expressed) across all samples. How many genes pass this threshold?
+```{r p3a}
+se.high<-???
+```
+
+3b. Using this high-expressing subset of genes (FPKM >=1000), create a `ComplexHeatmap::Heatmap` of the row (gene) scaled, log10+1 expression values.
+
+```{r}
+heatData<-???
+  
+heatData.scaled<-???
+
+
+```
+
+3c. Looking at the dendrogram of sample distances produced by the above heatmap, what does the top-level cluster separation describe? Which sample parameter appears to be a stronger component of the sample relationships, Age or CellType? Explain your answer.
+
+3d. Create a new SummarizedExperiment object containing only 'expressed' genes with an fpkm value >=1. Calculate the correlation matrix (`cor()`) across samples using the log10 +1 fpkm values of these expressed genes. Use the resulting correlation matrix to plot a correlation heatmap.
+```{r}
+se.expressed <- ???
+
+se.expressed.cor <- ???
+  
+se.expressed.cor.heatmap <- ???
+```
+Which two samples have the most dissimilar expression profiles?
+
+
+## Problem 4
+
+4a. Calculate the mean and standard deviation of the expression of each gene for each CellType (aggregating across Age). Print the first 20 rows of the resulting data frame.
+_Hint_: dplyr and the group_by function may be useful to help with this once you've created a full melted and merged dataset.
+```{r p4a}
+meltSE<-function(se){
+    plotData<-assay(se,'fpkm')
+    plotData$gene<-rownames(plotData)
+    plotData<-melt(plotData)
+    colnames(plotData)<-c("gene","SampleID","value")
+    plotData<-merge(plotData,colData(se),by.x='SampleID',by.y='SampleID')
+    plotData<-as.data.frame(plotData)
+    return(plotData)
+}
+
+plotData.summarised <- plotData %>%
+    group_by(gene,CellType) %>%
+    summarise(mean=mean(value),sd=sd(value))
+
+```
