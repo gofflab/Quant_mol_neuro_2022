@@ -346,6 +346,8 @@ Again, let's make a subset of the SE assay data for only the genes in this list 
 se.subset <- se[geneset, ]
 
 se.subset
+
+assay(se.subset,'logfpkm')<-log10(assay(se.subset,'fpkm')+1)
 ```
 
 A quick heatmap can be made directly from the assay data itself
@@ -393,6 +395,8 @@ Heatmap(heatData.scaled, top_annotation = sampleAnnot)
 ```{r}
 Heatmap(heatData.scaled, top_annotation = sampleAnnot, column_split = 3, row_split = 3)
 ```
+
+
 
 # Session Information
 
