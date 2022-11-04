@@ -1,0 +1,179 @@
+---
+title: "Module 9 -- Exploratory Data Analysis & plotting"
+author: "Loyal Goff"
+date: "2022-11-02"
+output:
+  html_document:
+    toc: true
+    toc_level: 3
+    toc_float: true
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data Import
+
+```{r}
+# setwd("modules/module_9/notebooks")
+library(SummarizedExperiment)
+library(tidyverse)
+library(dplyr)
+#GEO <- "GSE63482"
+
+# Read in the data
+data <- read.csv("https://github.com/gofflab/Quant_mol_neuro_2022/raw/main/modules/module_9/notebooks/GSE63482_Expression_matrix.tsv", sep = " ", header = T, row.names = 1)
+```
+
+```{r}
+# Parse header into parameters
+sample_metadata <- as.data.frame(stringr::str_split_fixed(colnames(data), "_", 2))
+colnames(sample_metadata) <- c("Age", "CellType")
+sample_metadata$SampleID <- colnames(data)
+colData <- DataFrame(sample_metadata)
+
+# Create Gene metadata
+gene_metadata <- data.frame(geneName = rownames(data))
+rownames(gene_metadata) <- rownames(data)
+gene_metadata <- DataFrame(gene_metadata)
+
+# Create a Summarized Experiment object
+se <- SummarizedExperiment(
+  assays = SimpleList(fpkm = as.matrix(data)),
+  rowData = gene_metadata,
+  colData = sample_metadata
+)
+```
+
+# Introduction to dplyr (tidyverse)
+Many tasks in data analysis require exploration, manipulation and visualization. Often before you perform any statistical analysis. The tidyverse package [`dplyr`](https://dplyr.tidyverse.org/) ('data plier') was developed to help with the common tasks manipulation, summarization, and organization of data. Similar to the 'grammar of graphics' (ggplot2), `dplyr` attempts to define a 'grammar of data'. With this structure you can learn to quickly reshape, group, summarise, and visualize your data to address your questions of interest.
+
+## dplyr verbs
+In the dplyr 'grammar of data', functions can be thought of as 'verbs' that operate on a data.frame. Each verb performs a single function and does so reasonably fast and efficiently. verb actions can be chained together to enable powerful reorganization, summarizations, or manipulations of the input data.frame.
+
+*All dplyr functions take, as their first argument a data.frame object.* Let's generate one for all of the gene expression data from our se object by making a 'long-form' melted and merged data.frame
+```{r}
+# this melt function will melt and merge an entire se object worth of data into a data.frame
+meltSE<-function(se){
+  fpkm<-as.data.frame(assay(se,'fpkm'))
+  fpkm$gene<-rownames(fpkm)
+  fpkm.melt<-reshape2::melt(fpkm)
+  colnames(fpkm.melt)<-c("gene","SampleID","value")
+  tmp<-merge(fpkm.melt,colData(se),by.x="SampleID",by.y="SampleID")
+  return(as.data.frame(tmp))
+}
+
+# Now lets create a melted and merged data.frame from our se object.
+se.melt<-meltSE(se)
+
+head(se.melt)
+```
+
+## dplyr verbs
+* `select()` - selects columns of a data.frame
+* `filter()` - selects rows of a data.frame matching a provided criterion
+* `arrange()` - sorts a data.frame
+* `mutate()` - adds columns to a data.frame based on a formula or equation
+* `group_by()` - creates groups of rows that can be operated on collectively
+* `summarise()` - creates new columns based on summarized properties of row groups
+
+### Subsetting
+The first two verbs define subsets of the data frame on either dimension.
+
+```{r}
+# select returns subsets of the columns in the order they are requested
+select(se.melt,Age)
+select(se.melt,Age, value)
+select(se.melt,value, Age)
+select(se.melt,-Age)
+
+# filter() to select rows matching a logical equation
+filter(se.melt,Age == "P1")
+filter(se.melt,CellType %in% c("corticothal","cpn"))
+filter(se.melt,gene %in% c("Pax6","Fezf2"))
+filter(se.melt,Age != "P1")
+filter(se.melt,value >= 5000)
+filter(se.melt,Age == "P1" & CellType == "subcereb")
+```
+
+### Transforming
+Often times we need to transform columns of the data (think of log-transforming the 'values' column here as an example). This is performed with the `mutate()` function in dplyr. And when we do this, we will need to provide a name for this new column
+```{r}
+head(mutate(se.melt,logValue = log10(value+1)))
+```
+
+Reminder that the output of dplyr can be assigned to a new variable as needed
+```{r}
+se.melt.transformed<-mutate(se.melt,logValue = log10(value+1))
+```
+
+### Sorting
+To sort a data.frame using dplyr we will use the `arrange()` function.  This takes (as always) a data.frame as the first argument, and then a list of columns that you would like to sort in order.
+```{r}
+head(arrange(se.melt,Age))
+head(arrange(se.melt,CellType))
+head(arrange(se.melt,value))
+head(arrange(se.melt,gene,Age,CellType))
+```
+
+### Chaining (piping) verbs together
+dplyr provides (through the package `magrittr`) an additional way to 'chain' verb actions together using a pipe operator (`%>%`). Conceptually, this is equivalent to the Unix pipe operator (`|`) that we have seen previously.  This allows you to construct 'workflow' sentences in dplyr to perform actions in order.
+In this context, it's important to remember that each dplyr function takes a data.frame as it's first argument, and what the `%>%` is doing is passing the output data.frame of the previous statement into the input argument of the next.
+```{r}
+se.melt %>%
+  filter(CellType=="cpn") %>%
+  arrange(gene,Age) %>%
+  head()
+```
+
+### Calculating summaries across variables
+This is where the real power of dplyr begins to emerge.  We can use the last two verbs here, `group_by()` and `summarise()` to group rows together and perform operations on each of the groups independently.
+
+For example, if we wanted to summarise the average expression across all genes for each of the celltypes we could do the following:
+```{r}
+se.melt %>%
+  group_by(CellType) %>%
+  summarise(mean = mean(value))
+
+```
+And by Age
+```{r}
+se.melt %>%
+  group_by(Age) %>%
+  summarise(mean = mean(value))
+```
+
+But more importantly, we can use combinations of variables to make more insightful groupings...
+
+```{r}
+se.melt %>%
+  group_by(gene,Age) %>%
+  summarise(mean = mean(value), sd = sd(value)) %>%
+  head()
+```
+
+Grouping also works with mutate() to preserve original data.frame structure
+```{r}
+se.melt %>%
+  filter(gene=="Pax6") %>%
+  group_by(CellType) %>%
+  mutate(CellType_mean = mean(value)) 
+
+# Make mean-centered gene expression values for each gene
+se.melt %>%
+  mutate(logFPKM = log10(value+1)) %>%
+  group_by(gene) %>%
+  mutate(geneMean = mean(logFPKM), mean_centered = logFPKM - geneMean) %>%
+  arrange(gene) %>%
+  head(12)
+```
+
+Some of the problemset questions for this week will ask you to integrate some dplyr manipulations with ggplot2 visualizations of summarised data.
+
+# Session Information
+```{r}
+sessionInfo()
+```
+

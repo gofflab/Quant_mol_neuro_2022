@@ -54,6 +54,20 @@ se <- SummarizedExperiment(
 )
 ```
 
+We are providing for you here, the helper function to melt an se object that we have been using this week to make the 'long-form' data.table combining the expression data and the sample information
+```{r}
+meltSE<-function(se){
+    plotData<-assay(se,'fpkm')
+    plotData$gene<-rownames(plotData)
+    plotData<-melt(plotData)
+    colnames(plotData)<-c("gene","SampleID","value")
+    plotData<-merge(plotData,colData(se),by.x='SampleID',by.y='SampleID')
+    plotData<-as.data.frame(plotData)
+    return(plotData)
+}
+```
+
+
 # Problems
 
 ## Problem 1
@@ -73,10 +87,8 @@ se <- SummarizedExperiment(
 ## Problem 2
 2a. Create a boxplot of the log10 + 1 expression of all genes for each sample (ie. 1 boxplot for each sample). 
 ```{r p2}
-plotData<-melt(assay(se,'fpkm'))
-p <- ggplot(plotData,aes(x=variable,y=log10(value+1))) + 
-    geom_boxplot() + 
-    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+plotData<-meltSE(assay(se,'fpkm'))
+p <- ???
 p
 ```
 2b. What does this plot tell us about the quality and consistency of the samples?
@@ -115,18 +127,7 @@ Which two samples have the most dissimilar expression profiles?
 4a. Calculate the mean and standard deviation of the expression of each gene for each CellType (aggregating across Age). Print the first 20 rows of the resulting data frame.
 _Hint_: dplyr and the group_by function may be useful to help with this once you've created a full melted and merged dataset.
 ```{r p4a}
-meltSE<-function(se){
-    plotData<-assay(se,'fpkm')
-    plotData$gene<-rownames(plotData)
-    plotData<-melt(plotData)
-    colnames(plotData)<-c("gene","SampleID","value")
-    plotData<-merge(plotData,colData(se),by.x='SampleID',by.y='SampleID')
-    plotData<-as.data.frame(plotData)
-    return(plotData)
-}
 
-plotData.summarised <- plotData %>%
-    group_by(gene,CellType) %>%
-    summarise(mean=mean(value),sd=sd(value))
+
 
 ```
