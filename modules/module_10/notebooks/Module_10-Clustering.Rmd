@@ -1,0 +1,136 @@
+---
+title: "Module 10 - Hierarchical & k-means clustering"
+author: "Loyal Goff"
+date: "2022-11-06"
+output:
+  html_document:
+    toc: true
+    toc_level: 3
+    toc_float: true
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Data Import
+```{r}
+library(SummarizedExperiment)
+library(tidyverse)
+
+# Read in the data
+data <- read.csv("https://github.com/gofflab/Quant_mol_neuro_2022/raw/main/modules/module_9/notebooks/GSE63482_Expression_matrix.tsv", sep = " ", header = T, row.names = 1)
+```
+
+```{r}
+# Parse header into parameters
+sample_metadata <- as.data.frame(stringr::str_split_fixed(colnames(data), "_", 2))
+colnames(sample_metadata) <- c("Age", "CellType")
+sample_metadata$SampleID <- colnames(data)
+colData <- DataFrame(sample_metadata)
+
+# Create Gene metadata
+gene_metadata <- data.frame(geneName = rownames(data))
+rownames(gene_metadata) <- rownames(data)
+gene_metadata <- DataFrame(gene_metadata)
+
+# Create a Summarized Experiment object
+se <- SummarizedExperiment(
+  assays = SimpleList(fpkm = as.matrix(data)),
+  rowData = gene_metadata,
+  colData = sample_metadata
+)
+assay(se,'logfpkm')<-log10(assay(se,'fpkm')+1)
+```
+
+# Clean/process data to cluster
+```{r}
+clustData<-assay(se,'logfpkm')
+clustData<-clustData[rowMeans(clustData)>=1,]
+```
+
+# Hierarchical clustering
+First we will need to compute a distance matrix of the pairwise distances across samples. To do this we will use the `dist()` function. `dist()` operates over rows, so if we want to calculate the distance between samples, we will have to transpose (`t()`) clustData.
+```{r}
+clustData.dist<-dist(t(clustData))
+clustData.dist
+```
+
+```{r}
+hclust(clustData.dist)
+
+plot(hclust(clustData.dist),main="Euclidean:complete")
+```
+
+
+```{r}
+clustData.dist<-dist(t(clustData),method="manhattan")
+
+plot(hclust(clustData.dist),main="Manhattan:complete")
+```
+
+Partition by choosing k
+```{r}
+clustData.hclust<-hclust(clustData.dist)
+plot(clustData.hclust)
+clus3<-cutree(clustData.hclust,k=3)
+clus3
+
+```
+
+Partition by fixing height
+```{r}
+clustData.hclust<-hclust(clustData.dist)
+plot(clustData.hclust)
+height<-1000
+abline(h=height,lty="dashed",col="red")
+clusH1000<-cutree(clustData.hclust,h=height)
+clusH1000
+
+```
+
+# K-means
+Let's try and identify groups of genes that behave similarly across the conditions. To do this, and to avoid the complication of absolute expression level (we're interested in 'patterns' across conditions), we will first center & scale the row(gene) data.
+```{r}
+nClusters<-12
+clustData.scaled<-t(scale(t(clustData)))
+clustData.kmeans<-kmeans(clustData.scaled,nClusters)
+```
+
+```{r}
+clustData.plot<-clustData.scaled
+clustData.plot<-as.data.frame(clustData.plot)
+clustData.plot$gene<-rownames(clustData.plot)
+clustData.plot$cluster<-clustData.kmeans$cluster
+clustData.melt<-reshape2::melt(clustData.plot,id.vars=c("gene","cluster"))
+clustData.melt<-merge(clustData.melt,colData(se),by.x="variable",by.y="SampleID")
+clustData.melt<-as.data.frame(clustData.melt)
+```
+
+Summarise data across clusters with dplyr
+```{r}
+kmeans.summary <- clustData.melt %>%
+  group_by(cluster,Age,CellType) %>%
+  summarise(mean=mean(value),sd=sd(value))
+```
+
+```{r}
+p<-ggplot(kmeans.summary,aes(x=Age,
+                             y=mean,
+                             ymax=mean+sd,
+                             ymin=mean-sd
+                             )) + 
+  geom_point(aes(color=CellType)) +
+  geom_line(aes(group=CellType,color=CellType)) +
+  geom_hline(yintercept=0,linetype="dashed") + 
+  #geom_ribbon(aes(group=CellType,color=CellType,fill=CellType),alpha = 0.2)
+  theme_minimal()
+p + facet_wrap('cluster',scales="free_y")
+```
+
+# Session Information
+```{r}
+sessionInfo()
+```
+
