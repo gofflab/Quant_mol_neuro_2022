@@ -1,0 +1,143 @@
+---
+title: "Module 10 -- Problem Set"
+author: "<Your Name Here>"
+date: '<Date Here>'
+output: 
+  html_document:
+    toc: true
+    toc_level: 3
+    toc_float: true
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Import required libraries
+```{r}
+library(tidyverse)
+library(SummarizedExperiment)
+library(reshape2)
+```
+
+# Data Import
+For this problemset we will be using the DeCoN sorted cortical neuron RNA-Seq dataset we have been using this week (GEO: GSE63482). Data will be loaded here and a SummarizedExperiment will be created.
+```{r}
+GEO <- "GSE63482"
+
+# Read in the data
+data <- read.csv("https://github.com/gofflab/Quant_mol_neuro_2022/raw/main/modules/module_9/notebooks/GSE63482_Expression_matrix.tsv", header = TRUE, sep = " ", row.names = 1)
+
+```
+
+```{r}
+# Parse header into parameters
+sample_metadata <- as.data.frame(stringr::str_split_fixed(colnames(data), "_", 2))
+colnames(sample_metadata) <- c("Age", "CellType")
+sample_metadata$SampleID<-colnames(data)
+```
+
+```{r}
+# Create Gene metadata
+gene_metadata <- data.frame(geneName = rownames(data))
+rownames(gene_metadata) <- rownames(data)
+```
+
+```{r}
+# Create a Summarized Experiment object
+se <- SummarizedExperiment(
+  # Multiple assays can be put in but must have same dims.
+  # Here we only have one assay called FPKM, which we assign the data to
+    assays = list(fpkm = data),
+    rowData = gene_metadata,  # From above.
+    colData = sample_metadata
+)
+
+assay(se,'logfpkm')<-log10(assay(se,'fpkm')+1)
+```
+
+We are providing for you here, the helper function to melt an se object that we have been using this week to make the 'long-form' data.table combining the expression data, the sample information, AND the rowData (gene) information.
+```{r}
+meltSE<-function(se){
+    plotData<-assay(se,'fpkm')
+    plotData$gene<-rownames(plotData)
+    plotData<-melt(plotData)
+    colnames(plotData)<-c("gene","SampleID","value")
+    plotData<-merge(plotData,as.data.frame(colData(se)),by.x='SampleID',by.y='SampleID')
+    plotData<-merge(plotData,as.data.frame(rowData(se)),by.x='gene',by.y='geneName')
+    plotData<-as.data.frame(plotData)
+    return(plotData)
+}
+```
+
+# Problem 1
+Given the below set of expressed transcription factor genes, create a hierarchical clustering dendrogram of the samples based on the **_scaled_** log10+1 expression of these TFs. 
+
+```{r}
+TFs<-c("Fbxl19","Thyn1","Sgsm2","Elk1","Pin1","Safb","Fiz1","Prr12","Camta2","Myt1l","E2f4","Deaf1","Thap4","Rexo4","Atf2","Csrnp3","Scrt1","Thap7","Purg","Mbd3","Srebf2","Spen","Nme2","Creb1","Dpf1","Cebpz","Akap8l","Baz2a","Maz","Setdb1","Camta1","Rfx7","Cxxc4","Rela","Mecp2","Gtf2i","Glyr1","Preb","Ubp1","Hmgn3","Rxrb","Cxxc1","Foxk2","Flywch1","Foxk1","Crebzf","Gatad2a","Neurod6","Pa2g4","Klf16","Znf512b","Nkrf","Jund","Zscan18","Pou6f1","Adnp","Yy1","Csrnp2","Nfyb","Ctcf","Zbtb45","Arnt","E4f1","Sox12","Ncoa1","Gabpa","Zfp41","Thra","Prmt3","Thap3","Rbpj","Ash1l","Atf4","Meis3","Arnt2","Thap11","Smad4","Cic","Gmeb2","Zbtb11","Irf3","Srf","Safb2","Vezf1","Usf2","Akap8","Zzz3","Pcgf2","Phf20","Tef","Gtf3a","Tcf3","Zfp62","Tsc22d1","Bhlhe22","Zfp1","Scrt2","Hmg20a","Foxg1","Cc2d1a","Tcf12","Sox11","Hbp1","Cebpg","Bptf","Sox4","Zbtb33","Patz1","Sp3","Foxj3","Mlx","Brf2","Dmtf1","Tbp","Peg3","Cux1","Tbr1","Zfp90","Prdm4","Foxj2","Pou3f3","Zfp28","Zbed4","Nr2f1","Nfat5","Prdm2","Pou3f2","Esrra","Znf326","Creb3","Myc","Smad1","Hivep2","Son","Zkscan2","Drap1","Cenpb","Elf2","Chchd3","Snapc2","Mef2a","Smad5","Pogk","Rbak","Snapc4","Mafg","Hsf1","Mtf2","Pcgf6","Mxd4","Tcf4","Nr1h2","Arid2","Kcmf1","Mnt","Tcf20","Cdc5l","Jun","Dzip1","Insm1","Sall2","Atf6b","Bcl11a","Dr1","Terf2","Gtf2b","Foxp4","Mycn","Rlf","Hsf2","Zxdc","Pbx1","Prdm8","Kdm5b","Zscan21","Ankzf1","Nfe2l1","Zbtb6","Zkscan1","Zbtb17","Hmga1","Mef2d","Bach1","Nfib","Rbck1","Wiz","Nrf1","Atmin","Ahdc1","Ncoa2","Lhx2","Meis2","Gatad2b","Nfia","Klf7","Setbp1","Neurod2","Topors","Foxp1","Zbtb22","Xpa","Gzf1","Nfix","Hif1a","Pbx2","Zbtb12","Hmbox1","Klf13","Mbd6","Fezf2","Skil","Ski","Max","Gpbp1","Nfya","Kdm2a","Xbp1","Mlxip","Zbtb43","Satb1","Mef2c","Hes6","Klf6","Hivep1","Tfdp1","Rfx1","Cggbp1","Dot1l","Nfx1","Stat2","Cenpt","Ahctf1","Zfp2","Ybx1","Usf1","Zeb2","Jazf1","Klf11","Bach2","Pou3f1","Scmh1","Rfx3","Cbx2","Dnttip1","Emx1","Zfp82","Foxo6","Zfhx2","Zfp91","Arntl","Zbtb5","Prdm15","Mbd1","Ddit3","Cux2","Bcl11b","Zkscan3","Nfyc","Satb2","Zfp30","Zgpat","Tet3","Gmeb1","Zscan2","Sox5","L3mbtl3","Zik1","Kin","Kdm2b","Phf21a","Nr1d1","Tshz3","Gtf2ird1","Glis2","Nfe2l3","Nfil3","Zfp57","Otx1","Trafd1","Tbpl1","Zbtb34","Irf9","Dnmt1","Nr4a3","Phf1","Tet2","Osr1")
+
+se.subset<-se[TFs,]
+
+# Remember that scaling genes is done by row, so we need to transpose the matrix, scale, and then transpose back
+clustData<-t(scale(t(assay(se.subset,'logfpkm'))))
+
+# Create the dendrogram
+dend<-hclust(dist(t(clustData)),method='complete')
+plot(dend)
+```
+1.1. Describe what the top-level split of the dendrogram depicts? Which samples are segregated?  
+
+1.2. How does the cell type grouping change with respect to age in this context? (ie. How do the sample relationships change from E15->E16->E18? Are cell types more or less similar to each other as a function of age?)
+
+1.3. What might this mean about the role of transcription factors in defining the relationship between samples in this developmental timecourse?
+
+1.4. Using ComplexHeatmap, create a heatmap of the samples based on the **_scaled_** log10+1 expression of these TFs. 
+```{r}
+ComplexHeatmap::Heatmap(clustData)
+```
+
+
+# Problem 2
+Using the same centered & scaled data from Problem 1, cluster the genes using kmeans clustering. Take a look at your heatmap to choose a reasonable starting k value.
+
+```{r}
+k<-5
+# Cluster the genes
+geneClust<-kmeans(clustData,k,iter.max=1000)
+# Add the cluster assignments to the rowData of the SummarizedExperiment
+rowData(se.subset)$geneCluster<-geneClust$cluster
+```
+To answer the following questions, you may want to melt and merge your se object TF subset and use dplyr to summarise the data by cluster, cell type, and/or age.
+
+2.1. How many genes are in each cluster? Which cluster contains the most genes? Which has the fewest?
+```{r}
+# Create a melted and merged version of the TF-specific se object with meltSE()
+tmp<-meltSE(se.subset)
+
+# Summarise with dplyr (use the n() function to count the number of genes in each cluster after grouping)
+tmp %>% 
+  group_by(geneCluster) %>% 
+  summarise(nGenes=n())
+```
+2.2 What is the average expression of each cluster?
+```{r}
+# Summarise with dplyr (use the mean() function to calculate the average expression of each cluster after grouping)
+tmp %>% 
+  group_by(geneCluster) %>% 
+  summarise(meanExp=mean(value))
+```
+
+2.3. What is the average expression and standard deviation of each cluster for each CellType?
+```{r}
+# Summarise with dplyr (use the mean() function to calculate the average expression of each cluster after grouping)
+tmp %>% 
+  group_by(CellType,geneCluster) %>% 
+  summarise(meanExp=mean(value), sdExp=sd(value))
+```
+4. What is the average expression and standard deviation of each cluster for each CellType and Age?
+```{r}
+# Summarise with dplyr (use the mean() function to calculate the average expression of each cluster after grouping)
+
+```
+
+5. Use the output of question 2.4
