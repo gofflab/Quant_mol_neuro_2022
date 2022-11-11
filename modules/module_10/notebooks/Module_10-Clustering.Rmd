@@ -130,16 +130,24 @@ p + facet_wrap('cluster',scales="free_y")
 ```
 
 # Clustering QC
+How do we determine that a clustering solution is optimal/effective?  In many cases, this requires us to test multiple clustering solutions using a given metric.
 
 ## Choosing a k
+Methods such as k-means clustering which require an a priori choice of k can be evaluated by asking the question, 'What is the best k'.  In many cases, we can use some intuition to set a starting value for k, but we can also assess how well a specific clustering solution performs, and choose a k from a range of values based on this assessment.
 ### Elbow method
-A naive approach to determining the choice of k by minimizing the 'Within-cluster-sum of Squared Errors' (WSS) across different choices of k. The WSS is the sum of the distances for each point to its cluster centroid. This is conveniently calculated for us and provided for each kmeans result in the `$tot.withinss` slot.
+A naive (but reasonable) approach to determining the choice of k is to ask which k minimizes the 'Within-cluster-sum of Squared Errors' (WSS) across different choices of k. The WSS is the sum of the distances for each point to its cluster centroid. 
+
+1) For each point, calculate the square of the distance between said point and its cluster centroid (Squared Error)
+2) WSS is the sum of all of the squared errors for each point.
+
+This is conveniently calculated for us and provided for each kmeans result in the `$tot.withinss` slot.
 
 ```{r}
 clustData.kmeans$tot.withinss
 ```
 
-Since we're interested in minimizing this across different values of k to choose an optimal k, let's write a for loop to do this for us.
+We can use this value, for multiple choices of k, to assess the goodness of fit for each clustering solution. An 'optimal' k will minimize the WSS but not 'overfit' or add more clusters than needed to describe the different groups effectively.
+To choose an optimal k, let's write a for loop to do this for us.
 
 ```{r}
 kRange<-c(2:30)
@@ -157,9 +165,22 @@ Now that we have performed the clustering over a range of k-values, let's plot t
 plot(kRange,wss,type="l")
 ```
 
-### Silhouette method
+Ideally you want a clustering that has the properties of both internal cohesion (low _within_ cluster SS) and external separation (high _between_ cluster SS). We can calculate the external separation by measuring the Sum of the Square of the distances between cluster centroids
+```{r}
+clustData.kmeans$betweenss
+```
 
-Silhouette Score = (b-a)/max(a,b)
+The ratio of BSS / TSS (TSS = BSS + WSS) gives us another metric to evaluate the 'goodness' of a clustering solution as well 
+```{r}
+clustData.kmeans$betweenss/(clustData.kmeans$betweenss+clustData.kmeans$tot.withinss)
+```
+
+For this metric, an 'optimal' clustering solution would have a BSS/TSS ratio approaching 1.
+
+### Silhouette method
+The silhouette score is another metric used to measure how close each point in one cluster is to points in the neighboring clusters.
+
+Silhouette Score = (b-a)/max(a,b) (Range: [-1:1])
 where:
   - a = average intra-cluster distance i.e the average distance between each point within a cluster.
   - b = average inter-cluster distance i.e the average distance between all clusters.
@@ -196,7 +217,6 @@ plot(genes.umap,
      col=clustData.kmeans$cluster,
      pch=20) #Run this several times....
 ```
-
 
 # Session Information
 ```{r}
