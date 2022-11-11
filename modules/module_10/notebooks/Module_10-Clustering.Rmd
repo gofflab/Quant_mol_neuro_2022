@@ -129,6 +129,75 @@ p<-ggplot(kmeans.summary,aes(x=Age,
 p + facet_wrap('cluster',scales="free_y")
 ```
 
+# Clustering QC
+
+## Choosing a k
+### Elbow method
+A naive approach to determining the choice of k by minimizing the 'Within-cluster-sum of Squared Errors' (WSS) across different choices of k. The WSS is the sum of the distances for each point to its cluster centroid. This is conveniently calculated for us and provided for each kmeans result in the `$tot.withinss` slot.
+
+```{r}
+clustData.kmeans$tot.withinss
+```
+
+Since we're interested in minimizing this across different values of k to choose an optimal k, let's write a for loop to do this for us.
+
+```{r}
+kRange<-c(2:30)
+wss<-c()
+for (i in kRange){
+  print(i)
+  clust<-kmeans(clustData.scaled,i,iter.max = 100)
+  wss<-c(wss,clust$tot.withinss)
+}
+```
+
+Now that we have performed the clustering over a range of k-values, let's plot the wss trends and see where the elbow of the curve is located. We want to choose a k that minimizes the wss, but doesn't 'overfit' the data.
+
+```{r}
+plot(kRange,wss,type="l")
+```
+
+### Silhouette method
+
+Silhouette Score = (b-a)/max(a,b)
+where:
+  - a = average intra-cluster distance i.e the average distance between each point within a cluster.
+  - b = average inter-cluster distance i.e the average distance between all clusters.
+
+```{r}
+library(cluster)
+D<-dist(clustData.scaled)
+kmeans.sil<-silhouette(clustData.kmeans$cluster,D)
+plot(kmeans.sil,border=NA,col=1:12)
+
+silhouette_score <- function(k){
+  km <- kmeans(clustData.scaled, centers = k, iter.max=100)
+  ss <- silhouette(km$cluster, dist(clustData.scaled))
+  mean(ss[, 3])
+}
+
+kRange <- c(2:30)
+avg_sil <- lapply(kRange, silhouette_score)
+plot(kRange, type='b', avg_sil, xlab='Number of clusters', ylab='Average Silhouette Scores', frame=FALSE)
+
+
+nClusters<-12
+clustData.kmeans<-kmeans(clustData.scaled,nClusters,iter.max=100)
+kmeans.sil<-silhouette(clustData.kmeans$cluster,D)
+plot(kmeans.sil,border=NA,col=1:nClusters)
+
+```
+
+## UMAP on genes to visualize cluster relationships
+```{r}
+library(uwot)
+genes.umap<-uwot::umap(clustData.scaled,verbose=T) # or uwot::umap()
+plot(genes.umap,
+     col=clustData.kmeans$cluster,
+     pch=20) #Run this several times....
+```
+
+
 # Session Information
 ```{r}
 sessionInfo()
