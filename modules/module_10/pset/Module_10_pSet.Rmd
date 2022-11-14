@@ -79,11 +79,9 @@ TFs<-c("Fbxl19","Thyn1","Sgsm2","Elk1","Pin1","Safb","Fiz1","Prr12","Camta2","My
 se.subset<-se[TFs,]
 
 # Remember that scaling genes is done by row, so we need to transpose the matrix, scale, and then transpose back
-clustData<-t(scale(t(assay(se.subset,'logfpkm'))))
 
-# Create the dendrogram
-dend<-hclust(dist(t(clustData)),method='complete')
-plot(dend)
+# Create and plot the dendrogram
+
 ```
 1.1. Describe what the top-level split of the dendrogram depicts? Which samples are segregated?  
 
@@ -93,7 +91,7 @@ plot(dend)
 
 1.4. Using ComplexHeatmap, create a heatmap of the samples based on the **_scaled_** log10+1 expression of these TFs. 
 ```{r}
-ComplexHeatmap::Heatmap(clustData)
+
 ```
 
 
@@ -101,43 +99,67 @@ ComplexHeatmap::Heatmap(clustData)
 Using the same centered & scaled data from Problem 1, cluster the genes using kmeans clustering. Take a look at your heatmap to choose a reasonable starting k value.
 
 ```{r}
-k<-5
+k<-??
 # Cluster the genes
-geneClust<-kmeans(clustData,k,iter.max=1000)
+
 # Add the cluster assignments to the rowData of the SummarizedExperiment
-rowData(se.subset)$geneCluster<-geneClust$cluster
+
 ```
 To answer the following questions, you may want to melt and merge your se object TF subset and use dplyr to summarise the data by cluster, cell type, and/or age.
 
 2.1. How many genes are in each cluster? Which cluster contains the most genes? Which has the fewest?
 ```{r}
 # Create a melted and merged version of the TF-specific se object with meltSE()
-tmp<-meltSE(se.subset)
 
 # Summarise with dplyr (use the n() function to count the number of genes in each cluster after grouping)
-tmp %>% 
-  group_by(geneCluster) %>% 
-  summarise(nGenes=n())
+
 ```
+Which cluster has the largest number of genes?
+
+
 2.2 What is the average expression of each cluster?
 ```{r}
 # Summarise with dplyr (use the mean() function to calculate the average expression of each cluster after grouping)
-tmp %>% 
-  group_by(geneCluster) %>% 
-  summarise(meanExp=mean(value))
+
 ```
+Which cluster has the largest average gene expression?
 
 2.3. What is the average expression and standard deviation of each cluster for each CellType?
 ```{r}
 # Summarise with dplyr (use the mean() function to calculate the average expression of each cluster after grouping)
-tmp %>% 
-  group_by(CellType,geneCluster) %>% 
-  summarise(meanExp=mean(value), sdExp=sd(value))
+
 ```
-4. What is the average expression and standard deviation of each cluster for each CellType and Age?
+2.4. What is the average expression and standard deviation of each cluster for each CellType and Age?
 ```{r}
 # Summarise with dplyr (use the mean() function to calculate the average expression of each cluster after grouping)
 
 ```
+# Problem 3
+3.1 Create an 'elbow plot' using the within-cluster sum of squared errors (WSS) metric, across the range of k=2 to k=30 to determine an optimal number of clusters for the selected transcription factor genes.
+```{r}
+# Create a vector of k values to test
 
-5. Use the output of question 2.4
+# Create a vector to store the WSS values
+
+# Loop over the k values and record the WSS for each
+
+# Plot the WSS values as a function of k
+
+```
+
+3.2. Using an optimal k value from the elbow plot, cluster the genes again using kmeans clustering. 
+
+```{r}
+k<-??
+# Cluster the genes with kmeans clustering & your optimal k value
+```
+
+3.3 Using the uwot package, create a UMAP plot of the genes using the cluster assignments as the color. 
+
+```{r}
+library(uwot)
+genes.umap<-uwot::umap(????)
+
+# Plot the UMAP
+plot(genes.umap, col=????)
+```
