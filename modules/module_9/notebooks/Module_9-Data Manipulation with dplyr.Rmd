@@ -102,14 +102,15 @@ The first two verbs define subsets of the data frame on either dimension.
 
 ```{r}
 # select returns subsets of the columns in the order they are requested
-select(se.melt, Age)
-select(se.melt, Age, value)
-select(se.melt, value, Age)
-select(se.melt, -Age)
+head(select(se.melt, Age))
+head(select(se.melt, Age, value))
+head(select(se.melt, value, Age))
+
+head(select(se.melt, -Age))
 
 # filter() to select rows matching a logical equation
-filter(se.melt, Age == "P1")
-filter(se.melt, CellType %in% c("corticothal", "cpn"))
+head(filter(se.melt, Age == "P1"))
+head(filter(se.melt, CellType %in% c("corticothal", "cpn")))
 filter(se.melt, gene %in% c("Pax6", "Fezf2"))
 filter(se.melt, Age != "P1")
 filter(se.melt, value >= 5000)
@@ -183,7 +184,7 @@ And by Age
 
 ```{r}
 se.melt %>%
-  group_by(Age) %>%
+  group_by(CellType,Age) %>%
   summarise(mean = mean(value))
 ```
 

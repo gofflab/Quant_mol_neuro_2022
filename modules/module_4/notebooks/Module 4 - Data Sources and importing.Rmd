@@ -1,0 +1,109 @@
+---
+title: "Module 4 -- Data Sources and Importing"
+author: "Loyal Goff"
+date: '2022-08-05'
+output: 
+  html_document:
+    toc: true
+    toc_level: 3
+    toc_float: true
+    theme: yeti
+editor_options:
+  chunk_output_type: inline
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Sequence Read Archive (SRA)
+
+| Metadata         | Description                                                                                                                                         |
+|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| Study (SRP)      | A study is a set of experiments and has an overall goal.                                                                                            |
+| Experiment (SRX) | An experiment is a consistent set of laboratory operations on input material with an expected result.                                               |
+| Sample (SRS)     | An experiment targets one or more samples. Results are expressed in terms of individual samples or bundles of samples as defined by the experiment. |
+| Run (SRR)        | Results are called runs. Runs comprise the data gathered for a sample or sample bundle and refer to a defining experiment.                          |
+| Submission       | A submission is a package of metadata and/or data objects and a directive for what to do with those objects.                                        |
+: SRA organization
+
+A Study (SRP) must contain one or more samples (SRS). Each sample (SRS) can be associated with one or more experiments (SRX).  And each experiment has one or more sequencing runs (SRR). Importantly, the SRR\* fields are where the final sequencing reads are stored and the primary field that you will generally be concerned with downloading.  But it's useful to know and understand the relationships (e.g. the same 'sample' can be run on multiple runs, and these should not be treated separately downstream)
+
+# FFQ
+
+## Dataset info
+
+We will use the dataset from this study:
+
+Mark S Cembrowski, Lihua Wang, Ken Sugino, Brenda C Shields, Nelson Spruston (2016) Hipposeq: a comprehensive RNA-seq database of gene expression in hippocampal principal neurons eLife 5:e14997 <https://doi.org/10.7554/eLife.14997>
+
+Specifically we're going to use some of the data that has been archived on the Gene Expression Omnibus with accession [GSE74985](http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?token=adsveykeprejbej&acc=GSE74985)
+
+## FetchFastQ (ffq) Installation
+
+We are going to use the tool `ffq` (<https://github.com/pachterlab/ffq>) to retrieve the metadata information from NCBI GEO database for this study. But first we need to install the tool.
+
+```{bash}
+pip install ffq
+```
+
+## Getting project metadata
+
+```{r}
+Sys.setenv(GEO="GSE74985")
+```
+
+```{bash}
+ffq --ftp $GEO > $GEO.json
+```
+
+```{bash}
+# Download all fastq files associated with GEO record
+jq -r '.[] | select(.filetype=="fastq") | .url' $GEO.json | xargs curl -O
+```
+## Processed data download
+
+```{r}
+dir.create(file.path("data/processed/"),recursive=TRUE)
+GSE74985_gene_exp_diff_url<-"https://ftp.ncbi.nlm.nih.gov/geo/series/GSE74nnn/GSE74985/suppl/GSE74985_gene_exp.diff.gz"
+GSE74985_genes_fpkm_tracking_url<-"https://ftp.ncbi.nlm.nih.gov/geo/series/GSE74nnn/GSE74985/suppl/GSE74985_genes.fpkm_tracking.gz"
+GSE74985_mergedCount_url<-"https://ftp.ncbi.nlm.nih.gov/geo/series/GSE74nnn/GSE74985/suppl/GSE74985_mergedCount.txt.gz"
+
+download.file(GSE74985_genes_fpkm_tracking_url,"data/processed/GSE74985_genes.fpkm_tracking.gz")
+
+install.packages('R.utils')
+library(data.table)
+fpkm<-as.data.frame(fread("data/processed/GSE74985_genes.fpkm_tracking.gz"))
+
+# Create an index of colnames from the fpkm_tracking table to select ONLY those columns with estimated FPKM values
+fpkm_cols<-grepl(("_FPKM"),colnames(fpkm))
+
+#Use index to create a table of FPKM values
+fpkm_matrix<-fpkm[,fpkm_cols]
+
+#Get info for row (gene) table
+row_info<-fpkm[,c(1:9)]
+
+#Get info for col (sample) table
+col_info<-data.frame(
+  sampleID = colnames(fpkm_matrix),
+  condition = c("dg_d","dg_v","ca4","ca3_d","ca3_v","ca2","ca1_d","ca1_v"),
+  position = c("dorsal","ventral",NA,"dorsal","ventral",NA,"dorsal","ventral"),
+  tissue = c("DG","DG","CA","CA","CA","CA","CA","CA"),
+  region = c("DG","DG","CA4","CA3","CA3","CA2","CA1","CA1")
+)
+
+library(SummarizedExperiment)
+hippo<-SummarizedExperiment(assays=list(fpkm=fpkm_matrix),
+                            rowData = row_info,
+                            colData = col_info)
+
+```
+
+
+
+# Session Information
+
+```{r session}
+sessionInfo()
+```

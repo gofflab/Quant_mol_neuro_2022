@@ -189,11 +189,11 @@ where:
 library(cluster)
 D<-dist(clustData.scaled)
 kmeans.sil<-silhouette(clustData.kmeans$cluster,D)
-plot(kmeans.sil,border=NA,col=1:12)
+plot(kmeans.sil,border=NA,col=1:5)
 
 silhouette_score <- function(k){
   km <- kmeans(clustData.scaled, centers = k, iter.max=100)
-  ss <- silhouette(km$cluster, dist(clustData.scaled))
+  ss <- silhouette(km$cluster, D)
   mean(ss[, 3])
 }
 
@@ -213,6 +213,7 @@ plot(kmeans.sil,border=NA,col=1:nClusters)
 ```{r}
 library(uwot)
 genes.umap<-uwot::umap(clustData.scaled,verbose=T) # or uwot::umap()
+plot(genes.umap,pch=20)
 plot(genes.umap,
      col=clustData.kmeans$cluster,
      pch=20) #Run this several times....

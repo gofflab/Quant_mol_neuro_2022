@@ -47,3 +47,8 @@ vignettes/*.pdf
 
 **/data/**
 *.ipynb
+
+# Compressed files
+*.tgz
+*.zip
+*.gz
