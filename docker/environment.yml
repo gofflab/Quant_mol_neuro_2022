@@ -22,12 +22,13 @@ dependencies:
       - ffq
       - gget
   # R stuffs
-  - r-base=4.1
+  - r-base=4.3
   - r-devtools
   - r-formatr
   - r-ggrepel
   - r-ggridges
   - r-here
+  - r-languageserver
   - r-lintr
   - r-markdown
   - r-matrix
@@ -37,6 +38,7 @@ dependencies:
   - r-rcpp
   - r-sleuth
   - r-seurat
+  - r-terra
   - r-tidyverse
   - r-uwot
   - bioconductor-biomart
